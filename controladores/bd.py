@@ -1,14 +1,26 @@
 import pymysql
 
+SQLALCHEMY_DATABASE_URI = 'mysql://ulkkuhuq5vq6ly5k:k1huLwTpahIIbyRds33S@b1maiitpask5s6u7x1or-mysql.services.clever-cloud.com:3306/b1maiitpask5s6u7x1or'
 
 
 def obtener_conexion():
-    return pymysql.connect(host='localhost',
-                                port=3306,
-                                user='root',
-                                password='',
-                                db='bd_proyecto'
-                                )
+    return pymysql.connect(
+        host='b1maiitpask5s6u7x1or-mysql.services.clever-cloud.com',
+        port=3306,
+        user='ulkkuhuq5vq6ly5k',
+        password='k1huLwTpahIIbyRds33S',
+        db='b1maiitpask5s6u7x1or'
+        )
+
+
+
+# def obtener_conexion():
+#     return pymysql.connect(host='localhost',
+#                                 port=3306,
+#                                 user='root',
+#                                 password='',
+#                                 db='bd_proyecto'
+#                                 )
 
 
 
