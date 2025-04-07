@@ -179,7 +179,6 @@ def inject_globals():
 
 
 
-@app.route("/")
 @app.route("/index")
 def index():
     return render_template("index.html")
@@ -304,7 +303,7 @@ def guardar_nota():
 
 
 
-
+@app.route("/")
 @app.route("/blank")
 def blank():
     return render_template("blank.html",)
