@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, flash, jsonify, session, make_response,  redirect, url_for
 from datetime import datetime, date , timedelta 
-import hashlib
-import base64
+# import hashlib
+# import base64
 import controladores.controlador as controlador
 import pytz
 
@@ -113,6 +113,7 @@ ENLACES_MENU= [
     'tareas' ,
     'sinfecha' ,
     'info_notas' ,
+    'blank' ,
     # 'lista' ,
 ]
 
@@ -302,6 +303,11 @@ def guardar_nota():
 
 
 
+
+
+@app.route("/blank")
+def blank():
+    return render_template("blank.html",)
 
 
 
