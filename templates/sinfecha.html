@@ -1,0 +1,57 @@
+{% extends "maestra_general.html" %}
+
+{% block titulo %}
+Sin fecha
+{% endblock %}
+
+{% block estilos %}
+<link rel="stylesheet" href="/static/css/horario.css">
+{% endblock %}
+
+
+
+
+
+{% block contenido %}
+
+<div>
+    <div class="list_tareas">
+        {% for tarea in sinfecha %}
+        {% set nombre = tarea[1] %}
+        {% set color = tarea[2] %}
+        {% set desc = tarea[3] %}
+
+        {% set dia = tarea[4] %}
+
+        {% set h_ini = tarea[5] %}
+        {% set m_ini = tarea[6] %}
+        {% set h_fin = tarea[7] %}
+        {% set m_fin = tarea[8] %}
+
+        {% set titulo = tarea[11] %}
+        {% set desc_h = tarea[12] %}
+
+        {% set letras = tarea[13] %}
+        {% set icono = tarea[14] %}
+        {% set img = tarea[15] %}
+
+        <div class="tarea sinfecha" style="  background-color: {{color}} ;">
+            <!-- {{titulo}} -->
+            {{tarea}}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+
+
+
+
+{% block scripts %}
+
+
+{% endblock %}

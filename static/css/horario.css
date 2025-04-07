@@ -1,0 +1,390 @@
+:root {
+    --witdh-nota: 70px;
+    --height-nota: 25px;
+}
+
+.cell {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    background-color: #18181896;
+    border-radius: 2px;
+}
+
+.grid-container {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 80vh;
+    width: 80vw;
+    position: relative;
+    scrollbar-width: thin;
+    scrollbar-color: #334f68 #f0f0f081;
+}
+
+.grid-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.grid-container::-webkit-scrollbar-thumb {
+    background-color: #373368;
+}
+
+.grid-container::-webkit-scrollbar-track {
+    background-color: #f0f0f0;
+}
+
+
+#grid {
+    display: grid;
+    color: white;
+}
+
+.grid_head {
+    text-align: center;
+    color: white;
+    align-items: center;
+    vertical-align: middle;
+    position: sticky;
+    z-index: 700;
+}
+
+.cell_day {
+    background-color: #262626c9;
+}
+
+.cell_date {
+    background-color: #717171b3;
+}
+
+.colday ,
+.space_hour ,
+.space_minute {
+    position: sticky;
+    z-index: 800;
+}
+
+.space_hour {
+    color: white;
+}
+
+.space_hour:nth-child(odd) {
+    background-color: #383838ab;
+}
+
+.space_hour:nth-child(even) {
+    background-color: #262626b5;
+}
+
+.space_minute {
+    background-color: #333333b2;
+    font-size: 80%;
+}
+
+.colday {
+    writing-mode: vertical-rl; 
+    text-orientation: upright;
+}
+
+.colday:nth-child(odd) {
+    background-color: #1b1b1bd4;
+}
+
+.colday:nth-child(even) {
+    background-color: #262626c8;
+}
+
+.empty_cell {
+    background-color: #94949459;
+    z-index: 5;
+}
+
+.empty_cell_2 {
+    background-color: #00000051;
+    z-index: 2;
+}
+
+.grid_head.space_hour {
+    z-index: 1000;
+    background-color: black;
+}
+
+.cuadro_horario {
+    /* background-color: #b725c46e; */
+    z-index: 99;
+    padding: 10px;
+    font-size: 80%;
+}
+
+
+
+
+.list_tareas {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 70vw;
+}
+
+.tarea {
+    /* border: 1px solid black; */
+    border-radius: 3px;
+    padding-block: 5px;
+    padding-inline: 10px;
+    width: 100%;
+    font-size: 140%;
+}
+
+.sinfecha {
+    background-color: #545454;
+    border: 1px solid white;
+    color: #fff;
+}
+
+.dashboard {
+    column-gap: 30px;
+    row-gap: 20px;
+    display: grid;
+    max-height: 75vh;
+    /* max-height: 100%; */
+    grid-template-columns: 35vw auto auto;
+    grid-template-rows: repeat(2,52.5%) ;
+    /* grid-template-rows: repeat(4,23%) ; */
+    grid-template-areas: 
+                            " dshb_horario dshb_sinfecha dshb_hoy"
+                            " dshb_horario dshb_mañana dshb_resto"
+                            /* " dshb_horario dshb_mañana " */
+                            /* " dshb_horario dshb_resto " */
+    ;
+}
+
+h5 {
+    color: black;
+}
+
+.dashboard .tarea {
+    font-size: 100%;
+}
+
+.dashboard .grid-container {
+    width: 100%;
+    max-height: 100%;
+    /* max-height: 77.5vh; */
+}
+
+.dashboard .list_tareas {
+    overflow-x: auto;
+    overflow-y: auto;
+    /* max-height: 35vh; */
+    max-height: 100%;
+    width: 100%;
+}
+
+.dashboard > div
+/* .dshb_sinfecha ,
+.dshb_tareas ,
+.dshb_horario ,
+.dshb_hoy ,
+.dshb_resto ,
+.dshb_mañana  */
+{
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard .dshb_sinfecha {
+    grid-area: dshb_sinfecha;
+}
+
+.dashboard .dshb_tareas {
+    grid-area: dshb_tareas;
+}
+
+.dashboard .dshb_horario {
+    grid-area: dshb_horario;
+}
+
+.dashboard .dshb_mañana {
+    grid-area: dshb_mañana;
+}
+
+.dashboard .dshb_hoy {
+    grid-area: dshb_hoy;
+}
+
+.dashboard .dshb_resto {
+    grid-area: dshb_resto;
+}
+
+
+
+
+
+
+
+.list_notas {
+    display: flex;
+    gap: 10px;
+    font-size: 97.5%;
+    margin: 0;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 80vh;
+    width: 80vw;
+    scrollbar-width: thin;
+    scrollbar-color: #1672c2c1 #f0f0f0;
+}
+
+.s_curso ,
+.v_nota ,
+.v_curso ,
+.v_unidad ,
+.p_nota ,
+.p_unidad ,
+.n_curso ,
+.n_unidad {
+    /* border: 0.5px solid black; */
+    /* border: 1px solid #898989b3; */
+    border-radius: 3px;
+    padding: 1px;
+    /* border: 3px solid rgba(0, 0, 0, 0); */
+}
+
+.s_curso ,
+.s_curso * {
+    gap: 5px;
+}
+
+.s_curso * {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.s_curso {
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+}
+
+.s_unidad {
+    display: grid;
+    grid-template-columns: repeat(3 , var(--witdh-nota));
+    grid-template-areas: 
+                " n_unidad p_unidad v_unidad "
+                " n_unidad c_unidad c_unidad "
+    ;
+}
+
+.n_unidad {
+    grid-area: n_unidad;
+    vertical-align: middle;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.p_unidad {
+    grid-area: p_unidad;
+}
+
+.v_unidad {
+    grid-area: v_unidad;
+}
+
+.c_unidad {
+    grid-area: c_unidad;
+}
+
+.c_curso {
+}
+
+.c_unidad {
+}
+
+.n_curso ,
+.n_unidad {
+    padding: 0;
+    margin: 0;
+}
+
+.c_curso ,
+.c_unidad {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.s_nota {
+    display: flex;
+    width: 100%;
+}
+
+.v_nota ,
+.p_nota {
+    width: var(--witdh-nota);
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.v_nota {
+    cursor: pointer;
+    height: var(--height-nota);
+    padding: 5px;
+}
+
+.s_curso p {
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+}
+
+.v_nota input {
+    width: -webkit-fill-available;
+    text-align: right;
+    border-radius: 3px;
+    border: 0;
+}
+
+
+
+
+
+
+.s_curso {
+    color: white;
+}
+
+.v_nota {
+    background-color: #000000c9;
+}
+
+.n_curso ,
+.v_curso {
+    background-color: #000000a1;
+}
+
+.v_unidad {
+    background-color: #0000004e;
+}
+
+.p_nota {
+    background-color: #2d2d2dd3;
+}
+
+.p_unidad {
+    background-color: #626262e6;
+}
+
+.n_unidad {
+    background-color: #ffffff67;
+    color: black;
+    height: 100%;
+}
