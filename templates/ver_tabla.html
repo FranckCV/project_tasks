@@ -1,0 +1,302 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Ver tabla {{ tabla_info['nombre'] }}
+{% endblock %}
+
+
+{% block estilos %}
+
+<style>
+    th {
+        min-width: 150px;
+        max-width: 200px;
+    }
+
+    td,
+    th {
+        border: 1px solid white;
+        text-align: center;
+    }
+
+    .td_tareas {
+        height: 100%;
+        position: relative;
+    }
+
+    .list_tareas {
+        min-height: 47px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        height: 100%;
+        gap: 5px;
+        position: relative;
+        height: 100%;
+    }
+
+    .tarea {
+        display: flex;
+        padding-inline: 10px;
+        padding-block: 5px;
+        border-radius: 5px;
+        width: fit-content;
+    }
+
+    .tarea:hover {
+        box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.57);
+    }
+
+    .section_tabla {
+        display: flex;
+        gap: 30px;
+        height: 100%;
+        width: 100%;
+    }
+
+    .insert_tarea {
+        --size: 0px;
+
+        border-radius: 0px;
+        border-bottom-left-radius: 5px;
+        background-color: rgb(0, 136, 98);
+        color: white;
+        height: 15px;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        position: absolute;
+        z-index: 99;
+        right: var(--size);
+        top: var(--size);
+    }
+
+
+    .container_tabla {
+        overflow: auto;
+        max-width: 900px;
+        max-height: 80vh;
+    }
+
+    .container_forms {
+        width: 200px;
+        gap: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .container_forms form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+</style>
+
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="container_title">
+    <p class="title">
+        {{tabla_info.nombre}}
+    </p>
+</div>
+
+<div class="section_tabla">
+
+
+    <div class="container_forms">
+
+        <div>
+            <p>
+                COLUMNAS
+            </p>
+            <form action=" {{ url_for('guardar_tabla_elemento') }}?elemento=columna " method="post">
+
+                <input type="text" name="nombre" id="" required>
+                <input type="color" name="color" id="" required>
+                <input type="number" name="orden" id="">
+                <input type="submit" value="Guardar">
+            </form>
+        </div>
+        <div>
+            <p>
+                FILAS
+            </p>
+            <form action=" {{ url_for('guardar_tabla_elemento') }}?elemento=fila " method="post">
+
+                <input type="text" name="nombre" id="" required>
+                <input type="color" name="color" id="" required>
+                <input type="number" name="orden" id="">
+                <input type="submit" value="Guardar">
+            </form>
+        </div>
+        <!-- <div>
+            <p>
+                TAREAS
+            </p>
+            <form action=" " method="post">
+
+                <input type="text" name="nombre" id="" required>
+                <input type="color" name="color" id="" required>
+                <select name="columnaid" id="">
+                    {% for col in columnas %}
+                    <option value="{{col.id}}">
+                        {{col.nombre}}
+                    </option>
+                    {% endfor %}
+                </select>
+                <select name="filaid" id="">
+                    {% for col in filas %}
+                    <option value="{{col.id}}">
+                        {{col.nombre}}
+                    </option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Guardar">
+            </form>
+        </div> -->
+
+    </div>
+
+    <div class="container_tabla">
+        <table>
+            <thead>
+                <th>
+
+                </th>
+                {% for col in columnas %}
+                <th data-columnaid="{{ col.id }}" style="background-color: {{ col.color }} ;">
+                    {{ col['nombre'] }}
+                </th>
+                {% endfor %}
+            </thead>
+            <tbody>
+                {% for fila in filas %}
+                <tr>
+                    <td style="background-color: {{ fila.color }} ;" data-filaid="{{ fila.id }}">
+                        {{ fila.nombre }}
+                    </td>
+                    {% for col in columnas %}
+                    <td class="td_tareas">
+                        <div class="insert_tarea clickable-modal" data-target="insert_tarea_c_{{col.id}}_f_{{fila.id}}"
+                            id="">
+                            <i class="fa-solid fa-plus"></i>
+                        </div>
+                        <div class="list_tareas" data-columnaid="{{col.id}}" data-filaid="{{fila.id}}">
+                            {% for tarea in tareas %}
+                            {% if fila.id == tarea.filaid and col.id == tarea.columnaid %}
+                            <div class="tarea clickable-modal" style=" background-color: {{ tarea.color }}; "
+                                data-target="update_tarea_{{tarea.id}}">
+                                {{ tarea.nombre }}
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+
+{% for tarea in tareas %}
+<div class="modal_space" id="update_tarea_{{tarea.id}}">
+    <form class="modal_dialog modal_form" action=" {{ url_for('guardar_tabla_elemento') }}?elemento=tarea "
+        method="post">
+        <div class="modal_header">
+            Editar tarea
+        </div>
+        <div class="modal_body">
+            <div class="form_field">
+                <label for="">Nombre</label>
+                <input type="text" name="nombre" id="" value="{{tarea.nombre}}" required>
+            </div>
+            <div class="form_field">
+                <label for="">Color</label>
+                <input type="color" name="color" id="" value="{{tarea.color}}" required>
+            </div>
+
+        </div>
+        <div class="modal_footer">
+            <button class="button close_modal" type="reset">
+                Cerrar
+            </button>
+            <button class="button submit_modal" type="submit">
+                Guardar
+            </button>
+        </div>
+    </form>
+</div>
+{% endfor %}
+
+
+{% for fila in filas %}
+{% for col in columnas %}
+<div class="modal_space" id="insert_tarea_c_{{col.id}}_f_{{fila.id}}">
+    <form class="modal_dialog modal_form" action=" {{ url_for('guardar_tabla_elemento') }}?elemento=tarea "
+        method="post">
+        <div class="modal_header">
+            Agregar tarea
+        </div>
+        <div class="modal_body">
+            <div class="form_field">
+                <label for="">Nombre</label>
+                <input type="text" name="nombre" id="" required>
+            </div>
+            <div class="form_field">
+                <label for="">Color</label>
+                <input type="color" name="color" id="" required>
+            </div>
+            <div class="form_field">
+                <label for="">Fila</label>
+                <input type="text" name="" id="" value="{{fila.nombre}}" disabled>
+            </div>
+            <div class="form_field">
+                <label for="">Columna</label>
+                <input type="text" name="" id="" value="{{col.nombre}}" disabled>
+            </div>
+
+            <input type="hidden" name="filaid" value="{{fila.id}}">
+            <input type="hidden" name="columnaid" value="{{col.id}}">
+
+        </div>
+        <div class="modal_footer">
+            <button class="button close_modal" type="reset">
+                Cerrar
+            </button>
+            <button class="button submit_modal" type="submit">
+                Guardar
+            </button>
+        </div>
+    </form>
+</div>
+{% endfor %}
+{% endfor %}
+
+
+
+{% endblock %}
+
+
+
+
+
+
+{% block scripts %}
+
+<script>
+    pintarElemento(' th , td , .tarea ');
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Mis tablas
+{% endblock %}
+
+
+{% block estilos %}
+<style>
+    .container_grid {
+        grid-template-columns: repeat(4, 1fr);
+
+    }
+
+    .tabla {
+        border-radius: 10px;
+        background-color: var(--colorbg2);
+        width: 100%;
+        padding: 10px;
+        padding-inline: 15px;
+        color: white;
+        height: fit-content;
+        gap: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .tabla:hover {
+        box-shadow: 0px 0px 5px var(--color3);
+    }
+
+    .tabla_nombre {
+        font-size: 130%;
+    }
+
+    .tabla_num {
+        display: flex;
+        justify-content: center;
+        /* gap: 10px; */
+    }
+
+    .tabla_num > * {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-top: 1px solid #ffffff41;
+        border-left: 1px solid #ffffff41;
+        padding-inline: 20px;
+        padding-block: 5px;
+    }
+
+    .tabla_num > *:first-of-type {
+        border-left: 0;
+    }
+
+</style>
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="container_title">
+    <p class="title">
+        Mis tablas
+    </p>
+
+    <div class="buttons">
+        <a class="button btn_insert" href="{{ url_for('nueva_tabla') }}">
+            <i class="fa-solid fa-plus"></i>
+            <p>
+                Agregar
+            </p>
+        </a>
+    </div>
+</div>
+
+<div class="container_grid">
+    {% for tabla in tablas %}
+    <a class="tabla" href="{{ url_for('ver_tabla' , tablaid = tabla.id) }}">
+        <div class="tabla_nombre">
+            {{ tabla.nombre }}
+        </div>
+        <div class="tabla_num">
+            <div>
+                <div>
+                    {{tabla.columnas}}
+                </div>
+                <div>
+                    Columnas
+                </div>
+            </div>
+            <div>
+                <div>
+                    {{tabla.filas}}
+                </div>
+                <div>
+                    Filas
+                </div>
+            </div>
+            <div>
+                <div>
+                    {{tabla.tareas}}
+                </div>
+                <div>
+                    Tareas
+                </div>
+            </div>
+
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+
+{% endblock %}

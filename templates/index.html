@@ -1,345 +1,473 @@
-{% extends "maestra_general.html" %}
+{% extends "MAESTRA.html" %}
 
 {% block titulo %}
 Index
 {% endblock %}
 
 {% block estilos %}
-<link rel="stylesheet" href="/static/css/horario.css">
+<style>
+    :root {
+        --size-block: 100px;
+        --color-low: #ff0077;
+        --color-middle: #90ff5d;
+        --color-high: var(--color3);
+
+        --color-bg: #9bc3ff;
+        --color-transparent: #ffffff1b;
+        --color-light: #ffffffd2;
+        --color-dark: #333;
+
+        --color-red: #ee0057;
+        --color-yellow: #fff456;
+        --color-blue: #60aaff;
+        --color-orange: color-mix(in srgb, var(--color-red) 100%, var(--color-yellow) 100%);
+        --color-green: color-mix(in srgb, var(--color-blue) 100%, var(--color-yellow) 100%);
+    }
+
+    section {
+        justify-content: center;
+        align-items: center;
+        min-height: 89.5vh;
+        padding: 5px;
+    }
+
+    .section_dashboard {
+        display: grid;
+        /* width: 400px; */
+        grid-template-columns: repeat(8, 125px);
+        grid-template-rows: repeat(6, 85px);
+        gap: 15px;
+    }
+
+    .d_block {
+        /* background-color: #5787ff70; */
+        background-color: var(--colorbg3);
+        /* background-color: color-mix(in srgb, var(--color1) 30%, black 90%) ; */
+        /* filter: saturate(2.5); */
+        border-radius: 10px;
+        padding: 10px;
+        padding-inline: 15px;
+        font-size: 110%;
+        gap: 10px;
+        display: flex;
+        flex-direction: column;
+        /* border: 1px solid color-mix(in srgb, 10%, white 25%) ; */
+        border: var(--color-border1) ;
+    }
+
+    .d_block>p {
+        font-size: 110%;
+        /* text-align: center; */
+    }
+
+    .d_block>div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .d_block[data-block="1"] {
+        grid-column: span 2 / span 2;
+        grid-row: span 3 / span 3;
+    }
+
+    .d_block[data-block="2"] {
+        grid-column: span 3 / span 3;
+        grid-row: span 4 / span 4;
+        grid-column-start: 3;
+        grid-row-start: 3;
+    }
+
+    .d_block[data-block="3"] {
+        grid-column: span 3 / span 3;
+        grid-row: span 2 / span 2;
+        grid-column-start: 3;
+        grid-row-start: 1;
+    }
+
+    .d_block[data-block="4"] {
+        grid-column: span 3 / span 3;
+        grid-row: span 2 / span 2;
+        grid-column-start: 6;
+        grid-row-start: 1;
+    }
+
+    .d_block[data-block="5"] {
+        grid-column: span 3 / span 3;
+        grid-row: span 4 / span 4;
+        grid-column-start: 6;
+        grid-row-start: 3;
+    }
+
+    .d_block[data-block="6"] {
+        grid-column: span 2 / span 2;
+        grid-row: span 3 / span 3;
+        grid-row-start: 4;
+    }
+
+
+
+
+
+    .avance_ciclo {
+        --size: 215px;
+        --thickness: 15px;
+        --percentage: 50;
+        position: relative;
+        width: var(--size);
+        height: var(--size);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        align-self: center;
+    }
+
+    .avance_ciclo p,
+    .avance_ciclo span {
+        z-index: 1;
+        margin: 0;
+        text-align: center;
+    }
+
+    .avance_ciclo p {
+        color: var(--color3);
+        font-size: 315%;
+    }
+
+    .avance_ciclo span {
+        color: color-mix(in srgb, var(--color2) 100%, white 10%);
+        font-size: 130%;
+    }
+
+    .avance_ciclo div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .avance_info {
+        position: absolute;
+        display: flex;
+        gap: 5px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .promedio_curso {
+        /* width: 100%; */
+        display: flex;
+        justify-content: center;
+        height: 55vh;
+    }
+
+    .promedio_curso canvas {
+        width: 100%;
+        margin-inline: 20px;
+        /* height: 400px; */
+    }
+</style>
 {% endblock %}
 
 {% block contenido %}
 
-<div class="dashboard">
-    
-    <div class="dshb_sinfecha">
-        <h5>Sin fecha</h5>
-        <div class="list_tareas lista_sinfecha">
-            {% for tarea in sinfecha %}
-            {% set nombre = tarea[1] %}
-            {% set color = tarea[2] %}
-            {% set desc = tarea[3] %}
-    
-            {% set dia = tarea[4] %}
-    
-            {% set h_ini = tarea[5] %}
-            {% set m_ini = tarea[6] %}
-            {% set h_fin = tarea[7] %}
-            {% set m_fin = tarea[8] %}
-    
-            {% set titulo = tarea[11] %}
-            {% set desc_h = tarea[12] %}
-    
-            {% set letras = tarea[13] %}
-            {% set icono = tarea[14] %}
-            {% set img = tarea[15] %}
-    
-            <div class="tarea sinfecha" style="  background-color: {{color}} ;">
-                <!-- {{titulo}} -->
-                {{tarea}}
+<div class="section_dashboard">
+
+    <div class="d_block" data-block="1">
+        <p>Progreso del ciclo</p>
+
+        {% set porcentaje = progreso_semestre['porcentaje'] %}
+        {% set avance = porcentaje if porcentaje < 100 else 100.00 %} <div class="avance_ciclo">
+            <div class="avance_info">
+                <p>{{ "%.2f"|format(avance) }}%</p>
+                <span>Semana {{ (progreso_semestre['actual'] / 7 ) | round | int }}</span>
             </div>
-            {% endfor %}
-        </div>
-    </div>
-    
-    <div class="dshb_hoy">
-        <h5>Hoy</h5>
-        <div class="list_tareas">
-            {% for tarea in tareashoy %}
-            {% set nombre = tarea[1] %}
-            {% set color = tarea[2] %}
-            {% set desc = tarea[3] %}
-    
-            {% set dia = tarea[4] %}
-    
-            {% set h_ini = tarea[5] %}
-            {% set m_ini = tarea[6] %}
-            {% set h_fin = tarea[7] %}
-            {% set m_fin = tarea[8] %}
-    
-            {% set titulo = tarea[11] %}
-            {% set desc_h = tarea[12] %}
-    
-            {% set letras = tarea[13] %}
-            {% set icono = tarea[14] %}
-            {% set img = tarea[15] %}
-    
-            <div class="tarea" style="  background-color: {{color}} ;">
-                <!-- color: ffffff{{color[-2:] }} ; -->
-                <!-- {{titulo}} -->
-                {{tarea}}
-            </div>
-            {% endfor %}
-        </div>
+            <div id="progress-ring-container"></div>
     </div>
 
-    <div class="dshb_mañana">
-        <h5>Mañana</h5>
-        <div class="list_tareas">
-            {% for tarea in tareasmaniana %}
-            {% set nombre = tarea[1] %}
-            {% set color = tarea[2] %}
-            {% set desc = tarea[3] %}
-    
-            {% set dia = tarea[4] %}
-    
-            {% set h_ini = tarea[5] %}
-            {% set m_ini = tarea[6] %}
-            {% set h_fin = tarea[7] %}
-            {% set m_fin = tarea[8] %}
-    
-            {% set titulo = tarea[11] %}
-            {% set desc_h = tarea[12] %}
-    
-            {% set letras = tarea[13] %}
-            {% set icono = tarea[14] %}
-            {% set img = tarea[15] %}
-    
-            <div class="tarea" style="  background-color: {{color}} ;">
-                <!-- color: ffffff{{color[-2:] }} ; -->
-                <!-- {{titulo}} -->
-                {{tarea}}
-            </div>
-            {% endfor %}
-        </div>
+</div>
+<div class="d_block" data-block="2">
+    <p>
+        Promedio final por curso
+    </p>
+    <div class="promedio_curso">
+        <canvas id="graficoBarras" style="max-height: 300px;"></canvas>
     </div>
+</div>
 
-    <div class="dshb_resto">
-        <h5>Semana</h5>
-        <div class="list_tareas">
-            {% for tarea in tareas %}
-            {% set nombre = tarea[1] %}
-            {% set color = tarea[2] %}
-            {% set desc = tarea[3] %}
-    
-            {% set dia = tarea[4] %}
-    
-            {% set h_ini = tarea[5] %}
-            {% set m_ini = tarea[6] %}
-            {% set h_fin = tarea[7] %}
-            {% set m_fin = tarea[8] %}
-    
-            {% set titulo = tarea[11] %}
-            {% set desc_h = tarea[12] %}
-    
-            {% set letras = tarea[13] %}
-            {% set icono = tarea[14] %}
-            {% set img = tarea[15] %}
-    
-            <div class="tarea" style="  background-color: {{color}} ;">
-                <!-- color: ffffff{{color[-2:] }} ; -->
-                <!-- {{titulo}} -->
-                {{tarea}}
-            </div>
-            {% endfor %}
-        </div>
+<div class="d_block" data-block="3">
+    Promedio general
+    <div>
+        <p>{{ promedio_general.promedio_general }}</p>
     </div>
-
-
-    <div class="dshb_horario">
-        <h5>Horario</h5>
-        <div class="grid-container">
-            <div id="grid" style="
-                grid-template-columns: repeat( {{CANTCOLSAD}} , {{sizeCOLad}}) repeat({{cantCol}}, {{sizeCOL}}); 
-                grid-template-rows: repeat( {{CANTROWSAD}} , {{sizeROWad}} ) repeat({{cantRow}} , {{sizeROW}});
-                grid-gap: {{sizeGAP}};
-                ">
+</div>
+<div class="d_block" data-block="4">
+    
+</div>
+<div class="d_block" data-block="5">
+    <!-- Actividad actual en ejecucion o Proxima actividad en ejecucion -->
+</div>
+<div class="d_block" data-block="6">
+    <div>
+        <button>
+            Agregar Actividad
+        </button>
         
-                <div class="cell grid_head space_hour" style="grid-area: {{CANTROWSAD - 1}} / 1 / {{CANTROWSAD }} / {{CANTCOLSAD + 1 }} ; top: 0; left: 0; ">DIA</div>
-                <div class="cell grid_head space_hour" style="grid-area: {{CANTROWSAD}} / 1 / {{CANTROWSAD + 1}} / {{CANTCOLSAD + 1}} ; top: calc({{sizeROWad}} + {{sizeGAP}}); left: 0; ">HORA</div>
+        <button>
+            Ver notas
+        </button>
         
-                {% for dia in BASE_dias %}
-                    <div class="cell grid_head cell_day" 
-                    style="grid-area: {{CANTROWSAD-1}} / {{loop.index0 + CANTCOLSAD + 1}} / {{CANTROWSAD }} / {{loop.index0 + 1 + CANTCOLSAD + 1}} ; top: 0 ;  "
-                    >
-                        {{ BASE_NOMBRE_DIAS[dia % 7] }}
-                    </div>
+        <button>
+            Ver calendario
+        </button>
         
-                    <div class="cell grid_head cell_date" 
-                    style="grid-area: {{CANTROWSAD}} / {{loop.index0 + CANTCOLSAD + 1}} / {{CANTROWSAD +1 }} / {{loop.index0 + 1 + CANTCOLSAD + 1}} ; top: calc({{sizeROWad}} + {{sizeGAP}}); "
-                    >
-                        {{ BASE_fechas[loop.index0] }}
-                    </div>
+        <button>
+            Ver horario
+        </button>
         
-                {% endfor %}
         
-                <div class="cell colday"
-                    style="grid-area: {{CANTROWSAD + 1}} / 1 / {{ (23 - BASE_horas[0] + 1) * (cantMin ) + CANTROWSAD + 1}} / 2 ; left: 0 ; ">
-                    {{ BASE_NOMBRE_DIAS[ (DIF_DAYS + BASE_dias[0]) % 7 ] }}
-                </div>
-        
-                {% if not BASE_horas[0] == 0 %}
-                <div class="cell colday"
-                    style="grid-area: {{ (23 - BASE_horas[0] + 1) * (cantMin ) + CANTROWSAD + 1 }} / 1 / {{ (23 - BASE_horas[0] + 1 + BASE_horas[23] + 1) * cantMin + CANTROWSAD + 1  }} / 2 ; left: 0 ; ">
-                    {{ BASE_NOMBRE_DIAS[ (DIF_DAYS + BASE_dias[0] + 1) % 7 ] }}
-                </div> 
-                {% endif %}
-        
-                {% for hora in BASE_horas %}
-                    {% for minuto in BASE_minutos %}
-                        {% for dia in range(cantDay) %}
-                            
-                            {% set row_ini = CANTROWSAD + 1 + ( hora ) * cantMin + BASE_minutos.index(minuto) %} 
-                            {% set col_ini = CANTCOLSAD + 1 + dia %} 
-                            {% set row_fin = row_ini + 1  %} 
-                            {% set col_fin = col_ini + 1 %} 
-        
-                            <div 
-                                {% if hora <= BASE_horas.index(23) %}
-                                    class="cell empty_cell"
-                                {% else %}
-                                    class="cell empty_cell_2"
-                                {% endif %}
-                                style="grid-area: 
-                                {{ row_ini }} /
-                                {{ col_ini }} / 
-                                {{ row_fin }} / 
-                                {{ col_fin }} ; "
-                                >
-                            </div>
-        
-                        {% endfor %}
-                    {% endfor %}
-                {% endfor %}
-        
-                {% for hora in BASE_horas %}
-                    {% set hora_index = loop.index0 %} 
-                    <div class="cell space_hour"
-                        style="grid-area: {{ (hora_index * cantMin) + CANTROWSAD + 1  }} / {{CANTCOLSAD-1}} / {{ ((hora_index + 1) * cantMin) + CANTROWSAD + 1}} / {{CANTCOLSAD}} ; left: calc( {{sizeCOLad}} + {{sizeGAP}}) ; ">
-                        {{ hora }}
-                    </div>
-                    {% for minuto in BASE_minutos %}
-                        {% set minuto_index = BASE_minutos.index(minuto) %}
-                        <div data-minute="{{ minuto }}" class="cell space_minute" 
-                            style="grid-area: {{ (hora_index * cantMin) + minuto_index + CANTROWSAD + 1 }} / {{CANTCOLSAD}} / {{ (hora_index * cantMin) + minuto_index + CANTROWSAD+2 }} / {{CANTCOLSAD+1}} ; left: calc( (  {{sizeCOLad}} + {{sizeGAP}}) * 2) ; ">
-                            {{ minuto }}
-                        </div>
-                    {% endfor %}
-                {% endfor %}
-        
-                {% for dia in range(BASE_dias | length) %}
-                    {% for hor in horarios %}
-                        {% if hor[3] == dia % 7 %}
-                        
-                            {% set hor_nom = hor[1] %}
-                            {% set hor_desc = hor[11] %}
-                            {% set hor_time = hor[4] ~":"~ ("%02d"|format(hor[5])) ~" - "~  hor[6] ~":"~ ("%02d"|format(hor[7])) %}                 
-                            {% set hor_color = hor[2] %}
-        
-                            {% set hora_index_ini = BASE_horas.index(hor[4]) %}
-                            {% set hora_index_fin = BASE_horas.index(hor[6]) %}
-                            {% set columna_dia = BASE_dias.index(hor[3]) + CANTCOLSAD + 1 %}
-                            {% set fila_inicio = (hora_index_ini * cantMin) + BASE_minutos.index(hor[5]) + CANTROWSAD + 1 %}
-                            {% set fila_fin    = (hora_index_fin * cantMin) + BASE_minutos.index(hor[7]) + CANTROWSAD + 1  %}
-                        
-        
-                            {% if hor[4] < BASE_horas[0] and (BASE_horas[0] < hor[6] or BASE_horas[23] + 1 == hor[6] )  %}
-        
-                                {% if CANTROWSAD + 1 != fila_fin %}
-                                    <div class="cell cuadro_horario"
-                                    style="grid-area: {{ CANTROWSAD +1 }} / {{ columna_dia }} / {{ fila_fin }} / {{ columna_dia + 1 }}; background-color: {{hor_color}}; ">
-                                        <!-- <p>1</p> -->
-                                        <p>{{ hor_nom }}</p>
-                                        {% if hor_desc  %}
-                                            <p>{{ hor_desc }}</p>
-                                        {% endif  %}
-                                        <p>{{ hor_time }}</p>
-                                    </div>
-                                {% endif %}
-        
-                                {% if CANTCOLSAD + 1 != columna_dia %}
-                                    <div class="cell cuadro_horario"
-                                    style="grid-area: {{ fila_inicio }} / {{ columna_dia - 1 }} / {{ 24 * cantMin + CANTROWSAD+ 1 }} / {{ columna_dia }}; background-color: {{hor_color}}; ">
-                                        <p>2</p>
-                                        <p>{{ hor_nom }}</p>
-                                        {% if hor_desc  %}
-                                            <p>{{ hor_desc }}</p>
-                                        {% endif  %}
-                                        <p>{{ hor_time }}</p>
-                                    </div>
-                                {% endif %}
-                                
-                            {% elif hor[4] < BASE_horas[0]  and BASE_dias[0] + DIF_DAYS == hor[3] %}
-        
-                                {% if CANTCOLSAD + 1 != columna_dia %}
-                                    <div class="cell cuadro_horario"
-                                    style="grid-area: {{fila_inicio}} / {{columna_dia - 1 }} / {{fila_fin}} / {{columna_dia }}; background-color: {{hor_color}}; ">
-                                        <p>3</p>
-                                        <p>{{ hor_nom }}</p>
-                                        {% if hor_desc  %}
-                                            <p>{{ hor_desc }}</p>
-                                        {% endif  %}
-                                        <p>{{ hor_time }}</p>
-                                    </div>
-                                {% endif %}
-        
-                            {% elif hor[4] < BASE_horas[0] and hor[6] <= BASE_horas[23] %}
-                                {% if CANTCOLSAD + 1 != columna_dia %}
-                                    <div class="cell cuadro_horario"
-                                    style="grid-area: {{fila_inicio}} / {{columna_dia - 1}} / {{fila_fin}} / {{columna_dia }}; background-color: {{hor_color}}; ">
-                                        <!-- <p>4</p> -->
-                                        <p>{{ hor_nom }}</p>
-                                        {% if hor_desc  %}
-                                            <p>{{ hor_desc }}</p>
-                                        {% endif  %}
-                                        <p>{{ hor_time }}</p>
-                                    </div>
-                                {% endif %}
-                            {% else %}
-                                
-                                <div class="cell cuadro_horario"
-                                style="grid-area: {{fila_inicio}} / {{columna_dia }} / {{fila_fin}} / {{columna_dia + 1 }}; background-color: {{hor_color}}; ">
-                                    <p>5</p>
-                                    <p>{{ hor_nom }}</p>
-                                    {% if hor_desc  %}
-                                        <p>{{ hor_desc }}</p>
-                                    {% endif  %}
-                                    <p>{{ hor_time }}</p>
-                                </div>
-        
-                            {% endif %}
-                            
-                        {% endif %}
-                    {% endfor %}
-                {% endfor %}
-                       
-        
-            </div>
-        </div>
-    </div>          
-                
-
+    </div>
 </div>
 
 
 
-{% endblock %}
+
+</div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/progressbar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@2.2.1/dist/chartjs-plugin-annotation.min.js"></script>
 
-{% block scripts %}
-<script src="/static/js/general_script.js"></script>
+<script>
+    Chart.defaults.font.family = 'Poppins';
+
+    function getValueRoot(value , def = "#ee003f") {
+        return getComputedStyle(document.documentElement).getPropertyValue(value).trim() || def;
+    }
+
+    function hexToRgb(hex) {
+        hex = hex.trim();
+        if (hex.startsWith("#")) hex = hex.slice(1);
+        if (hex.length === 3) {
+            hex = hex.split("").map(c => c + c).join("");
+        }
+        const bigint = parseInt(hex, 16);
+        return {
+            r: (bigint >> 16) & 255,
+            g: (bigint >> 8) & 255,
+            b: bigint & 255
+        };
+    }
+
+    let colorBG = getValueRoot( '--color-bg' );
+    let colorTransparent = getValueRoot( '--color-transparent' );
+    let colorLight = getValueRoot( '--color-light' );
+    let colorDark = getValueRoot( '--color-dark' );
+
+</script>
 
 <script>
 
-    
+    const ctx = document.getElementById('graficoBarras').getContext('2d');
 
-    const clases = [
-        '.empty_cell' ,
-        '.empty_cell_2' ,
-        '.colday' ,
-        '.space_hour' ,
-        '.space_minute' ,
-        '.grid_head' ,
-    ]
+    const cursos = {{ cursos| tojson }};
+    const nombresCompletos = {{ nombres_completos| tojson }};
+    const promedios = {{ promedios| tojson }};
 
-    for (let clase of clases) {
-        var num = document.querySelectorAll(clase).length;
-        console.log(clase,num);        
-    }
-    
-    
+    const colorBarras = promedios.map(valor => {
+        if (valor < 13.5) return getComputedStyle(document.documentElement).getPropertyValue('--color-red').trim() || '#ff0000';
+        else if (valor < 14.5) return getComputedStyle(document.documentElement).getPropertyValue('--color-orange').trim() || '#ff8000';
+        else if (valor < 16.5) return getComputedStyle(document.documentElement).getPropertyValue('--color-yellow').trim() || '#ffff00';
+        else if (valor < 17.5) return getComputedStyle(document.documentElement).getPropertyValue('--color-green').trim() || '#00ff00';
+        else return getComputedStyle(document.documentElement).getPropertyValue('--color-blue').trim() || '#0000ff';
+    });
 
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: cursos,
+            datasets: [{
+                label: 'Promedio',
+                data: promedios,
+                backgroundColor: colorBarras,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    min: 0,
+                    max: 20,
+                    ticks: {
+                        stepSize: 13.5,
+                        color: colorLight // Números del eje Y en blanco
+                    },
+                    grid: {
+                        color: colorTransparent
+                    }
+                },
+                x: {
+                    ticks: {
+                        color: colorLight // Etiquetas (siglas) en blanco
+                    },
+                    grid: {
+                        // color: colorTransparent
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: '#333',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    callbacks: {
+                        title: function (context) {
+                            const index = context[0].dataIndex;
+                            return nombresCompletos[index]; // muestra el nombre completo
+                        },
+                        label: context => `Promedio: ${context.parsed.y.toFixed(2)}`
+                    } 
+                    
+                } ,
+                annotation: {
+                    annotations: {
+                        linea135: {
+                            type: 'line',
+                            yMin: 13.5,
+                            yMax: 13.5,
+                            borderColor: colorTransparent,
+                            borderWidth: 1,
+                            label: {
+                                content: 'Límite 13.5',
+                                enabled: true,
+                                position: 'end',
+                                color: '#fff',
+                                backgroundColor: 'rgba(0,0,0,0.5)',
+                                font: {
+                                    family: 'Poppins',
+                                    size: 10
+                                }
+                            }
+                        },
+                        linea145: {
+                            type: 'line',
+                            yMin: 14.5,
+                            yMax: 14.5,
+                            borderColor: colorTransparent,
+                            borderWidth: 1,
+                            label: {
+                                content: 'Límite 14.5',
+                                enabled: true,
+                                position: 'end',
+                                color: '#fff',
+                                backgroundColor: 'rgba(0,0,0,0.5)',
+                                font: {
+                                    family: 'Poppins',
+                                    size: 10
+                                }
+                            }
+                        },
+                        linea165: {
+                            type: 'line',
+                            yMin: 16.5,
+                            yMax: 16.5,
+                            borderColor: colorTransparent,
+                            borderWidth: 1,
+                            label: {
+                                content: 'Límite 16.5',
+                                enabled: true,
+                                position: 'end',
+                                color: '#000',
+                                backgroundColor: 'rgba(255,255,255,0.8)',
+                                font: {
+                                    family: 'Poppins',
+                                    size: 10
+                                }
+                            }
+                        },
+                        linea175: {
+                            type: 'line',
+                            yMin: 17.5,
+                            yMax: 17.5,
+                            borderColor: colorTransparent,
+                            borderWidth: 1,
+                            label: {
+                                content: 'Límite 17.5',
+                                enabled: true,
+                                position: 'end',
+                                color: '#fff',
+                                backgroundColor: 'rgba(0,0,0,0.5)',
+                                font: {
+                                    family: 'Poppins',
+                                    size: 10
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+</script>
+
+<script>
+    let porcentajeAvance = {{ avance / 100 }};
+
+    var bar = new ProgressBar.Circle('#progress-ring-container', {
+        trailColor: colorTransparent,
+        strokeWidth: 10,
+        trailWidth: 10,
+        easing: 'easeInOut',
+        duration: 1400,
+        text: { autoStyleContainer: false },
+        from: { color: '#ff0000', width: 10 },
+        to: { color: '#00ff00', width: 10 },
+        step: function (state, circle) {
+            let percent = circle.value();
+
+            let colorLowHex = getComputedStyle(document.documentElement).getPropertyValue('--color-low').trim() || "#ee003f";
+            let colorMidHex = getComputedStyle(document.documentElement).getPropertyValue('--color-middle').trim() || "#ffff00";
+            let colorHighHex = getComputedStyle(document.documentElement).getPropertyValue('--color-high').trim() || "#0dfc7d";
+
+            let cLow = hexToRgb(colorLowHex);
+            let cMid = hexToRgb(colorMidHex);
+            let cHigh = hexToRgb(colorHighHex);
+
+            let r, g, b;
+
+            if (percent < 0.5) {
+                // Interpolar de low a middle
+                let p = percent / 0.5;
+                r = Math.round(cLow.r + p * (cMid.r - cLow.r));
+                g = Math.round(cLow.g + p * (cMid.g - cLow.g));
+                b = Math.round(cLow.b + p * (cMid.b - cLow.b));
+            } else {
+                // Interpolar de middle a high
+                let p = (percent - 0.5) / 0.5;
+                r = Math.round(cMid.r + p * (cHigh.r - cMid.r));
+                g = Math.round(cMid.g + p * (cHigh.g - cMid.g));
+                b = Math.round(cMid.b + p * (cHigh.b - cMid.b));
+            }
+
+            let color = `rgb(${r},${g},${b})`;
+
+            circle.path.setAttribute('stroke', color);
+            circle.path.setAttribute('stroke-width', state.width);
+
+            // Sin número en el centro
+            circle.setText('');
+        }
+    });
+
+    bar.animate(porcentajeAvance);
 </script>
 
 {% endblock %}

@@ -1,0 +1,131 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Cursos
+{% endblock %}
+
+
+{% block estilos %}
+<link rel="stylesheet" href="/static/css/cursos.css">
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="list_ciclos container_list">
+
+    {% for ciclo in ciclos %}
+    {% set num_ciclo = ciclo.ciclo %}
+    <div class="block_ciclo">
+        <div class="ciclo_num">
+            {{ num_ciclo if num_ciclo != 0 else 'Otros' }}
+        </div>
+
+        <div class="list_cursos container_wrap">
+            {% for curso in cursos %}
+            {% if num_ciclo == curso.ciclo %}
+
+            <!-- <style>
+                
+                .block_curso[data-curso_id="{{ curso.id }}"] {
+                    border-radius: 50px;
+                    background-color: var(--colorbg2)  ;
+                    border: 1px solid #ffffff16;
+                    /* border-color: color-mix(in srgb, {{ curso.color }} 100%, transparent 0%) ; */
+                }
+                
+                .block_curso[data-curso_id="{{ curso.id }}"]:hover {
+                    box-shadow: 0px 0px 5px #ffffffde ;
+                    /* box-shadow: 0px 0px 7px  {{ curso.color }} ; */
+                    /* background-color: {{curso.color}} ; */
+                }
+
+                .block_curso[data-curso_id="{{ curso.id }}"] .curso_s {
+                    background-color: {{ curso.color }};
+                }
+
+            </style> -->
+
+            <!-- <style>
+                
+                .block_curso[data-curso_id="{{ curso.id }}"] {
+                    border: 0;
+                    font-size: 110%;
+                    padding-right: 15px;
+                    color: white;
+                    border-radius: 5px;
+                    background-color:  {{curso.color}} ;
+                    /* background-color: color-mix(in srgb, #3f3f3f1c 0% , {{curso.color}} 100% )  ; */
+                    /* border-color: color-mix(in srgb, {{ curso.color }} 100%, transparent 0%) ; */
+                }
+                
+                .block_curso[data-curso_id="{{ curso.id }}"]:hover {
+                    box-shadow: 0px 0px 7px  {{ curso.color }} ;
+                    background-color: {{curso.color}} ;
+                }
+
+                .block_curso[data-curso_id="{{ curso.id }}"] .curso_s {
+                    background-color: {{ curso.color }};
+                }
+
+            </style> -->
+
+            <style>
+                
+                .block_curso[data-curso_id="{{ curso.id }}"] {
+                    padding-right: 15px;
+                    border-radius: 50px;
+                    background-color: color-mix(in srgb, #3f3f3f1c 100% , {{curso.color}} 0% )  ;
+                    border-color: color-mix(in srgb, {{ curso.color }} 100%, transparent 0%) ;
+                }
+                
+                .block_curso[data-curso_id="{{ curso.id }}"]:hover {
+                    box-shadow: 0px 0px 7px  {{ curso.color }} ;
+                    background-color: color-mix(in srgb, #3f3f3f1c 100% , {{curso.color}} 25% )  ;
+                }
+
+                .block_curso[data-curso_id="{{ curso.id }}"] .curso_s {
+                    background-color: {{ curso.color }};
+                }
+
+            </style>
+
+            <div class="block_curso" data-curso_id="{{ curso.id }}" >
+                <div class="curso_s" >
+                    {% if curso.icono %}
+                    <i class="{{ curso.icono }}"></i>
+                    {% else %}
+                    <b>{{ curso.siglas }}</b>
+                    {% endif %}
+                </div>
+                <div class="curso_nombre">
+                    {{ curso.nombre }}
+                </div>
+            </div>
+            
+            {% endif %}
+            {% endfor %}
+        </div>
+
+
+    </div>
+    {% endfor %}
+
+</div>
+
+
+{% endblock %}
+
+
+
+
+{% block scripts %}
+
+<script>
+    // pintarElemento(' .curso_s ');
+    // pintarElemento(' .block_curso ');
+
+</script>
+
+
+{% endblock %}

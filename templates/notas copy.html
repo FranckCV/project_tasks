@@ -1,0 +1,264 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Notas
+{% endblock %}
+
+
+{% block estilos %}
+<!-- <link rel="stylesheet" href="/static/css/horario.css"> -->
+<style>
+    :root {
+        --witdh-nota: 60px;
+        --height-nota: 25px;
+    }
+
+    .list_notas {
+        display: flex;
+        gap: 10px;
+        font-size: 97.5%;
+        margin: 0;
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: auto;
+        max-height: 80vh;
+        width: 80vw;
+        scrollbar-width: thin;
+        scrollbar-color: #1672c2c1 #f0f0f0;
+    }
+
+    .s_curso,
+    .v_nota,
+    .v_curso,
+    .v_unidad,
+    .p_nota,
+    .p_unidad,
+    .n_curso,
+    .n_unidad {
+        /* border: 0.5px solid black; */
+        /* border: 1px solid #898989b3; */
+        border-radius: 3px;
+        padding: 1px;
+        /* border: 3px solid rgba(0, 0, 0, 0); */
+    }
+
+    .s_curso,
+    .s_curso * {
+        gap: 5px;
+    }
+
+    .s_curso * {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .s_curso {
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        padding: 5px;
+    }
+
+    .s_unidad {
+        display: grid;
+        grid-template-columns: 40px repeat(2, var(--witdh-nota));
+        grid-template-areas:
+            " n_unidad p_unidad v_unidad "
+            " n_unidad c_unidad c_unidad "
+        ;
+    }
+
+    .n_unidad {
+        grid-area: n_unidad;
+        vertical-align: middle;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .p_unidad {
+        grid-area: p_unidad;
+    }
+
+    .v_unidad {
+        grid-area: v_unidad;
+    }
+
+    .c_unidad {
+        grid-area: c_unidad;
+    }
+
+    .n_curso,
+    .n_unidad {
+        padding: 0;
+        margin: 0;
+    }
+
+    .n_curso {
+        height: 45px;
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        padding-block: 5px;
+    }
+
+    .c_curso,
+    .c_unidad {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .s_nota {
+        display: flex;
+        width: 100%;
+    }
+
+    .v_nota,
+    .p_nota {
+        width: var(--witdh-nota);
+        align-items: center;
+        justify-content: center;
+        display: flex;
+    }
+
+    .v_nota {
+        cursor: pointer;
+        height: var(--height-nota);
+        padding: 5px;
+    }
+
+    .s_curso p {
+        height: fit-content;
+        width: fit-content;
+        display: flex;
+    }
+
+    .v_nota input {
+        width: -webkit-fill-available;
+        text-align: right;
+        border-radius: 3px;
+        border: 0;
+    }
+
+
+
+
+
+
+    .s_curso {
+        color: white;
+    }
+
+    .v_nota {
+        background-color: #000000c9;
+    }
+
+    .n_curso,
+    .v_curso {
+        background-color: #000000a1;
+    }
+
+    .v_unidad {
+        background-color: #0000004e;
+    }
+
+    .p_nota {
+        background-color: #2d2d2dd3;
+    }
+
+    .p_unidad {
+        background-color: #626262e6;
+    }
+
+    .n_unidad {
+        background-color: #ffffff67;
+        color: black;
+        height: 100%;
+    }
+</style>
+{% endblock %}
+
+
+{% block contenido %}
+<!-- <input type="color" name="" id=""> -->
+
+<div class="list_notas" style="color: black;">
+
+    {% for curso in cursos %}
+    <div class="s_curso" data-curso-id="{{curso['id']}}" style="
+    background-color: color-mix(in srgb, {{ curso['color'] }} 20%, transparent 20%) ;
+    border: 1px solid {{ curso['color'] }};
+    ">
+        <div class="n_curso" style="
+            border: 1px solid {{ curso['color'] }};
+        ">
+            <p>{{ curso['nombre'] }}</p>
+        </div>
+        <div class="c_curso">
+            {% set unidad_num = loop.index0 %}
+
+            {% for unidad in unidades %}
+            {% if curso['id'] == unidad['curso'] %}
+
+            {% set unidad_num = unidad_num + 1 %}
+
+            <div class="s_unidad" data-unidad-id="{{ unidad['id'] }}">
+                <div class="n_unidad">
+                    <!-- <p>{{ unidad['nombre'] }}</p> -->
+                    <p>{{ unidad_num }}</p>
+                </div>
+                <div class="p_unidad">
+                    {{ unidad['porcentaje'] }} %
+                </div>
+                <div class="v_unidad">
+                    {{ unidad['prom'] }}
+                </div>
+                <div class="c_unidad">
+                    {% for nota in notas %}
+                    {% if unidad['id'] == nota['unidad'] %}
+                    <div class="s_nota">
+                        <div class="v_nota" data-nota-id="{{nota['id']}}">
+                            <p>{{ nota['valor'] }}</p>
+                        </div>
+                        <div class="p_nota">
+                            <p>{{ nota['porcentaje'] }} %</p>
+                            <!-- <p>({{nota['id']}})</p> -->
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="v_curso" style="
+            border: 1px solid {{ curso['color'] }};
+        ">
+            {{ curso['prom'] }}
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+
+{% endblock %}
+
+
+
+
+
+
+{% block scripts %}
+
+<!-- <script src="/static/js/notas_1.js"></script> -->
+<script src="/static/js/notas.js"></script>
+
+
+
+
+
+{% endblock %}

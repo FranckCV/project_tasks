@@ -1,0 +1,217 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Notas
+{% endblock %}
+
+
+{% block estilos %}
+<!-- <link rel="stylesheet" href="/static/css/horario.css"> -->
+<style>
+    :root {
+        --witdh-nota: 55px;
+        --height-nota: 25px;
+    }
+
+    .list_notas {
+        display: flex;
+        gap: 10px;
+        font-size: 97.5%;
+        margin: 0;
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: auto;
+        max-height: 80vh;
+        width: 80vw;
+        scrollbar-width: thin;
+        scrollbar-color: #1672c2c1 #f0f0f0;
+    }
+
+    .s_curso,
+    .v_nota,
+    .v_curso,
+    .v_unidad,
+    .p_nota,
+    .p_unidad,
+    .n_curso,
+    .n_unidad {
+        /* border: 0.5px solid black; */
+        /* border: 1px solid #898989b3; */
+        border-radius: 3px;
+        padding: 1px;
+        /* border: 3px solid rgba(0, 0, 0, 0); */
+    }
+
+    .s_curso,
+    .s_curso * {
+        gap: 1px;
+    }
+
+    .s_curso * {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .s_curso {
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        padding: 5px;
+    }
+
+    .s_unidad {
+        font-size: 95%;
+        display: grid;
+        grid-template-columns: 25px repeat(2, var(--witdh-nota));
+        grid-template-areas:
+            " n_unidad p_unidad v_unidad "
+            " n_unidad c_unidad c_unidad "
+        ;
+    }
+
+    .n_unidad {
+        grid-area: n_unidad;
+        vertical-align: middle;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .p_unidad {
+        grid-area: p_unidad;
+    }
+
+    .v_unidad {
+        grid-area: v_unidad;
+    }
+
+    .c_unidad {
+        grid-area: c_unidad;
+    }
+
+    .n_curso,
+    .n_unidad {
+        padding: 0;
+        margin: 0;
+    }
+
+    .n_curso {
+        height: 45px;
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        padding: 5px;
+    }
+
+    .c_curso,
+    .c_unidad {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .s_nota {
+        display: flex;
+        width: 100%;
+    }
+
+    .v_nota,
+    .p_nota {
+        width: var(--witdh-nota);
+        align-items: center;
+        justify-content: center;
+        display: flex;
+    }
+
+    .v_nota {
+        cursor: pointer;
+        height: var(--height-nota);
+        padding: 5px;
+    }
+
+    .s_curso p {
+        height: fit-content;
+        width: fit-content;
+        display: flex;
+    }
+
+    .v_nota input {
+        width: -webkit-fill-available;
+        text-align: right;
+        border-radius: 3px;
+        border: 0;
+    }
+
+
+
+
+
+
+    .s_curso {
+        color: white;
+    }
+
+    .v_nota {
+        background-color: #000000c9;
+    }
+
+    .n_curso,
+    .v_curso {
+        background-color: #000000a1;
+    }
+
+    .v_unidad {
+        background-color: #0000004e;
+    }
+
+    .p_nota {
+        background-color: #2d2d2dd3;
+    }
+
+    .p_unidad {
+        background-color: #626262e6;
+    }
+
+    .n_unidad {
+        background-color: #ffffff00;
+        color: rgb(255, 255, 255);
+        height: 100%;
+    }
+</style>
+{% endblock %}
+
+
+{% block contenido %}
+<!-- <input type="color" name="" id=""> -->
+
+<div class="list_notas" style="color: black;">
+
+    {% for curso in cursos %}
+    
+    {% set loop_index = loop.index0 %}
+    
+    {% include 'NOTA.html' %}
+
+    {% endfor %}
+
+</div>
+
+
+{% endblock %}
+
+
+
+
+
+
+{% block scripts %}
+
+<!-- <script src="/static/js/notas_1.js"></script> -->
+<script src="/static/js/notas.js"></script>
+
+
+
+
+
+{% endblock %}

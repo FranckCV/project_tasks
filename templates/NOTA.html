@@ -1,0 +1,65 @@
+<style>
+    .s_curso[data-curso-id="{{curso['id']}}"] {
+    background-color: color-mix(in srgb, {{ curso['color'] }} 20%, transparent 20%) ;
+    border: 1px solid {{ curso['color'] }};
+    }
+
+    .s_curso[data-curso-id="{{curso['id']}}"] div:not(.c_curso , .s_unidad , .s_nota , .c_unidad) {
+        border: 1px solid {{ curso['color'] }};
+    }
+
+    .s_curso[data-curso-id="{{curso['id']}}"] .n_curso {
+        border: 1px solid {{ curso['color'] }};
+    }
+
+</style>
+
+<div class="s_curso" data-curso-id="{{curso['id']}}" >
+        <div class="n_curso">
+            <p>{{ curso['nombre'] }}</p>
+        </div>
+        <div class="c_curso">
+            
+            {% set ns = namespace(unidad_num=0) %}
+            {% for unidad in unidades %}
+            
+            {% if curso['id'] == unidad['curso'] %}
+            {% set ns.unidad_num = ns.unidad_num + 1 %}
+
+            <div class="s_unidad" data-unidad-id="{{ unidad['id'] }}">
+                <div class="n_unidad">
+                    <p>
+                        {{ns.unidad_num}}
+                    </p>
+                </div>
+                <div class="p_unidad">
+                    {{ unidad['porcentaje'] }} %
+                </div>
+                <div class="v_unidad">
+                    {{ unidad['prom'] }}
+                </div>
+                <div class="c_unidad">
+                    {% for nota in notas %}
+                    {% if unidad['id'] == nota['unidad'] %}
+                    <div class="s_nota">
+                        <div class="v_nota" data-nota-id="{{nota['id']}}">
+                            <p>{{ nota['valor'] }}</p>
+                        </div>
+                        <div class="p_nota">
+                            <p>{{ nota['porcentaje'] }} %</p>
+                            <!-- <p>({{nota['id']}})</p> -->
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="v_curso" style="
+            /* border: 1px solid {{ curso['color'] }}; */
+        ">
+            {{ curso['prom'] | round(0) }}
+        </div>
+    </div>

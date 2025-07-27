@@ -1,4 +1,4 @@
-from controladores.bd import obtener_conexion
+from bd import obtener_conexion
 
 def obtener_matriculas_alumno(alu_id):
     conexion = obtener_conexion()

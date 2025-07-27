@@ -1,0 +1,194 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Mis tablas
+{% endblock %}
+
+
+{% block estilos %}
+<style>
+
+    .container_list {
+        gap: 10px;
+    }
+    
+    .tarea {
+        padding: 10px;
+        padding-block: 5px;
+        border-radius: 5px;
+        color: white;
+        font-size: 90%;
+        display: grid;
+        align-items: center;
+        grid-template-columns: 20px auto 20px;
+        gap: 10px;
+        background-color: var(--colorbg3);
+        /* justify-content: space-between; */
+        /* background-color: #9421ff; */
+    }
+
+    .tarea a {
+        color: white;
+        justify-self: center;
+    }
+    
+    .color_tarea {
+        height: 15px;
+        width:  15px;
+        border-radius: 30px;
+        justify-self: center;
+        aspect-ratio: 1 / 1 ;
+        border: 1px solid #ffffff7c;
+    }
+
+    
+
+</style>
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="container_title">
+    <p class="title">
+        {{ tarea_info.nombre if tarea_info else 'Tareas' }}
+    </p>
+</div>
+
+{% macro render_tarea(tarea, nivel=0) %}
+    <style>
+        .tarea[data-tarea-id="{{tarea.id}}"] {
+            margin-left: {{ nivel * 30 }}px;
+            border: 1px solid color-mix(in srgb, {{tarea.color}} 70%, transparent 40%);
+        }
+
+        .tarea[data-tarea-id="{{tarea.id}}"]:hover {
+            box-shadow: 0px 0px 10px {{ tarea.color }};
+        }
+
+        .tarea[data-tarea-id="{{tarea.id}}"] .color_tarea {
+            background-color: color-mix(in srgb, {{tarea.color}} 20%, transparent 90%);
+            border-color: {{tarea.color}};
+        }
+    </style>
+    <div class="tarea" data-tarea-id="{{tarea.id}}" >
+        <div class="color_tarea"></div>
+        <input type="color" class="color_picker" value="{{tarea.color}}" data-id="{{tarea.id}}" style="position: absolute; top: 20%; left: 50%; display: none; z-index: 10;" />
+
+        <div class="tarea_nom" data-id="{{tarea.id}}" >
+            {{ tarea.nombre }}
+        </div>
+        <a href=" {{ url_for('tareas' , id = tarea.id) }} ">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+        </a>
+    </div>
+
+    {% for hijo in tarea.hijos %}
+        {{ render_tarea(hijo, nivel + 1) }}
+    {% endfor %}
+{% endmacro %}
+
+<div class="container_list">
+    {% if tareas %}
+        {% for tarea in tareas %}
+            {{ render_tarea(tarea) }}
+        {% endfor %}
+    {% else %}
+        <p>Sin tareas</p>
+    {% endif %}
+</div>
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+<script>
+    pintarElemento(' .tarea ');
+
+</script>
+
+<script>
+document.querySelectorAll('.tarea_nom').forEach(div => {
+    div.addEventListener('dblclick', () => {
+        if (div.querySelector('input')) return;  // evitar múltiples inputs
+
+        const currentText = div.textContent.trim();
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = currentText;
+        input.style.width = '100%';
+        input.style.fontFamily = 'inherit';
+        input.style.fontSize = 'inherit';
+        input.style.border = 'none';
+        input.style.outline = 'none';
+        input.style.background = 'transparent';
+
+        div.innerHTML = '';
+        div.appendChild(input);
+        input.focus();
+
+        pintarElemento(' .tarea input ');
+
+
+        const guardar = () => {
+            const nuevoTexto = input.value.trim();
+            if (nuevoTexto && nuevoTexto !== currentText) {
+                const id = div.dataset.id;
+                update_column_table_id("tarea", "nombre", nuevoTexto, id);
+            }
+            div.textContent = nuevoTexto || currentText;
+        };
+
+        input.addEventListener('blur', guardar);
+        input.addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                input.blur();
+            }
+        });
+    });
+});
+</script>
+
+<script>
+document.querySelectorAll('.color_tarea').forEach(div => {
+    div.addEventListener('click', () => {
+        const tarea = div.closest('.tarea');
+        const input = tarea.querySelector('.color_picker');
+
+        // Muestra el input justo debajo
+        input.style.display = 'block';
+
+        // Opcional: ocultarlo cuando se elija un color
+        input.addEventListener('blur', () => {
+            setTimeout(() => input.style.display = 'none', 200); // da tiempo a elegir el color
+        });
+
+        // Abre el color picker automáticamente
+        input.focus();  // solo funciona en algunos navegadores
+        input.click();  // asegúrate de que viene de una acción del usuario
+    });
+});
+
+document.querySelectorAll('.color_picker').forEach(input => {
+    input.addEventListener('input', () => {
+        const tareaId = input.dataset.id;
+        const newColor = input.value;
+
+        const tareaDiv = input.closest('.tarea');
+        const colorDiv = tareaDiv.querySelector('.color_tarea');
+        colorDiv.style.backgroundColor = `${newColor}30`;
+        colorDiv.style.borderColor = newColor;
+        tareaDiv.style.borderColor = newColor;
+        tareaDiv.style.boxShadow = `0px 0px 10px ${newColor}`;
+
+        update_column_table_id("tarea", "color", newColor, tareaId);
+    });
+});
+
+
+</script>
+
+{% endblock %}
