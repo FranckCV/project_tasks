@@ -3,12 +3,12 @@ import bd
 
 # INSERT
 
-def insert_tarea( nombre , descripcion , color , tareaid ):
+def insert_tarea( nombre , descripcion , color , orden , tareaid ):
     sql = '''
-        INSERT INTO tarea( nombre, descripcion, color, tareaid ) VALUES
-        (%s, %s, %s, %s)
+        INSERT INTO tarea( nombre, descripcion, color, orden , tareaid ) VALUES
+        (%s, %s, %s, %s , %s)
     '''
-    bd.sql_execute(sql,( nombre , descripcion , color , tareaid ))
+    bd.sql_execute(sql,( nombre , descripcion , color , orden , tareaid ))
 
 
 def insert_tabla_tarea( tareaid , filaid , columnaid , orden ):
@@ -326,16 +326,37 @@ def get_tables():
     return data
 
 
-def get_tareas():
-    sql = '''
+def get_orden_tarea(tareaid=None):
+    where = f"WHERE tareaid = {tareaid}" if tareaid is not None else "WHERE tareaid IS NULL"
+
+    sql = f'''
+    select max(orden) as max from tarea 
+    {where}
+    '''
+    return bd.sql_select_fetchone(sql)
+
+
+def get_tareas(tareaid=None):
+    where = f"WHERE tareaid = {tareaid}" if tareaid is not None else "WHERE tareaid IS NULL"
+
+    sql = f'''
+    WITH RECURSIVE tareas_recursivas AS (
+        SELECT id, nombre, descripcion, color, orden , tareaid
+        FROM tarea
+        {where}
+        UNION ALL
+        SELECT t.id, t.nombre, t.descripcion, t.color, t.orden , t.tareaid
+        FROM tarea t
+        JOIN tareas_recursivas tr ON t.tareaid = tr.id
+    )
     SELECT 
-        tar.id, tar.nombre, tar.descripcion, tar.color, tar.tareaid , COUNT(h.id) AS cant
-    FROM tarea tar
-    LEFT JOIN tarea h ON h.tareaid = tar.id
-    GROUP BY tar.id
-    order by 6 asc
+        tr.id, tr.nombre, tr.descripcion, tr.color, tr.orden , tr.tareaid,
+        (SELECT COUNT(*) FROM tarea h WHERE h.tareaid = tr.id) as cant
+    FROM tareas_recursivas tr
+    ORDER BY 7 , 5, 6 , 2
     '''
     return bd.sql_select_fetchall(sql)
+
 
 
 def get_tarea_id(id):

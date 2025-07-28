@@ -72,22 +72,33 @@ def cursos():
         ciclos = ciclos, 
     )
 
+@app.route("/test")
+def test():
+    id = request.args.get('id') 
+    tareaid = id if id else None
+    tarea_info = controlador.get_tarea_id(tareaid) if tareaid else {}
+    tareas_planas = controlador.get_tareas(tareaid) 
+    tareas_arbol = construir_arbol_tareas(tareas_planas)
+    return render_template(
+        "test.html" ,
+        tareaid = tareaid ,
+        tareas = tareas_arbol ,
+        tarea_info = tarea_info ,
+    )
 
-def construir_arbol_tareas(tareas):
-    # Crear un dict indexado por id
-    tarea_dict = {t["id"]: dict(t, hijos=[]) for t in tareas}
-    raiz = []
 
-    for tarea in tarea_dict.values():
-        padre_id = tarea["tareaid"]
-        if padre_id:
-            padre = tarea_dict.get(padre_id)
-            if padre:
-                padre["hijos"].append(tarea)
-        else:
-            raiz.append(tarea)
+@app.route('/nueva_tarea')
+def nueva_tarea():
+    id = request.args.get('id') 
+    tareaid = id if id else None
+    orden = controlador.get_orden_tarea(tareaid).get('max') + 1
+    date = utils.format_now("%Y-%m-%d")
+    controlador.insert_tarea( f'Nueva tarea {date}', None , '#fff' , orden , tareaid )
+    if id:
+        return redirect(url_for('tareas' , id = tareaid))
+    else:
+        return redirect(url_for('tareas'))
 
-    return raiz
 
 
 @app.route("/tareas")
@@ -95,13 +106,30 @@ def tareas():
     id = request.args.get('id') 
     tareaid = id if id else None
     tarea_info = controlador.get_tarea_id(tareaid) if tareaid else {}
-    tareas_planas = controlador.get_tareas()
+    tareas_planas = controlador.get_tareas(tareaid) 
     tareas_arbol = construir_arbol_tareas(tareas_planas)
     return render_template(
         "arbol.html" ,
+        tareaid = tareaid ,
         tareas = tareas_arbol ,
+        tareas_planas = tareas_planas ,
         tarea_info = tarea_info ,
     )
+
+
+def construir_arbol_tareas(tareas):
+    # Crear diccionario indexado por id
+    tarea_dict = {t["id"]: dict(t, hijos=[]) for t in tareas}
+    raiz = []
+
+    for tarea in tarea_dict.values():
+        padre_id = tarea["tareaid"]
+        if padre_id is not None and padre_id in tarea_dict:
+            tarea_dict[padre_id]["hijos"].append(tarea)
+        else:
+            raiz.append(tarea)
+
+    return raiz
 
 
 @app.route("/mis_tablas")
@@ -134,12 +162,6 @@ def nueva_tabla():
     id = controlador.insert_tabla( f'Nueva tabla {date}', 1 )
     return redirect(url_for('ver_tabla' , tablaid = id ))
 
-
-@app.route("/test")
-def test():
-    return render_template(
-        "test.html" ,
-    )
 
 
 ######################## METODOS POST ########################

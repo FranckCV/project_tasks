@@ -78,34 +78,34 @@
     </script>
 
     
-<script>
-    function update_column_table_id( tabla , columna , valor , id ) {
-        fetch('/update_column_table_id', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                tabla: tabla,
-                columna: columna ,
-                valor: valor ,
-                id : id
+    <script>
+        function update_column_table_id( tabla , columna , valor , id ) {
+            fetch('/update_column_table_id', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    tabla: tabla,
+                    columna: columna ,
+                    valor: valor ,
+                    id : id
+                })
             })
-        })
-        .then(response => {
-            if (!response.ok) throw new Error("Error al actualizar");
-            return response.json();
-        })
-        .then(data => {
-            console.log(data);
-        })
-        .catch(err => {
-            alert("Error al actualizar valor");
-            console.error(err);
-        });
-    }
+            .then(response => {
+                if (!response.ok) throw new Error("Error al actualizar");
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+            })
+            .catch(err => {
+                alert("Error al actualizar valor");
+                console.error(err);
+            });
+        }
 
-</script>
+    </script>
 
     {% block scripts %}
     {% endblock %}

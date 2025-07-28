@@ -13,30 +13,36 @@
 
 
 {% block contenido %}
-
-<div class="buttons_modal">
-
-    <div>
-        <button class="button clickable-modal" data-target="modal1" id="">
-            +
-        </button>
-    </div>
-
+<div class="container_title">
+    <p class="title">
+        {{ tarea_info }}
+    </p>
 </div>
 
 
-<div class="modal_space" id="modal1">
-    <div class="modal_dialog">
-        gaaa
-        <div>
-            <button class="close_modal">
-                Cerrar
-            </button>
-        </div>
-    </div>
+
+{% macro render_tarea(tarea, nivel=0) %}
+    
+    <a style="margin-left: {{ nivel * 50 }}px;" href=" {{ url_for('test' , id = tarea.id) }} ">
+        {{tarea}}
+    </a>
+
+    {% for hijo in tarea.hijos %}
+        {{ render_tarea(hijo, nivel + 1) }}
+    {% endfor %}
+
+{% endmacro %}
+
+
+<div class="container_list">
+
+{% for tarea in tareas %}
+
+    {{ render_tarea(tarea) }}
+
+{% endfor %}
 
 </div>
-
 
 {% endblock %}
 

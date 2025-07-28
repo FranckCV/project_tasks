@@ -10,7 +10,13 @@ Mis tablas
 
     .container_list {
         gap: 10px;
+        max-height: 80vh;
+        overflow-x: auto;
     }
+
+    /* .container_list::-webkit-scrollbar {
+        width: 20px;
+    } */
     
     .tarea {
         padding: 10px;
@@ -20,7 +26,7 @@ Mis tablas
         font-size: 90%;
         display: grid;
         align-items: center;
-        grid-template-columns: 20px auto 20px;
+        grid-template-columns: 20px auto 150px 20px;
         gap: 10px;
         background-color: var(--colorbg3);
         /* justify-content: space-between; */
@@ -53,6 +59,15 @@ Mis tablas
     <p class="title">
         {{ tarea_info.nombre if tarea_info else 'Tareas' }}
     </p>
+
+    <div class="buttons">
+        <a class="button btn_insert" href="{{ url_for('nueva_tarea' , id = tareaid) }}">
+            <i class="fa-solid fa-plus"></i>
+            <p>
+                Agregar
+            </p>
+        </a>
+    </div>
 </div>
 
 {% macro render_tarea(tarea, nivel=0) %}
@@ -78,6 +93,19 @@ Mis tablas
         <div class="tarea_nom" data-id="{{tarea.id}}" >
             {{ tarea.nombre }}
         </div>
+
+        <select class="select_padre" data-id="{{ tarea.id }}">
+        <option value="">Sin padre</option>
+        {% for posible in tareas_planas %}
+            {% if posible.id != tarea.id %}
+                <option value="{{ posible.id }}" {% if posible.id == tarea.tareaid  %}selected{% endif %}>
+                    {{ posible.nombre }}
+                </option>
+            {% endif %}
+        {% endfor %}
+        </select>
+
+
         <a href=" {{ url_for('tareas' , id = tarea.id) }} ">
             <i class="fa-solid fa-arrow-up-right-from-square"></i>
         </a>
@@ -86,12 +114,15 @@ Mis tablas
     {% for hijo in tarea.hijos %}
         {{ render_tarea(hijo, nivel + 1) }}
     {% endfor %}
+
 {% endmacro %}
 
 <div class="container_list">
     {% if tareas %}
         {% for tarea in tareas %}
+
             {{ render_tarea(tarea) }}
+
         {% endfor %}
     {% else %}
         <p>Sin tareas</p>
@@ -108,6 +139,19 @@ Mis tablas
     pintarElemento(' .tarea ');
 
 </script>
+
+<script>
+document.querySelectorAll(".select_padre").forEach(select => {
+    select.addEventListener("change", () => {
+        const tareaid = select.dataset.id;
+        const nuevoPadre = select.value || null;
+
+        update_column_table_id("tarea", "tareaid", nuevoPadre, tareaid);
+        setTimeout(() => location.reload(), 500);
+    });
+});
+</script>
+
 
 <script>
 document.querySelectorAll('.tarea_nom').forEach(div => {
