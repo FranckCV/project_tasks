@@ -7,12 +7,20 @@ from flask import Flask, render_template, request, redirect, flash, jsonify, ses
 
 
 ENLACES_MENU= [
-    'index' ,
-    'tareas' ,
-    'tablas' ,
-    'notas' ,
-    'cursos' , 
-    'test' ,
+    'horario' ,
+    # 'grupos' , 
+    # 'cursos' , 
+    # 'docentes' , 
+
+    # 'index' ,
+    # 'horario' ,
+    # 'tareas' ,
+    # 'tablas' ,
+    # 'notas' ,
+    # 'cursos' , 
+    # 'docentes' , 
+    # 'test' ,
+
     # 'horario' ,
     # 'tareas' ,
     # 'sinfecha' ,
@@ -46,6 +54,7 @@ sizeROW   = '30px'
 sizeROWad = '20px'
 sizeGAP   = '1px'
 
+SEMESTRE = '2025-2'
 
 
 CURSOS_AMARILLO = (5 , 8 , 14 , 20 , 25 , 36 , 43 , 51 , 57 ,63)

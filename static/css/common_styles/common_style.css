@@ -115,7 +115,7 @@ button:hover {
 }
 
 :root {
-    --width-aside: 15vw;
+    --width-aside: 7.5vw;
     --heigh-header: 65px;
 }
 
@@ -133,6 +133,21 @@ button:hover {
     align-items: center;
     justify-content: center;
 }
+
+::-webkit-scrollbar {
+    width: 3px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #ffffff6a;
+    border-radius: var(--border-radius-size);
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
 
 header {
     /* background-color: color-mix(in srgb, var(--color2) 40%, white 20%) ; */
@@ -163,9 +178,9 @@ aside {
     border-right: var(--color-border1);
 }
 
-aside::-webkit-scrollbar {
+/* aside::-webkit-scrollbar {
     display: none;
-}
+} */
 
 section {
     min-height: var(--height-section);
@@ -383,6 +398,14 @@ section.general_element {
 
 
 
+
+option {
+    color: rgb(0, 0, 0) !important;
+}
+
+option[selected] {
+    color: rgb(255, 255, 255);
+}
 
 
 

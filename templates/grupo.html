@@ -1,0 +1,267 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+
+{% endblock %}
+
+
+{% block estilos %}
+
+<style>
+    .container_wrap {
+        align-items: center;
+    }
+    
+    .cont {
+        display: grid;
+        height: fit-content;
+        grid-template-columns: repeat(2,auto);
+        width: 100%;
+        margin-block: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .cont > * {
+        border: 1px solid rgba(255, 255, 255, 0.313);
+        padding: 10px;
+    }
+
+    .cont .container_list {
+        height: 60vh;
+    }
+
+    .container_list{
+        height: fit-content;
+        overflow-x: auto;
+    }
+    
+    .container_title {
+        border-bottom: 1px solid {{curso.color}};
+    }
+
+    .semestre_block {
+        display: grid;
+        border-radius: 5px;
+        border: 1px solid rgba(255, 255, 255, 0.323);
+        padding: 5px;
+        /* flex-direction: column; */
+        justify-items: center;
+        align-items: center;
+        grid-template-columns: 50px auto;
+        gap: 10px;
+    }
+
+    .semestre_block .container_list {
+        border: 1px solid rgba(255, 255, 255, 0.323);
+        padding: 10px;
+        border-radius: 5px;
+    }
+    
+    .grupo_block {
+        border: 1px solid rgba(255, 255, 255, 0.323);
+        gap: 10px;
+        display: flex;
+        align-items: center;
+        border-radius: 50px;
+        /* padding: 10px; */
+    }
+
+    .grupo_block * {
+        display: flex;
+    }
+
+    .grupo_nombre {
+        background-color: white;
+        border-radius: 50px;
+        color: var(--colorbg1);
+        width: 30px;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 160%;
+    }
+
+    .grupo_horario {
+        gap: 10px;
+        border: 1px solid white;
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="container_title">
+    <p class="title">
+        {{ curso.nombre }}
+    </p>
+    
+</div>
+
+<div class="cont">
+    <form class="container_wrap" method="post" action="{{url_for('guardar_grupo')}}">
+
+    <h5>Grupos</h5>
+    <input type="hidden" name="cursoid" value="{{curso.id}}">
+
+    <div class="form_field">
+        <label for="">Nombre</label>
+        <input type="text" name="nombre" id="" required minlength="1" maxlength="1" style="width: 50px;">
+    </div>
+
+    <div class="form_field">
+        <label for="">Docentes</label>
+        <select name="docenteid" id="">
+            {% for docente in docentes %}
+            <option value="{{docente.id}}">{{docente.apellidos}}, {{docente.nombres}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form_field">
+        <label for="">Semestres</label>
+        <select name="semestrecodigo" id="">
+            {% for semestre in semestres %}
+            <option value="{{semestre.codigo}}">{{semestre.codigo}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button class="button btn_insert" type="submit">
+        <i class="fa-solid fa-plus"></i>
+        <p>
+            Agregar
+        </p>
+    </button>
+    
+</form>
+<form class="container_wrap" method="post" action="{{url_for('guardar_horario_grupo')}}">
+
+    <h5>Horarios</h5>
+    <input type="hidden" name="cursoid" value="{{curso.id}}">
+
+    <div class="form_field">
+        <label for="">Dias</label>
+        <select name="dia" id="">
+            <option value="1">Lunes</option>
+            <option value="2">Martes</option>
+            <option value="3">Miercoles</option>
+            <option value="4">Jueves</option>
+            <option value="5">Viernes</option>
+            <option value="6">Sábado</option>
+        </select>
+    </div>
+    
+    <div class="form_field">
+        <label for="">Hora Inicio</label>
+        <select name="h_ini" id="">
+            {% for v in range(16) %}
+            <option value="{{ v + 7 }}">{{ v + 7 }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    <div class="form_field">
+        <label for="">Hora Fin</label>
+        <select name="h_fin" id="">
+            {% for v in range(16) %}
+            <option value="{{ v + 7 }}">{{ v + 7 }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form_field">
+        <label for="">Grupos</label>
+        <select name="grupoid" id="">
+            {% for grupo in grupos %}
+            <option value="{{grupo.id}}">{{grupo.semestrecodigo}} | {{grupo.nombre}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button class="button btn_insert" type="submit">
+        <i class="fa-solid fa-plus"></i>
+        <p>
+            Agregar
+        </p>
+    </button>
+    
+</form>
+</div>
+
+<!-- <div class="cont">
+    <div class="container_list">
+
+    {% for g in grupos %}
+        <div>
+            {{ g }}
+        </div>
+    {% endfor %}
+
+    </div>
+    <div class="container_list">
+
+    {% for h in horarios %}
+        <div>
+            {{ h }}
+        </div>
+    {% endfor %}
+        
+    </div>
+</div> -->
+
+<div class="container_list">
+    {% for semestre in semestres %}
+        <div class="semestre_block">
+            <div class="">
+                {{ semestre.codigo }}
+            </div>
+            <div class="container_list">
+                {% for grupo in grupos %}
+                {% if grupo.semestrecodigo == semestre.codigo %}
+                    <div class="grupo_block">
+                        <div class="grupo_nombre">
+                            {{grupo.nombre}}
+                        </div>
+                        <div class="grupo_docente">
+                            {{grupo.apellidos}}, {{grupo.nombres}}
+                        </div>
+                        <div class="grupo_horario">
+                            {% for horario in horarios %}
+                            {% if grupo.id == horario.grupoid %}
+                            <div class="grupo_dia">
+                                {{ dias[horario.dia] }}
+                            </div>
+
+                            <div class="grupo_horas">
+                                
+                                <div class="horario_h_ini">
+                                    {{horario.h_ini}}:00
+                                </div> 
+                                <p>-</p>
+                                <div class="horario_h_fin">
+                                    {{horario.h_fin}}:00
+                                </div>
+                            </div> 
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div> 
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+
+{% endblock %}

@@ -90,7 +90,7 @@ Cursos
 
             </style>
 
-            <div class="block_curso" data-curso_id="{{ curso.id }}" >
+            <a class="block_curso" data-curso_id="{{ curso.id }}" href="{{ url_for('grupos_curso' , id = curso.id ) }}">
                 <div class="curso_s" >
                     {% if curso.icono %}
                     <i class="{{ curso.icono }}"></i>
@@ -101,7 +101,7 @@ Cursos
                 <div class="curso_nombre">
                     {{ curso.nombre }}
                 </div>
-            </div>
+            </a>
             
             {% endif %}
             {% endfor %}
@@ -122,7 +122,7 @@ Cursos
 {% block scripts %}
 
 <script>
-    // pintarElemento(' .curso_s ');
+    pintarElemento(' .curso_s ');
     // pintarElemento(' .block_curso ');
 
 </script>

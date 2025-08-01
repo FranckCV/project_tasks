@@ -10,7 +10,7 @@ Mis tablas
 
     .container_list {
         gap: 10px;
-        max-height: 80vh;
+        /* max-height: 80vh; */
         overflow-x: auto;
     }
 
@@ -26,7 +26,7 @@ Mis tablas
         font-size: 90%;
         display: grid;
         align-items: center;
-        grid-template-columns: 20px auto 150px 20px;
+        grid-template-columns: 20px 40px auto 150px 20px;
         gap: 10px;
         background-color: var(--colorbg3);
         /* justify-content: space-between; */
@@ -47,7 +47,29 @@ Mis tablas
         border: 1px solid #ffffff7c;
     }
 
+    .select_padre {
+        background-color: transparent;
+        border-radius:5px;
+        border: 1px solid white;
+    }
+
+    .tarea_orden {
+        background-color: transparent;
+        text-align: right;
+        border-radius:5px;
+        border: 1px solid white;
+        color: white;
+    }
+
+
+    /* input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: square-button;
+        margin: 0;
+    } */
+
     
+
 
 </style>
 {% endblock %}
@@ -70,11 +92,13 @@ Mis tablas
     </div>
 </div>
 
+
 {% macro render_tarea(tarea, nivel=0) %}
     <style>
         .tarea[data-tarea-id="{{tarea.id}}"] {
             margin-left: {{ nivel * 30 }}px;
-            border: 1px solid color-mix(in srgb, {{tarea.color}} 70%, transparent 40%);
+            border: 1px solid {{tarea.color}} ;
+            /* border: 1px solid color-mix(in srgb, {{tarea.color}} 70%, transparent 40%); */
         }
 
         .tarea[data-tarea-id="{{tarea.id}}"]:hover {
@@ -89,6 +113,8 @@ Mis tablas
     <div class="tarea" data-tarea-id="{{tarea.id}}" >
         <div class="color_tarea"></div>
         <input type="color" class="color_picker" value="{{tarea.color}}" data-id="{{tarea.id}}" style="position: absolute; top: 20%; left: 50%; display: none; z-index: 10;" />
+
+        <input class="tarea_orden" type="number"  name="" id="" data-id="{{ tarea.id }}" value="{{tarea.orden}}">
 
         <div class="tarea_nom" data-id="{{tarea.id}}" >
             {{ tarea.nombre }}
@@ -141,6 +167,32 @@ Mis tablas
 </script>
 
 <script>
+
+document.querySelectorAll(".tarea_orden").forEach(input => {
+
+    // input.addEventListener("keydown", e => {
+    //     if (e.key === "ArrowUp") {
+    //         e.preventDefault();
+    //         input.stepDown(); // al presionar arriba → disminuye
+    //     }
+    //     if (e.key === "ArrowDown") {
+    //         e.preventDefault();
+    //         input.stepUp(); // al presionar abajo → aumenta
+    //     }
+    // });
+
+
+    input.addEventListener("input", () => {
+        const id = input.dataset.id;
+        const valor = input.value || 0;
+
+        update_column_table_id("tarea", "orden", valor, id);
+        setTimeout(() => location.reload(), 500);
+    });
+});
+</script>
+
+<script>
 document.querySelectorAll(".select_padre").forEach(select => {
     select.addEventListener("change", () => {
         const tareaid = select.dataset.id;
@@ -151,7 +203,6 @@ document.querySelectorAll(".select_padre").forEach(select => {
     });
 });
 </script>
-
 
 <script>
 document.querySelectorAll('.tarea_nom').forEach(div => {

@@ -43,6 +43,36 @@ def insert_tabla( nombre, espacioid ):
     return bd.sql_execute_lastrowid(sql,( nombre, espacioid ))
 
 
+def insert_grupo( nombre, docenteid , semestrecodigo , cursoid ):
+    sql = '''
+        INSERT INTO grupo ( nombre, docenteid , semestrecodigo , cursoid ) VALUES
+        ( %s , %s , %s , %s )
+    '''
+    return bd.sql_execute_lastrowid(sql,( nombre.upper(), docenteid , semestrecodigo , cursoid ))
+
+
+def insert_horario_grupo( nombre, descripcion, dia, h_ini, min_ini, h_fin, min_fin, fecha_ini, fecha_fin, grupoid):
+    sql = '''
+        INSERT INTO horario_grupo( nombre, descripcion, dia, h_ini, min_ini, h_fin, min_fin, fecha_ini, fecha_fin, grupoid) VALUES
+        ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s )
+    '''
+    return bd.sql_execute_lastrowid(sql,( nombre, descripcion, dia, h_ini, min_ini, h_fin, min_fin, fecha_ini, fecha_fin, grupoid))
+
+
+def insert_docente( nombres, apellidos ):
+    sql = '''
+        INSERT INTO docente ( nombres , apellidos) VALUES
+        ( %s , %s )
+    '''
+    return bd.sql_execute(sql,( nombres, apellidos ))
+
+
+def insert_grupo_horarios( nombre, docenteid , semestrecodigo , cursoid , dia1 , h_ini1 , h_fin1 , dia2 = None, h_ini2  = None, h_fin2  = None):
+    grupoid = insert_grupo(nombre, docenteid , semestrecodigo , cursoid)
+    horarioid1 = insert_horario_grupo( None, None, dia1, h_ini1, 0, h_fin1, 0, None, None, grupoid)
+    if dia2 and h_ini2 and h_fin2:
+        horarioid2 = insert_horario_grupo( None, None, dia2, h_ini2, 0, h_fin2, 0, None, None, grupoid)
+
 
 
 # UPDATE
@@ -150,7 +180,146 @@ def get_promedio_curso(usuarioid):
     return data
 
 
+def get_cursos_grupo():
+    sql = '''
+    SELECT DISTINCT
+    	cu.id ,
+		cu.nombre ,
+        cu.siglas  ,
+        cu.color  ,
+        cu.ciclo 
+    FROM grupo gr
+    inner join curso cu on cu.id = gr.cursoid
+    inner join docente doc on doc.id = gr.docenteid
+    order by 2 asc
+    '''
+    return bd.sql_select_fetchall(sql)
+
+
+def get_ciclos_grupos():
+    sql = '''
+    SELECT DISTINCT 
+        gr.semestrecodigo ,
+        cu.ciclo 
+    FROM grupo gr
+    inner join curso cu on cu.id = gr.cursoid
+    inner join docente doc on doc.id = gr.docenteid
+    order by 1 desc , 2 desc
+    '''
+    return bd.sql_select_fetchall(sql)
+
+
+def get_horario_grupo():
+    sql = '''
+    SELECT 
+        hor.id , 
+        hor.dia , 
+        hor.h_ini , 
+        hor.h_fin, 
+        hor.grupoid
+    FROM horario_grupo hor     
+    order by 2 asc , 3 asc
+    '''
+    return bd.sql_select_fetchall(sql)
+
+
+def get_grupos():
+    sql = '''
+    SELECT 
+		gr.semestrecodigo ,
+		cu.nombre as cu_nombre,
+        gr.nombre as gr_nombre ,
+        cu.siglas as cu_siglas ,
+        cu.color as color ,
+        cu.ciclo as ciclo ,
+        doc.apellidos ,
+        doc.nombres ,
+        gr.id ,
+        gr.cursoid 
+    FROM grupo gr
+    inner join curso cu on cu.id = gr.cursoid
+    inner join docente doc on doc.id = gr.docenteid
+    order by 1 asc , 2 asc, 3 asc 
+    '''
+    return bd.sql_select_fetchall(sql)
+
+
+def get_grupos_semestre(semestre):
+    sql = '''
+    SELECT 
+        cu.nombre as name,
+        cu.siglas as letters,
+        hor.dia as day,
+        hor.h_ini as hr_ini,
+        hor.h_fin as hr_fin,
+        cu.color as color,
+        cu.ciclo as ciclo,
+        gr.nombre as "group",
+        doc.apellidos as prof,
+        doc.nombres as prof_nom,
+        gr.id ,
+        CASE 
+            WHEN gr.id IN ( 21 ) THEN TRUE
+            ELSE FALSE
+        END as estado
+    FROM grupo gr
+    INNER JOIN curso cu ON cu.id = gr.cursoid
+    INNER JOIN docente doc ON doc.id = gr.docenteid
+    INNER JOIN horario_grupo hor ON hor.grupoid = gr.id
+    LEFT JOIN detalle_matricula det ON det.grupoid = gr.id
+    WHERE gr.semestrecodigo = %s
+    ORDER BY 1 ASC, 7 ASC , 4 asc
+    '''
+    return bd.sql_select_fetchall(sql,(semestre))
+
+
+def get_horarios_cursoid(cursoid):
+    sql = '''
+    SELECT 
+        gr.id as gr_id, 
+        gr.nombre as gr_nombre , 
+        hor.id , 
+        hor.dia , 
+        hor.h_ini , 
+        hor.h_fin, 
+        hor.grupoid
+    FROM grupo gr
+    inner join horario_grupo hor on hor.grupoid = gr.id    
+    WHERE cursoid = %s
+    order by 4 asc , 5 asc
+    '''
+    return bd.sql_select_fetchall(sql,(cursoid))
+
+
+def get_grupos_cursoid(cursoid):
+    sql = '''
+    SELECT gr.id, gr.nombre, gr.docenteid, gr.semestrecodigo, gr.cursoid , doc.nombres , doc.apellidos
+    FROM grupo gr
+    left join docente doc on doc.id = gr.docenteid
+    WHERE gr.cursoid = %s
+    order by 4 desc , 2 asc
+    '''
+    return bd.sql_select_fetchall(sql,(cursoid))
+
+
 def get_cursos():
+    sql = '''
+    select
+        cu.id ,
+        cu.nombre ,
+        cu.siglas ,
+        cu.descripcion ,
+        cu.ciclo ,
+        cu.creditos ,
+        cu.icono ,
+        cu.color
+    from curso cu
+    order by 5 desc , 2 asc
+    '''
+    return bd.sql_select_fetchall(sql)
+
+
+def get_curso_id(id):
     sql = '''
     select
         cu.id ,
@@ -162,8 +331,9 @@ def get_cursos():
         cu.icono ,
         cu.color
     from curso cu
+    where cu.id = %s
     '''
-    return bd.sql_select_fetchall(sql)
+    return bd.sql_select_fetchone(sql,(id))
 
 
 def get_ciclos():
@@ -174,6 +344,23 @@ def get_ciclos():
     '''
     return bd.sql_select_fetchall(sql)
 
+
+def get_semestres():
+    sql = '''
+    SELECT codigo 
+    FROM semestre 
+    ORDER BY 1 DESC
+    '''
+    return bd.sql_select_fetchall(sql)
+
+
+def get_docentes():
+    sql = '''
+    SELECT id, nombres, apellidos 
+    FROM docente 
+    ORDER BY 3 ASC
+    '''
+    return bd.sql_select_fetchall(sql)
 
 
 def obtener_info_notas():
@@ -330,7 +517,7 @@ def get_orden_tarea(tareaid=None):
     where = f"WHERE tareaid = {tareaid}" if tareaid is not None else "WHERE tareaid IS NULL"
 
     sql = f'''
-    select max(orden) as max from tarea 
+    select IFNULL(max(orden),0) as max from tarea
     {where}
     '''
     return bd.sql_select_fetchone(sql)
@@ -350,10 +537,15 @@ def get_tareas(tareaid=None):
         JOIN tareas_recursivas tr ON t.tareaid = tr.id
     )
     SELECT 
-        tr.id, tr.nombre, tr.descripcion, tr.color, tr.orden , tr.tareaid,
+        tr.id, 
+        tr.nombre, 
+        tr.descripcion, 
+        tr.color, 
+        tr.orden , 
+        tr.tareaid,
         (SELECT COUNT(*) FROM tarea h WHERE h.tareaid = tr.id) as cant
     FROM tareas_recursivas tr
-    ORDER BY 7 , 5, 6 , 2
+    ORDER BY 5 , 7 , 6 , 2  
     '''
     return bd.sql_select_fetchall(sql)
 

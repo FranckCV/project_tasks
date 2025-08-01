@@ -1,0 +1,71 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+
+{% endblock %}
+
+
+{% block estilos %}
+
+
+
+{% endblock %}
+
+
+{% block contenido %}
+
+<form method="POST" action="/grupos/crear">
+  <label>Nombre del grupo:</label>
+  <input type="text" name="nombre_grupo" required>
+
+  <hr>
+  <h4>Horarios:</h4>
+  <div id="contenedor-horarios">
+    <!-- Se agregarán aquí los campos dinámicos -->
+  </div>
+
+  <button type="button" onclick="agregarHorario()">Agregar Horario</button>
+  <br><br>
+  <button type="submit">Guardar</button>
+</form>
+
+<script>
+let contadorHorarios = 0;
+
+function agregarHorario() {
+  const contenedor = document.getElementById("contenedor-horarios");
+
+  const html = `
+    <div class="horario-item" style="margin-bottom: 10px;">
+      <label>Día:</label>
+      <select name="horarios[${contadorHorarios}][dia]">
+        <option value="1">Lunes</option>
+        <option value="2">Martes</option>
+        <option value="3">Miércoles</option>
+        <option value="4">Jueves</option>
+        <option value="5">Viernes</option>
+        <option value="6">Sábado</option>
+      </select>
+
+      <label>Hora inicio:</label>
+      <input type="time" name="horarios[${contadorHorarios}][hora_ini]">
+
+      <label>Hora fin:</label>
+      <input type="time" name="horarios[${contadorHorarios}][hora_fin]">
+    </div>
+  `;
+
+  contenedor.insertAdjacentHTML("beforeend", html);
+  contadorHorarios++;
+}
+</script>
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+
+{% endblock %}

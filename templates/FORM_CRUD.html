@@ -1,0 +1,103 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+
+{% endblock %}
+
+
+{% block estilos %}
+
+<style>
+    option {
+        color: rgb(0, 0, 0) !important;
+    }
+
+    option[selected] {
+        color: rgb(255, 255, 255);
+    }
+
+    form.container_wrap {
+        align-items: center;
+        height: fit-content;
+        margin-bottom: 20px;
+        border: 1px solid white;
+        padding: 10px;
+    }
+
+    .container_list {
+        overflow-x: auto;
+    }
+
+    .container_wrap div {
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        padding: 5px;
+        border-radius: 5px;
+        height: fit-content;
+    }
+    
+    .container_wrap {
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="container_title">
+    <p class="title">
+        {{ titulo }}
+    </p>
+    
+</div>
+
+<form class="container_wrap" method="post"
+{% if funcion %}
+action="{{url_for(funcion)}}"
+{% endif %}
+>
+
+    {% for ff in form_fields %}
+
+    <div class="form_field">
+        <input type="{{ff.3}}" name="{{ff.0}}" id="" placeholder="{{ff.2}}"
+        {% if ff.4 %}
+            required
+        {% endif %}
+        {% if not ff.5 %}
+            disabled
+        {% endif %}
+        >
+    </div>
+
+    {% endfor %}
+
+    <button class="button btn_insert" type="submit">
+        <i class="fa-solid fa-plus"></i>
+        <p>
+            Agregar
+        </p>
+    </button>
+    
+</form>
+
+<div class="container_wrap">
+
+{% for fila in lista %}
+<div>
+    {{ fila }}
+</div>
+{% endfor %}
+    
+</div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+
+{% endblock %}

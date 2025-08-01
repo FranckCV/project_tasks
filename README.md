@@ -1,3 +1,34 @@
+- Tablas
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="d_block" style="grid-area: 1 / 1 / 4 / 4;">
         Progreso del ciclo
     </div>

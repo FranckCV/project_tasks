@@ -178,7 +178,7 @@ Index
     <div class="d_block" data-block="1">
         <p>Progreso del ciclo</p>
 
-        {% set porcentaje = progreso_semestre['porcentaje'] %}
+        {% set porcentaje = progreso_semestre.get('porcentaje') if progreso_semestre.get('porcentaje') else 0.0 %}
         {% set avance = porcentaje if porcentaje < 100 else 100.00 %} <div class="avance_ciclo">
             <div class="avance_info">
                 <p>{{ "%.2f"|format(avance) }}%</p>
@@ -204,10 +204,10 @@ Index
     </div>
 </div>
 <div class="d_block" data-block="4">
-    
+    lista de actividades
 </div>
 <div class="d_block" data-block="5">
-    <!-- Actividad actual en ejecucion o Proxima actividad en ejecucion -->
+    Actividad actual en ejecucion o Proxima actividad en ejecucion
 </div>
 <div class="d_block" data-block="6">
     <div>

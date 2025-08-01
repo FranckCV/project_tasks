@@ -1,0 +1,324 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Grupos
+{% endblock %}
+
+
+{% block estilos %}
+
+<style>
+
+    .form_horario {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        grid-template-areas: 
+        "frm_gr frm_hr"
+        "frm_gr frm_btn"
+        ;
+        height: 40vh;
+        width: 100%;
+        margin-bottom: 25px;
+        border: var(--color-border1);
+        justify-items: center;
+        align-items: center;
+        border-radius: 10px;
+        column-gap: 15px;
+        row-gap: 10px;
+        padding: 10px;
+    }
+
+    .form_horario .cont_grupo {
+        grid-area: frm_gr;
+        display: flex;
+        align-items: center;
+        align-content: center;
+        justify-content: center;
+        gap: 5px;
+        height: fit-content;
+        /* width: 450px; */
+    }
+
+    .cont_grupo .form_field {
+        height: fit-content;
+    }
+
+    .form_horario .cont_horario {
+        grid-area: frm_hr;
+        display: flex;
+        gap: 20px;
+    }
+
+    .cont_horario .container_wrap {
+        width: fit-content;
+    }
+
+    .form_horario .btn_insert {
+        grid-area: frm_btn;
+    }
+
+    .container_list {
+        height: fit-content;
+        border: var(--color-border1);
+        /* padding-left: 10px; */
+    }
+
+    .super_container {
+        height: 100%;
+        overflow-y: scroll;
+        border: 0;
+    }
+
+    .nom_semestre {
+        font-size: 120%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.333);
+    }
+
+    .block_ciclo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 5px;
+        border: 1px solid;
+    }
+
+    .nom_ciclo {
+        width: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--colorbg1);
+        background-color: white;
+        height: 100%;
+    }
+
+    .list_curso {
+        /* margin-block: 10px; */
+        padding-block: 10px;
+        border: 0;
+    }
+
+    .block_curso {
+        display: grid;
+        grid-template-columns: 70px 250px auto;
+        align-items: center;
+        justify-items: center;
+        padding-right: 10px;
+    }
+
+    .sig_curso {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .block_grupo {
+        display: grid;
+        grid-template-columns: min-content 250px auto;
+        align-items: center;
+        justify-items: center;
+        border-radius: 300px;
+        border: var(--color-border1);
+        padding-left: 0;
+    }
+
+    .nom_grupo {
+        width: 30px;
+        aspect-ratio: 1 / 1;
+        border-radius: 500px;
+        background-color: white;
+        color: var(--colorbg1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 120%;
+    }
+
+    .list_grupo {
+        padding-block: 5px;
+        border: 0;
+    }
+</style>
+
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="container_title">
+    <p class="title">
+        Grupos
+    </p>
+</div>
+
+<form class="form_horario" method="post" action="{{url_for('guardar_grupo_horarios')}}">
+
+    <div class="cont_grupo container_wrap">
+        <div class="form_field">
+            <label for="">Nombre</label>
+            <input type="text" name="nombre" id="" required minlength="1" maxlength="1" style="width: 50px;">
+        </div>
+
+        <div class="form_field">
+            <label for="">Semestres</label>
+            <select name="semestrecodigo" id="" required>
+                {% for semestre in semestres %}
+                <option value="{{semestre.codigo}}">{{semestre.codigo}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form_field">
+            <label for="">Docentes</label>
+            <select name="docenteid" id="" required>
+                <option value="" selected disabled>Seleccionar</option>
+                {% for docente in docentes %}
+                <option value="{{docente.id}}">{{docente.apellidos}}, {{docente.nombres}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form_field">
+            <label for="">Cursos</label>
+            <select name="cursoid" id="" required>
+                <option value="" selected disabled>Seleccionar</option>
+                {% for curso in todos_cursos %}
+                <option value="{{curso.id}}">{{curso.ciclo}} - {{curso.nombre}}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+    </div>
+
+    <div class="cont_horario">
+        {% for i in range(2) %}
+        {% set num = i + 1 %}
+        <div class="container_wrap">
+            <div class="form_field">
+                <label for="">Dia {{num}}</label>
+                <select name="dia{{num}}" id="" {% if num==1 %} required {% endif %}>
+                    <option value="" selected disabled>Seleccionar</option>
+                    <option value="1">Lunes</option>
+                    <option value="2">Martes</option>
+                    <option value="3">Miercoles</option>
+                    <option value="4">Jueves</option>
+                    <option value="5">Viernes</option>
+                    <option value="6">Sábado</option>
+                </select>
+            </div>
+
+            <div class="form_field">
+                <label for="">Hora Inicio {{num}}</label>
+                <select name="h_ini{{num}}" id="" {% if num==1 %} required {% endif %}>
+                    <option value="" selected disabled>Seleccionar</option>
+                    {% for v in range(16) %}
+                    <option value="{{ v + 7 }}">{{ v + 7 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form_field">
+                <label for="">Hora Fin {{num}}</label>
+                <select name="h_fin{{num}}" id="" {% if num==1 %} required {% endif %}>
+                    <option value="" selected disabled>Seleccionar</option>
+                    {% for v in range(16) %}
+                    <option value="{{ v + 7 }}">{{ v + 7 }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <button class="button btn_insert" type="submit">
+        <i class="fa-solid fa-plus"></i>
+        <p>
+            Agregar
+        </p>
+    </button>
+
+</form>
+
+<div class="super_container container_list">
+    {% for semestre in semestres %}
+    <div class="nom_semestre">
+        {{ semestre.codigo }}
+    </div>
+    <div class="list_ciclo container_list">
+        {% for ciclo in ciclos %}
+        {% if ciclo.semestrecodigo == semestre.codigo %}
+        <div class="block_ciclo">
+            <div class="nom_ciclo">
+                {{ ciclo.ciclo }}
+            </div>
+            <div class="list_curso container_list">
+                {% for curso in cursos %}
+                {% if curso.ciclo == ciclo.ciclo %}
+                <style>
+                    .block_curso[data-curso-id="{{curso.id}}"] {
+                        border-radius: 10px;
+
+                        border: 1px solid {{ curso.color }} ;
+                    }
+
+                    .block_curso[data-curso-id="{{curso.id}}"] .sig_curso {
+                        background-color: {{ curso.color }} ;
+                    }
+                </style>
+                <div class="block_curso" data-curso-id="{{curso.id}}">
+                    <div class="sig_curso">
+                        {{ curso.siglas }}
+                    </div>
+                    <div class="nom_curso">
+                        {{ curso.nombre }}
+                    </div>
+                    <div class="list_grupo container_list">
+                        {% for grupo in grupos %}
+                        {% if grupo.cursoid == curso.id and grupo.semestrecodigo == semestre.codigo %}
+                        <div class="block_grupo">
+                            <div class="nom_grupo">
+                                {{ grupo.gr_nombre }}
+                            </div>
+                            <div class="nom_docente">
+                                {{ grupo.apellidos }}, {{ grupo.nombres }}
+                            </div>
+                            <div class="list_horario container_list">
+                                {% for horario in horarios %}
+                                {% if horario.grupoid == grupo.id %}
+                                <div class="horario">
+                                    {{ dias[horario.dia] }} | {{ horario.h_ini }} - {{ horario.h_fin }}
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+<script>
+    pintarElemento(' .sig_curso ');
+
+</script>
+
+{% endblock %}

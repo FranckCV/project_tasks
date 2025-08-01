@@ -1,0 +1,31 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+
+{% endblock %}
+
+
+{% block estilos %}
+
+
+
+{% endblock %}
+
+
+{% block contenido %}
+
+{{ data }}
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+<script>
+
+const activities = {{ data | tojson }}
+
+</script>
+
+{% endblock %}
