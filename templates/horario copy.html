@@ -32,11 +32,11 @@ Horario {{semestre}}
         flex-direction: column;
         gap: 10px;
         padding: 10px;
+        width: 340px ;
         color: white;
         justify-content: flex-start;
         overflow-y: scroll;
         height: 90vh;
-        width: 300px ;
     }
 
     #listaCursos p {
@@ -62,7 +62,7 @@ Horario {{semestre}}
 
     .curso {
         gap: 5px;
-        width: 45%;
+        width: 150px;
     }
 
     .letra_grupo {
@@ -149,6 +149,7 @@ Horario {{semestre}}
 
     .cell {
         border: 1px solid #cccccc47;
+        transition: background-color 0.3s ease;
         display: flex;
         flex-direction: column;
         z-index: 1;
@@ -216,8 +217,6 @@ Horario {{semestre}}
 
     }
 
-
-
     @keyframes parpadeo-rojo {
 
         0%,
@@ -234,21 +233,21 @@ Horario {{semestre}}
 
     @media (max-width: 600px) {
         .content {
-            display: grid;
-            /* flex-direction: column; */
-            grid-template-rows: 27.5vh 60vh;
-            height: 100%;
-            padding: 0px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 10px;
             justify-content: center;
+            padding-block: 10px;
         }
 
         #listaCursos {
             width: 100% ;
             /* height: 30px; */
             display: flex;
-            /* flex-direction: row; */
+            flex-direction: row;
             min-height: 0;
-            height: 100%;
+            height: 40vh;
         }
 
         .ciclo p,
@@ -256,22 +255,8 @@ Horario {{semestre}}
         .curso p,
         .grupos,
         .grupo {
-            /* display: flex; */
-            /* flex-direction: row; */
-            font-size: 70%;
-        }
-
-        .ciclo {
-            /* top: 0; */
-        }
-
-        #grid span {
-            font-size: 50%;
-        }
-        
-        :root {
-            --sizeCol: 35px;
-            --sizeRow: 25px;
+            display: flex;
+            flex-direction: row;
         }
     }
 
@@ -285,43 +270,6 @@ Horario {{semestre}}
 <div class="content">
     
 <div id="listaCursos" class="general_element">
-
-    
-    {% for ciclo in ciclos %}
-    <div class="ciclo">
-        <p class="nom_ciclo">Ciclo {{ciclo.ciclo}}</p>
-        {% for curso in cursos %}
-            <div class="curso" data-curso-id="{{curso.id}}">
-                <p class="nom_curso" style="background-color: {{ curso.color }};">
-                    {{curso.nombre}}
-                </p>
-                <button style="margin: 5px auto; font-size: 80%;" onclick="deseleccionarCurso('{{curso.nombre}}')" >
-                    Deseleccionar
-                </button>
-                {% for grupo in grupos %}
-                {% if grupo.cursoid == curso.id  %}
-                    <div class="grupo" data-grupo-id="{{grupo.id}}" data-curso-id="{{grupo.cursoid}}" data-estado="{{ '1' if grupo.estado else '0' }}">
-                        <div class="letra_grupo">
-                            {{grupo.gr_nombre}}
-                        </div>
-                        <div class="nom_grupo">
-                            <div class="nom_docente">
-                                {{grupo.apellidos}}
-                            </div>
-                        </div>
-                        <div class="box">
-                            <input type="radio" {{ 'checked' if grupo.estado else '' }} 
-                            name="{{curso.nombre}}" 
-                            onchange="toggleGroup('{{curso.nombre}}', '{{grupo.gr_nombre}}')">
-                        </div>
-                    </div>
-                {% endif %}
-                {% endfor %}
-            </div>
-        {% endfor %}
-    </div>
-    {% endfor %}
-
 </div>
 
 <div id="grid">
@@ -341,17 +289,22 @@ Horario {{semestre}}
 <script>
 
     const nombresDias = ["HORA", "Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-    const cols = 8, rows = 17, sizeCell = 50 ;
+    const cols = 8, rows = 17, sizeCell = 50, sizeCol = '7.5vw', sizeRow = 32.5;
     const grid = [];
     const time = new Date();
+    // const dayActual = time.getDay();
+    // const horaActual = time.getHours();
     const dayActual = 0;
     const horaActual = 0;
+
 
     function createGrid() {
         const gridElement = document.getElementById('grid');
         gridElement.innerHTML = ``;
+        // gridElement.style.gridTemplateColumns = `repeat(${cols}, 100%)`;
         gridElement.style.gridTemplateColumns = `repeat(${cols}, var(--sizeCol))`;
         gridElement.style.gridTemplateRows = `repeat(${rows}, var(--sizeRow))`;
+        // gridElement.style.gridTemplateRows = `repeat(${rows + 1}, ${sizeRow}px)`;
 
         for (let i = 0; i < rows; i++) {
             grid[i] = [];
@@ -451,11 +404,81 @@ Horario {{semestre}}
             }
         }
         createGrid();
+        listarCursos();
     }
 
+
+    function listarCursos() {
+        const asideElement = document.getElementById('listaCursos');
+        asideElement.innerHTML = "";
+
+        const ciclos = {};
+        for (const act of activities) {
+            if (!ciclos[act.ciclo]) ciclos[act.ciclo] = {};
+            if (!ciclos[act.ciclo][act.name]) ciclos[act.ciclo][act.name] = { color: act.color, grupos: {}, letras: act.letters };
+            if (!ciclos[act.ciclo][act.name].grupos[act.group]) {
+                ciclos[act.ciclo][act.name].grupos[act.group] = { prof: act.prof, day: act.day , hr_ini: act.hr_ini , hr_fin: act.hr_fin , actividades: [] };
+            }
+            ciclos[act.ciclo][act.name].grupos[act.group].actividades.push(act);
+        }
+
+        for (const ciclo of Object.keys(ciclos).sort((a, b) => a - b)) {
+            const cicloElement = document.createElement('div');
+            cicloElement.classList.add('ciclo');
+            cicloElement.innerHTML = `<p class="nom_ciclo">Ciclo ${ciclo}</p>`;
+
+            for (const curso in ciclos[ciclo]) {
+
+                const cursoElement = document.createElement('div');
+                cursoElement.classList.add('curso');
+                cursoElement.innerHTML = `<p class="nom_curso">${curso}</p>`;
+                cursoElement.querySelector('.nom_curso').style.backgroundColor = ciclos[ciclo][curso].color;
+
+                const deseleccionarBtn = document.createElement('button');
+                deseleccionarBtn.textContent = 'Deseleccionar';
+                deseleccionarBtn.style.margin = '5px auto';
+                deseleccionarBtn.style.fontSize = '80%';
+                deseleccionarBtn.onclick = () => deseleccionarCurso(curso);
+                cursoElement.appendChild(deseleccionarBtn);
+
+                for (const grupo in ciclos[ciclo][curso].grupos) {
+                    const grupoData = ciclos[ciclo][curso].grupos[grupo];
+                    const estado = grupoData.actividades.some(act => act.estado) ? 'checked' : '' ;
+
+                    const grupoElement = document.createElement('div');
+                    grupoElement.classList.add('grupo');
+                    grupoElement.innerHTML = `
+                    <div class="letra_grupo">
+                        ${grupo}
+                    </div>
+                    <div class="nom_grupo">
+                        <div class="nom_docente">
+                            ${grupoData.prof}
+                        </div>
+                    </div>
+                    <div class="box">
+                        <input type="radio" ${estado} name="${curso}" onchange="toggleGroup('${curso}', '${grupo}')">
+                    </div>
+                    `;
+                    cursoElement.appendChild(grupoElement);
+                }
+
+                cicloElement.appendChild(cursoElement);
+            }
+
+            asideElement.appendChild(cicloElement);
+        }
+    }
+
+    listarCursos();
     createGrid();
 
+</script>
+
+
+<script>
     pintarElemento(' .nom_curso ');
+
 </script>
 
 

@@ -154,12 +154,21 @@ def grupos():
 @app.route("/horario")
 def horario():
     actual = request.args.get('semestre')
-    semestre = actual if actual else SEMESTRE
-    data = controlador.get_grupos_semestre(semestre)
+    semestre = actual if actual else utils.SEMESTRE
+    ciclos = controlador.get_ciclos_grupos_semestre(semestre)
+    cursos = controlador.get_cursos_grupo_semestre(semestre)
+    grupos = controlador.get_grupos_semestre(semestre)
+    horarios = controlador.get_horario_grupo()
+
+    data = controlador.get_grupos_semestrecodigo(semestre)
     return render_template(
         "horario.html" ,
-        data = data ,
         semestre = semestre ,
+        ciclos = ciclos ,
+        cursos = cursos ,
+        grupos = grupos ,
+        horarios = horarios ,
+        data = data ,
     )
 
 
@@ -374,9 +383,6 @@ def guardar_grupo_horarios():
     f( *valores )
 
     return redirect(url_for('grupos'))
-
-
-
 
 
 if __name__ == "__main__":

@@ -7,10 +7,10 @@ from flask import Flask, render_template, request, redirect, flash, jsonify, ses
 
 
 ENLACES_MENU= [
-    'horario' ,
-    # 'grupos' , 
-    # 'cursos' , 
-    # 'docentes' , 
+    {'nombre' : 'Horario' , 'icono': 'fa-solid fa-calendar' , 'enlace': 'horario' , 'color': '' } ,
+    {'nombre' : 'Grupos' , 'icono': 'fa-solid fa-list' , 'enlace': 'grupos' , 'color': '' } ,
+    {'nombre' : 'Cursos' , 'icono': 'fa-solid fa-layer-group' , 'enlace': 'cursos' , 'color': '' } ,
+    {'nombre' : 'Docentes' , 'icono': 'fa-solid fa-user-tie' , 'enlace': 'docentes' , 'color': '' } ,
 
     # 'index' ,
     # 'horario' ,

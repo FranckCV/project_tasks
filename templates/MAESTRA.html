@@ -27,14 +27,11 @@
 </head>
 
 <body class="general_body">
-    <!-- <header class="general_element">
-        axcxcxcxc
-    </header> -->
 
     <aside class="general_element">
-        {% for enlace in MENU %}
-        <a class="aside_item" href="{{url_for(enlace)}}">
-            <p>{{ enlace | upper }}</p>
+        {% for e in MENU %}
+        <a class="aside_item" href="{{url_for(e.enlace)}}">
+            <i class="{{ e.icono }}"></i>
         </a>
         {% endfor %}
     </aside>
@@ -70,11 +67,7 @@
         }
 
         pintarElemento('header');
-        // pintarElemento('.aside_item');
-        // pintarElemento('cuadro_horario');
-        // pintarElemento('tarea');
-        // pintarCeldasxClase('s_curso');
-
+        
     </script>
 
     

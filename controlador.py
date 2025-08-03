@@ -196,6 +196,23 @@ def get_cursos_grupo():
     return bd.sql_select_fetchall(sql)
 
 
+def get_cursos_grupo_semestre(semestre):
+    sql = '''
+    SELECT DISTINCT
+    	cu.id ,
+		cu.nombre ,
+        cu.siglas  ,
+        cu.color  ,
+        cu.ciclo 
+    FROM grupo gr
+    inner join curso cu on cu.id = gr.cursoid
+    inner join docente doc on doc.id = gr.docenteid
+    where gr.semestrecodigo = %s
+    order by 2 asc
+    '''
+    return bd.sql_select_fetchall(sql,(semestre))
+
+
 def get_ciclos_grupos():
     sql = '''
     SELECT DISTINCT 
@@ -207,6 +224,20 @@ def get_ciclos_grupos():
     order by 1 desc , 2 desc
     '''
     return bd.sql_select_fetchall(sql)
+
+
+def get_ciclos_grupos_semestre(semestre):
+    sql = '''
+    SELECT DISTINCT 
+        gr.semestrecodigo ,
+        cu.ciclo 
+    FROM grupo gr
+    inner join curso cu on cu.id = gr.cursoid
+    inner join docente doc on doc.id = gr.docenteid
+    where gr.semestrecodigo = %s
+    order by 1 desc , 2 desc
+    '''
+    return bd.sql_select_fetchall(sql,(semestre))
 
 
 def get_horario_grupo():
@@ -221,6 +252,32 @@ def get_horario_grupo():
     order by 2 asc , 3 asc
     '''
     return bd.sql_select_fetchall(sql)
+
+
+def get_grupos_semestre(semestre):
+    sql = '''
+    SELECT 
+		gr.semestrecodigo ,
+		cu.nombre as cu_nombre,
+        gr.nombre as gr_nombre ,
+        cu.siglas as cu_siglas ,
+        cu.color as color ,
+        cu.ciclo as ciclo ,
+        doc.apellidos ,
+        doc.nombres ,
+        gr.id ,
+        gr.cursoid ,
+        CASE 
+            WHEN gr.id IN ( 21 ) THEN TRUE
+            ELSE FALSE
+        END as estado
+    FROM grupo gr
+    inner join curso cu on cu.id = gr.cursoid
+    inner join docente doc on doc.id = gr.docenteid
+    where gr.semestrecodigo = %s
+    order by 1 asc , 2 asc, 3 asc 
+    '''
+    return bd.sql_select_fetchall(sql,(semestre))
 
 
 def get_grupos():
@@ -244,12 +301,12 @@ def get_grupos():
     return bd.sql_select_fetchall(sql)
 
 
-def get_grupos_semestre(semestre):
+def get_grupos_semestrecodigo(semestre):
     sql = '''
     SELECT 
         cu.nombre as name,
         cu.siglas as letters,
-        hor.dia as day,
+        hor.dia   as day,
         hor.h_ini as hr_ini,
         hor.h_fin as hr_fin,
         cu.color as color,
