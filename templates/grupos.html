@@ -96,40 +96,53 @@ Grupos
         /* margin-block: 10px; */
         padding-block: 10px;
         border: 0;
+        gap: 10px;
+
+        /* grid-template-columns: repeat(4,1fr);
+        display: grid; */
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
     }
 
     .block_curso {
-        display: grid;
-        grid-template-columns: 70px 250px auto;
-        align-items: center;
-        justify-items: center;
-        padding-right: 10px;
+        /* display: grid;
+        grid-template-columns: 70px 175px auto; */
+        display: flex;
+        flex-direction: column;
+
+        /* align-items: center; */
+        /* justify-items: center; */
+        /* padding-right: 10px; */
+        gap: 5px;
+        height: fit-content;
+        width: 24%;
     }
 
     .sig_curso {
         border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
+        border-top-right-radius: 10px;
+        /* border-bottom-left-radius: 10px; */
         height: 100%;
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
+        text-align: center;
+        padding-inline: 10px;
     }
 
-    .block_grupo {
-        display: grid;
-        grid-template-columns: min-content 250px auto;
-        align-items: center;
-        justify-items: center;
-        border-radius: 300px;
-        border: var(--color-border1);
-        padding-left: 0;
+    .nom_curso {
+        text-align: center;
     }
 
     .nom_grupo {
         width: 30px;
-        aspect-ratio: 1 / 1;
-        border-radius: 500px;
+        /* aspect-ratio: 1 / 1; */
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        height: 100%;
         background-color: white;
         color: var(--colorbg1);
         display: flex;
@@ -137,11 +150,63 @@ Grupos
         justify-content: center;
         font-size: 120%;
     }
+    
+    .block_grupo {
+        display: grid;
+        grid-template-columns: min-content 1fr 1.5fr;
+        align-items: center;
+        justify-items: center;
+        border: 0;
+        padding-right: 10px;
+        gap: 5px;
+        font-size: 90%;
+        border-top: var(--color-border1);
+    }
+
+    .block_grupo:last-of-type {
+        border-bottom: var(--color-border1);
+    }
+
+    .nom_docente {
+        text-align: center;
+    }
 
     .list_grupo {
+        /* padding-block: 5px; */
+        border: 0;
+        gap: 0px;
+    }
+
+    .list_horario {
+        gap: 0;
+        padding-inline: 0px;
+        border: 0;    
+    }
+
+    .horario {
         padding-block: 5px;
+        border-bottom: var(--color-border1);
+        display: grid;
+        justify-items: center;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .horario * {
+        width: fit-content;
+    }
+
+    .horario:last-of-type {
         border: 0;
     }
+
+    @media (max-width: 600px) {
+        .block_curso {
+            width: 90%;
+        }
+
+
+    }
+
 </style>
 
 {% endblock %}
@@ -153,95 +218,107 @@ Grupos
     <p class="title">
         Grupos
     </p>
+
+    <div class="buttons">
+        <div class="clickable-modal button btn_insert" data-target="insert_grupo">
+            <i class="fa-solid fa-plus"></i>
+            <p>
+                Agregar
+            </p>
+        </div>
+    </div>
 </div>
 
-<form class="form_horario" method="post" action="{{url_for('guardar_grupo_horarios')}}">
-
-    <div class="cont_grupo container_wrap">
-        <div class="form_field">
-            <label for="">Nombre</label>
-            <input type="text" name="nombre" id="" required minlength="1" maxlength="1" style="width: 50px;">
+<div class="modal_space" id="insert_grupo">
+    <form class="modal_dialog modal_form" action=" {{ url_for('guardar_grupo_horarios') }} " method="post">
+        <div class="modal_header">
+            Agregar grupo
         </div>
-
-        <div class="form_field">
-            <label for="">Semestres</label>
-            <select name="semestrecodigo" id="" required>
-                {% for semestre in semestres %}
-                <option value="{{semestre.codigo}}">{{semestre.codigo}}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div class="form_field">
-            <label for="">Docentes</label>
-            <select name="docenteid" id="" required>
-                <option value="" selected disabled>Seleccionar</option>
-                {% for docente in docentes %}
-                <option value="{{docente.id}}">{{docente.apellidos}}, {{docente.nombres}}</option>
-                {% endfor %}
-            </select>
-        </div>
-        
-        <div class="form_field">
-            <label for="">Cursos</label>
-            <select name="cursoid" id="" required>
-                <option value="" selected disabled>Seleccionar</option>
-                {% for curso in todos_cursos %}
-                <option value="{{curso.id}}">{{curso.ciclo}} - {{curso.nombre}}</option>
-                {% endfor %}
-            </select>
-        </div>
-
-    </div>
-
-    <div class="cont_horario">
-        {% for i in range(2) %}
-        {% set num = i + 1 %}
-        <div class="container_wrap">
+        <div class="modal_body">
             <div class="form_field">
-                <label for="">Dia {{num}}</label>
-                <select name="dia{{num}}" id="" {% if num==1 %} required {% endif %}>
-                    <option value="" selected disabled>Seleccionar</option>
-                    <option value="1">Lunes</option>
-                    <option value="2">Martes</option>
-                    <option value="3">Miercoles</option>
-                    <option value="4">Jueves</option>
-                    <option value="5">Viernes</option>
-                    <option value="6">Sábado</option>
-                </select>
+                <label for="">Nombre</label>
+                <input type="text" name="nombre" id="" required minlength="1" maxlength="1" style="width: 50px;">
             </div>
 
             <div class="form_field">
-                <label for="">Hora Inicio {{num}}</label>
-                <select name="h_ini{{num}}" id="" {% if num==1 %} required {% endif %}>
-                    <option value="" selected disabled>Seleccionar</option>
-                    {% for v in range(16) %}
-                    <option value="{{ v + 7 }}">{{ v + 7 }}</option>
+                <label for="">Semestres</label>
+                <select name="semestrecodigo" id="" required>
+                    {% for semestre in semestres %}
+                    <option value="{{semestre.codigo}}">{{semestre.codigo}}</option>
                     {% endfor %}
                 </select>
             </div>
 
             <div class="form_field">
-                <label for="">Hora Fin {{num}}</label>
-                <select name="h_fin{{num}}" id="" {% if num==1 %} required {% endif %}>
+                <label for="">Docentes</label>
+                <select name="docenteid" id="" required>
                     <option value="" selected disabled>Seleccionar</option>
-                    {% for v in range(16) %}
-                    <option value="{{ v + 7 }}">{{ v + 7 }}</option>
+                    {% for docente in docentes %}
+                    <option value="{{docente.id}}">{{docente.apellidos}}, {{docente.nombres}}</option>
                     {% endfor %}
                 </select>
             </div>
+            
+            <div class="form_field">
+                <label for="">Cursos</label>
+                <select name="cursoid" id="" required>
+                    <option value="" selected disabled>Seleccionar</option>
+                    {% for curso in todos_cursos %}
+                    <option value="{{curso.id}}">{{curso.ciclo}} - {{curso.nombre}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {% for i in range(2) %}
+            <div class="container_wrap">
+            {% set num = i + 1 %}
+                <div class="form_field">
+                    <label for="">Dia {{num}}</label>
+                    <select name="dia{{num}}" id="" {% if num==1 %} required {% endif %}>
+                        <option value="" selected disabled>Seleccionar</option>
+                        <option value="1">Lunes</option>
+                        <option value="2">Martes</option>
+                        <option value="3">Miercoles</option>
+                        <option value="4">Jueves</option>
+                        <option value="5">Viernes</option>
+                        <option value="6">Sábado</option>
+                    </select>
+                </div>
+
+                <div class="form_field">
+                    <label for="">Hora Inicio {{num}}</label>
+                    <select name="h_ini{{num}}" id="" {% if num==1 %} required {% endif %}>
+                        <option value="" selected disabled>Seleccionar</option>
+                        {% for v in range(16) %}
+                        <option value="{{ v + 7 }}">{{ v + 7 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form_field">
+                    <label for="">Hora Fin {{num}}</label>
+                    <select name="h_fin{{num}}" id="" {% if num==1 %} required {% endif %}>
+                        <option value="" selected disabled>Seleccionar</option>
+                        {% for v in range(16) %}
+                        <option value="{{ v + 7 }}">{{ v + 7 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            {% endfor %}
+
         </div>
-        {% endfor %}
-    </div>
+        <div class="modal_footer">
+            <button class="button close_modal" type="reset">
+                Cerrar
+            </button>
+            <button class="button submit_modal" type="submit">
+                Guardar
+            </button>
+        </div>
+    </form>
+</div>
 
-    <button class="button btn_insert" type="submit">
-        <i class="fa-solid fa-plus"></i>
-        <p>
-            Agregar
-        </p>
-    </button>
-
-</form>
 
 <div class="super_container container_list">
     {% for semestre in semestres %}
@@ -255,13 +332,12 @@ Grupos
             <div class="nom_ciclo">
                 {{ ciclo.ciclo }}
             </div>
-            <div class="list_curso container_list">
+            <div class="list_curso ">
                 {% for curso in cursos %}
                 {% if curso.ciclo == ciclo.ciclo %}
                 <style>
                     .block_curso[data-curso-id="{{curso.id}}"] {
                         border-radius: 10px;
-
                         border: 1px solid {{ curso.color }} ;
                     }
 
@@ -271,9 +347,9 @@ Grupos
                 </style>
                 <div class="block_curso" data-curso-id="{{curso.id}}">
                     <div class="sig_curso">
-                        {{ curso.siglas }}
-                    </div>
-                    <div class="nom_curso">
+                        <!-- {{ curso.siglas }} -->
+                        <!-- </div> -->
+                        <!-- <div class="nom_curso"> -->
                         {{ curso.nombre }}
                     </div>
                     <div class="list_grupo container_list">
@@ -290,7 +366,12 @@ Grupos
                                 {% for horario in horarios %}
                                 {% if horario.grupoid == grupo.id %}
                                 <div class="horario">
-                                    {{ dias[horario.dia] }} | {{ horario.h_ini }} - {{ horario.h_fin }}
+                                    <div>
+                                    {{ dias[horario.dia] }} 
+                                    </div>
+                                    <div>
+                                    {{ horario.h_ini }} - {{ horario.h_fin }}
+                                    </div>
                                 </div>
                                 {% endif %}
                                 {% endfor %}

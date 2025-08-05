@@ -12,7 +12,7 @@ Horario {{semestre}}
         --color-background: #081028;
 
         --sizeCol: 7.5vw;
-        --sizeRow: 32.5px;
+        --sizeRow: 4.75vh;
     }
 
     section {
@@ -23,11 +23,14 @@ Horario {{semestre}}
         display: flex;
         gap: 20px;
         padding: 5px;
+        height: 90%;
+        align-items: center;
+        /* margin-top: 20px; */
     }
 
     #listaCursos {
         background-color: #00000064;
-        min-height: var(--height-aside);
+        /* min-height: var(--height-aside); */
         display: flex;
         flex-direction: column;
         gap: 10px;
@@ -35,7 +38,7 @@ Horario {{semestre}}
         color: white;
         justify-content: flex-start;
         overflow-y: scroll;
-        height: 90vh;
+        height: 100%;
         width: 300px ;
     }
 
@@ -215,7 +218,14 @@ Horario {{semestre}}
         animation: parpadeo-rojo 1s infinite;
 
     }
+    
+    .block_grupo span {
+        font-size: 85%;
+    }
 
+    .block_grupo p {
+        font-size: 75%;
+    }
 
 
     @keyframes parpadeo-rojo {
@@ -251,6 +261,7 @@ Horario {{semestre}}
             height: 100%;
         }
 
+
         .ciclo p,
         .curso,
         .curso p,
@@ -281,51 +292,56 @@ Horario {{semestre}}
 
 
 {% block contenido %}
+<div class="container_title">
+    <p class="title">
+        Horario {{semestre}}
+    </p>
+</div>
 
 <div class="content">
-    
-<div id="listaCursos" class="general_element">
+        
+    <div id="listaCursos" class="general_element">
 
-    
-    {% for ciclo in ciclos %}
-    <div class="ciclo">
-        <p class="nom_ciclo">Ciclo {{ciclo.ciclo}}</p>
-        {% for curso in cursos %}
-            <div class="curso" data-curso-id="{{curso.id}}">
-                <p class="nom_curso" style="background-color: {{ curso.color }};">
-                    {{curso.nombre}}
-                </p>
-                <button style="margin: 5px auto; font-size: 80%;" onclick="deseleccionarCurso('{{curso.nombre}}')" >
-                    Deseleccionar
-                </button>
-                {% for grupo in grupos %}
-                {% if grupo.cursoid == curso.id  %}
-                    <div class="grupo" data-grupo-id="{{grupo.id}}" data-curso-id="{{grupo.cursoid}}" data-estado="{{ '1' if grupo.estado else '0' }}">
-                        <div class="letra_grupo">
-                            {{grupo.gr_nombre}}
-                        </div>
-                        <div class="nom_grupo">
-                            <div class="nom_docente">
-                                {{grupo.apellidos}}
+        
+        {% for ciclo in ciclos %}
+        <div class="ciclo">
+            <p class="nom_ciclo">Ciclo {{ciclo.ciclo}}</p>
+            {% for curso in cursos %}
+                <div class="curso" data-curso-id="{{curso.id}}">
+                    <p class="nom_curso" style="background-color: {{ curso.color }};">
+                        {{curso.nombre}}
+                    </p>
+                    <button style="margin: 5px auto; font-size: 80%;" onclick="deseleccionarCurso('{{curso.nombre}}')" >
+                        Deseleccionar
+                    </button>
+                    {% for grupo in grupos %}
+                    {% if grupo.cursoid == curso.id  %}
+                        <div class="grupo" data-grupo-id="{{grupo.id}}" data-curso-id="{{grupo.cursoid}}" data-estado="{{ '1' if grupo.estado else '0' }}">
+                            <div class="letra_grupo">
+                                {{grupo.gr_nombre}}
+                            </div>
+                            <div class="nom_grupo">
+                                <div class="nom_docente">
+                                    {{grupo.apellidos}}
+                                </div>
+                            </div>
+                            <div class="box">
+                                <input type="radio" {{ 'checked' if grupo.estado else '' }} 
+                                name="{{curso.nombre}}" 
+                                onchange="toggleGroup('{{curso.nombre}}', '{{grupo.gr_nombre}}')">
                             </div>
                         </div>
-                        <div class="box">
-                            <input type="radio" {{ 'checked' if grupo.estado else '' }} 
-                            name="{{curso.nombre}}" 
-                            onchange="toggleGroup('{{curso.nombre}}', '{{grupo.gr_nombre}}')">
-                        </div>
-                    </div>
-                {% endif %}
-                {% endfor %}
-            </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
         {% endfor %}
+
     </div>
-    {% endfor %}
 
-</div>
-
-<div id="grid">
-</div>
+    <div id="grid">
+    </div>
 </div>
 
 {% endblock %}
@@ -416,16 +432,18 @@ Horario {{semestre}}
 
     function agregarGrupo(cell, act) {
         cell.innerHTML += `
-                <div class="block" 
+                <div class="block block_grupo" 
                 style="
                 border: 1px solid color-mix(in srgb, ${act.color} 100%, white 70%);
+                color: color-mix(in srgb, ${act.color} 100%, white 70%);
                 background-color: color-mix(in srgb, ${act.color} 15%, transparent 50%);
                 ">
-                <span 
-                style="
-                color: color-mix(in srgb, ${act.color} 100%, white 90%);
-                "
-                >${act.letters} - ${act.group} | ${act.prof}</span>
+                <span>
+                    ${act.letters} - ${act.group} 
+                </span>
+                <p>
+                    ${act.prof}
+                </p>
                 </div>
                 `;
         let cant = cell.querySelectorAll('.block').length;
@@ -450,6 +468,9 @@ Horario {{semestre}}
                 act.estado = false;
             }
         }
+        document.querySelectorAll(`input[name="${nombreCurso}"]`).forEach(input => {
+            input.checked = false;
+        });
         createGrid();
     }
 

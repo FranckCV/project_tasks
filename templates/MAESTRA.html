@@ -32,6 +32,7 @@
         {% for e in MENU %}
         <a class="aside_item" href="{{url_for(e.enlace)}}">
             <i class="{{ e.icono }}"></i>
+            <p>{{ e.nombre }}</p>
         </a>
         {% endfor %}
     </aside>

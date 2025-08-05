@@ -1,5 +1,7 @@
 .list_ciclos {
     gap: 20px;
+    height: 100%;
+    overflow-x: scroll;
 }
 
 .block_ciclo {

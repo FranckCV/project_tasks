@@ -1,5 +1,6 @@
 from datetime import datetime, date , timedelta 
 import bd
+LISTA_GRUPOS = '( 21 , 16 , 26)'
 
 # INSERT
 
@@ -255,7 +256,7 @@ def get_horario_grupo():
 
 
 def get_grupos_semestre(semestre):
-    sql = '''
+    sql = f'''
     SELECT 
 		gr.semestrecodigo ,
 		cu.nombre as cu_nombre,
@@ -268,7 +269,7 @@ def get_grupos_semestre(semestre):
         gr.id ,
         gr.cursoid ,
         CASE 
-            WHEN gr.id IN ( 21 ) THEN TRUE
+            WHEN gr.id IN {LISTA_GRUPOS} THEN TRUE
             ELSE FALSE
         END as estado
     FROM grupo gr
@@ -302,7 +303,7 @@ def get_grupos():
 
 
 def get_grupos_semestrecodigo(semestre):
-    sql = '''
+    sql = f'''
     SELECT 
         cu.nombre as name,
         cu.siglas as letters,
@@ -316,7 +317,7 @@ def get_grupos_semestrecodigo(semestre):
         doc.nombres as prof_nom,
         gr.id ,
         CASE 
-            WHEN gr.id IN ( 21 ) THEN TRUE
+            WHEN gr.id IN {LISTA_GRUPOS} THEN TRUE
             ELSE FALSE
         END as estado
     FROM grupo gr
