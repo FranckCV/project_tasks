@@ -1,20 +1,35 @@
 - Tablas
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-- 
-
-
+- Tabla
+  - mejorar agregar columna
+  - mejorar agregar fila
+- Notas
+  - Mejorar aspecto
+- Tareas
+- Tarea
+- Horario
+- Calendario
+- Actividades
+- Actividad
+- Historial Academico
+  - datos Semestres
+  - datos Grupos
+  - datos Cursos
+  - datos Docentes
+  - datos Notas
+- Semestres
+- Semestre
+- Cursos
+- Curso
+- Docentes
+  - 
+- Grupos
+- Grupo
+- Matriculas
+- Matricula
+-  
+-  
+-  
+-  
 
 
 
