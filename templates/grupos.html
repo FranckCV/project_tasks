@@ -264,7 +264,7 @@ Grupos
                 <select name="cursoid" id="" required>
                     <option value="" selected disabled>Seleccionar</option>
                     {% for curso in todos_cursos %}
-                    <option value="{{curso.id}}">{{curso.ciclo}} - {{curso.nombre}}</option>
+                    <option class="option_curso" value="{{curso.id}}" style="background-color: {{ curso.color }};">{{curso.ciclo}} - {{curso.nombre}}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -287,22 +287,38 @@ Grupos
 
                 <div class="form_field">
                     <label for="">Hora Inicio {{num}}</label>
-                    <select name="h_ini{{num}}" id="" {% if num==1 %} required {% endif %}>
+                    <input 
+                    type="number" 
+                    name="h_ini{{num}}" 
+                    id="" 
+                    {% if num==1 %} required {% endif %}
+                    min="7"
+                    max="20"
+                    >
+                    <!-- <select name="h_ini{{num}}" id="" {% if num==1 %} required {% endif %}>
                         <option value="" selected disabled>Seleccionar</option>
                         {% for v in range(16) %}
                         <option value="{{ v + 7 }}">{{ v + 7 }}</option>
                         {% endfor %}
-                    </select>
+                    </select> -->
                 </div>
 
                 <div class="form_field">
                     <label for="">Hora Fin {{num}}</label>
-                    <select name="h_fin{{num}}" id="" {% if num==1 %} required {% endif %}>
+                    <input 
+                    type="number" 
+                    name="h_fin{{num}}" 
+                    id="" 
+                    {% if num==1 %} required {% endif %}
+                    min="9"
+                    max="22"
+                    >
+                    <!-- <select name="h_fin{{num}}" id="" {% if num==1 %} required {% endif %}>
                         <option value="" selected disabled>Seleccionar</option>
                         {% for v in range(16) %}
                         <option value="{{ v + 7 }}">{{ v + 7 }}</option>
                         {% endfor %}
-                    </select>
+                    </select> -->
                 </div>
             </div>
             {% endfor %}
@@ -399,6 +415,7 @@ Grupos
 
 <script>
     pintarElemento(' .sig_curso ');
+    pintarElemento(' .option_curso ');
 
 </script>
 

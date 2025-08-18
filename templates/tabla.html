@@ -1,0 +1,601 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Ver tabla {{ tabla_info['nombre'] }}
+{% endblock %}
+
+
+{% block estilos %}
+
+<style>
+    table {
+        font-size: 90%;
+        table-layout: fixed;
+        border-collapse: separate;
+        border-spacing: 2px;
+    }
+
+    tr {
+        display: table-row; /* por defecto */
+    }
+
+    th {
+        min-width: 150px;
+        max-width: 400px;
+        /* display: flex; */
+        width: fit-content;
+    }
+
+    /* td {
+        height: 100%;
+    } */
+
+    td,
+    th {
+        /* border: 1px solid white; */
+        /* border: 1px solid rgba(255, 255, 255, 0.281); */
+        text-align: center;
+        padding: 0;
+    }
+
+    td.td_tareas {
+        /* height: 100%; */
+        position: relative;
+        vertical-align: top;
+        padding: 0;
+    }
+
+    .list_tareas {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        gap: 5px;
+        width: 100%;  
+        height: 100%;
+        position: relative;
+        min-height: 100%;
+        box-sizing: border-box;
+    }
+
+    .tarea {
+        display: flex;
+        padding-inline: 10px;
+        padding-block: 3px;
+        border-radius: 5px;
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* .tarea:hover {
+        box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.57);
+    } */
+
+    .section_tabla {
+        display: flex;
+        gap: 30px;
+        height: 100%;
+        width: 100%;
+    }
+
+    .insert_tarea {
+        --size: 0px;
+
+        border-radius: 0px;
+        border-bottom-left-radius: 5px;
+        /* background-color: rgb(0, 136, 98); */
+        color: white;
+        height: 15px;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        position: absolute;
+        z-index: 99;
+        right: var(--size);
+        top: var(--size);
+    }
+
+
+    .container_tabla {
+        overflow: auto;
+        position: relative;
+        /* max-width: 900px; */
+        max-height: 85vh;
+        background-color: rgba(0, 0, 0, 0.316);
+        border-radius: 5px;
+    }
+
+    .container_forms {
+        width: 200px;
+        gap: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .container_forms form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .btns_insert {
+        display: flex;
+        gap: 5px;
+        padding: 5px;
+        justify-content: center;
+    }
+
+    .btns_insert .button {
+        gap:     5px;
+        padding: 5px;
+        font-size: 100%;
+        width: 100%;
+        justify-content: center;
+    }
+
+    td input ,
+    th input {
+        text-align: center;
+    }
+
+    .columna_head {
+        display: flex;
+        gap: 5px;
+        justify-content: space-between;
+        height: -webkit-fill-available;
+        align-items: center;
+    }
+
+    .col_name {
+        padding-block: 5px;
+    }
+
+    .col_arrows {
+        display: flex;
+        /* justify-content: space-between; */
+    }
+
+    .columna_head .button {
+        width: fit-content;
+        padding-inline: 5px;
+        height: -webkit-fill-available;
+    }
+
+    .fila_head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .fila_buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        height: -webkit-fill-available;
+    }
+
+    .fila_buttons * {
+        height: 100%;
+        padding: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .fila_buttons .button {
+        /* height: 30px; */
+    }
+
+    .fila_buttons i {
+        padding: 0;
+    }
+
+    .fil_name {
+        width: 100%;
+        height: -webkit-fill-available;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-inline: 5px;
+        /* max-width: 100px; */
+    }
+
+    .button i {
+        font-size: 85%;
+    }
+
+    tr {
+        display: table-row;
+    }
+
+    td, th {
+        text-align: center;
+        padding: 0;
+        vertical-align: top;
+        height: 1px; 
+    }
+
+    td.td_tareas {
+        position: relative;
+        padding: 0;
+        height: 1px;
+    }
+
+    .list_tareas {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        gap: 5px;
+        box-sizing: border-box;
+        min-height: 100%; 
+    }
+
+    td.head_fila {
+        /* position: fixed; */
+        left: 0;
+        z-index: 999;
+        padding: 0;
+        height: 1px; 
+    }
+
+    .fila_head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 100%;
+        box-sizing: border-box;
+    }
+
+    th {
+        min-width: 150px;
+        max-width: 400px;
+        width: fit-content;
+        padding: 0;
+        height: 1px; 
+    }
+
+    .columna_head {
+        display: flex;
+        gap: 5px;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 100%;
+        box-sizing: border-box;
+    }
+
+    .btns_insert {
+        display: flex;
+        gap: 5px;
+        padding: 5px;
+        justify-content: center;
+        min-height: 100%;
+        box-sizing: border-box;
+    }
+
+    .insert_tarea {
+        --size: 0px;
+        border-radius: 5px;
+        color: white;
+        height: 15px;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        position: absolute;
+        z-index: 99;
+        right: var(--size);
+        top: var(--size);
+    }
+
+    .tarea.dragging {
+        opacity: 0.5;
+    }
+    .list_tareas.dragover {
+        border: 2px dashed #fff;
+    }
+
+    .btn_delete {
+        z-index: 999;
+        position: absolute;
+        background-color: rgb(99, 1, 1) !important;
+        padding: 5px;
+        /* top: 5px; */
+        height: fit-content !important;
+        right: 20%;
+    }
+
+
+</style>
+
+
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="container_title">
+    <p class="title tabla_name" data-tablaid="{{tabla_info.id}}"> 
+        {{tabla_info.nombre}}
+    </p>
+</div>
+
+<div class="section_tabla">
+
+    <div class="container_tabla">
+        <table>
+            <thead>
+                <th>
+                    <div class="btns_insert">
+                        <a class="button btn_insert" href="{{url_for('nueva_fila' , tablaid = tabla_info.id )}}">
+                            <i class="fa-solid fa-plus"></i>
+                            Row
+                        </a>
+                        <a class="button btn_insert" href="{{url_for('nueva_columna' , tablaid = tabla_info.id )}}">
+                            <i class="fa-solid fa-plus"></i>
+                            Col
+                        </a>
+                    </div>
+                </th>
+                {% for col in columnas %}
+                <style>
+                    /* th[data-columnaid="{{ col.id }}"] {
+                        background-color: {{ col.color }} ;
+                    }
+                    th[data-columnaid="{{ col.id }}"] .col_name ,
+                    th[data-columnaid="{{ col.id }}"] .col_name input {
+                        background-color: {{ col.color }} ;
+                    } */
+                    /* th[data-columnaid="{{ col.id }}"] .col_name {
+                        background-color: color-mix(
+                            in srgb, 
+                            transparent     25%, 
+                            {{ col.color }} 25%
+                            ) ;
+                    } */
+
+                    th[data-columnaid="{{ col.id }}"] .columna_head {
+                        border-radius: 5px;
+                        border: 1px solid {{ col.color }};
+                        background-color: {{ col.color }} ;
+                        /* background-color: color-mix(
+                            in srgb, 
+                            transparent     75%, 
+                            {{ col.color }} 75%
+                            ) ; */
+                    }
+
+                    th[data-columnaid="{{ col.id }}"] .button {
+                        background-color: {{ col.color }};
+                    }
+
+                </style>
+
+                <th data-columnaid="{{ col.id }}">
+                    <div class="columna_head" data-columnaid="{{ col.id }}">
+                        <a class="button" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'm' ) }}">
+                            <i class="fa-solid fa-caret-left"></i>
+                        </a>
+                        <div class="col_name" data-columnaid="{{ col.id }}" >
+                            {{ col['nombre'] }}
+                        </div>
+                        <a class="button" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'M' ) }}">
+                            <i class="fa-solid fa-caret-right"></i>
+                        </a>
+                    <a class="button btn_delete" href="{{ url_for('delete_columna' , columnaid = col.id ) }}">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                    </div>
+                </th>
+                {% endfor %}
+                
+            </thead>
+            <tbody>
+                {% for fila in filas %}
+                <tr>
+                    <style>
+                        /* td.head_fila[data-filaid="{{ fila.id }}"] {
+                            background-color: {{ fila.color }} ;
+                        } */
+
+                        td[data-filaid="{{ fila.id }}"] .fila_head {
+                            border-radius: 5px;
+                            border: 1px solid {{ fila.color }};
+                            background-color: {{ fila.color }} ;
+                            /* background-color: color-mix(
+                            in srgb, 
+                            transparent 75%, 
+                            {{ fila.color }}  75%
+                            ) ; */
+                        }
+
+                        td[data-filaid="{{ fila.id }}"] .button {
+                            background-color: {{ fila.color }};
+                        }
+                    </style>
+
+                    <td class="head_fila" data-filaid="{{ fila.id }}">
+                        <div class="fila_head" data-filaid="{{ fila.id }}">
+                            <div class="fil_name" data-filaid="{{ fila.id }}">
+                                {{ fila.nombre }}
+                            </div>
+                            <div class="fila_buttons">
+                                <a class="button" href="{{ url_for('change_orden_fila' , filaid = fila.id , modo = 'm' ) }}">
+                                    <i class="fa-solid fa-caret-up"></i>
+                                </a>
+                                <a class="button" href="{{ url_for('change_orden_fila' , filaid = fila.id , modo = 'M' ) }}">
+                                    <i class="fa-solid fa-caret-down"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                    {% for col in columnas %}
+                    <style>
+                        /* .tarea[data-columnaid="{{col.id}}"][data-filaid="{{fila.id}}"]  , */
+                        td[data-columnaid="{{col.id}}"][data-filaid="{{fila.id}}"] .insert_tarea {
+                            background-color: color-mix(
+                                in srgb,
+                                {{ col.color}}  100%, 
+                                {{ fila.color}} 100%
+                                );
+                            /* background-color: color-mix(
+                                in srgb, 
+                                black 00%, 
+                                color-mix(
+                                    in srgb, 
+                                    {{ col.color}}  50%, 
+                                    {{ fila.color}} 50%
+                                ) 90%
+                                ); */
+                        }
+
+                        .list_tareas[data-columnaid="{{col.id}}"][data-filaid="{{fila.id}}"] {
+                            /* margin: 5px; */
+                            border-radius: 5px;
+                            border: 1px dashed color-mix(
+                                in srgb, 
+                                {{ col.color}}  100%, 
+                                {{ fila.color}} 100%
+                            );
+                            /* border: 1px dashed color-mix(
+                                in srgb, 
+                                {{ col.color}}  75%, 
+                                {{ fila.color}} 75%
+                            ); */
+                            background-color: color-mix(
+                                in srgb, 
+                                {{ col.color}}  10%, 
+                                {{ fila.color}} 10%
+                            );
+                        }
+                    </style>
+                    <td class="td_tareas" data-columnaid="{{col.id}}" data-filaid="{{fila.id}}">
+                        <a class="insert_tarea" href="{{url_for('nueva_tabla_tarea' , columnaid = col.id , filaid = fila.id , tablaid = tabla_info.id )}}">
+                            <i class="fa-solid fa-plus"></i>
+                        </a>
+                        <div class="list_tareas" data-columnaid="{{col.id}}" data-filaid="{{fila.id}}">
+                            <style>
+                                .tarea[data-columnaid="{{col.id}}"][data-filaid="{{fila.id}}"] {
+                                    background-color: color-mix(
+                                        in srgb,
+                                        {{ col.color}}  100%, 
+                                        {{ fila.color}} 100%
+                                        );
+                                }
+                            </style>
+                            {% for tarea in tareas if fila.id == tarea.filaid and col.id == tarea.columnaid %}
+
+                            <style>
+                                /* .tarea[data-tareaid="{{tarea.id}}"] { */
+                                    /* background-color: {{ tarea.color }}; */
+                                /* } */
+                            </style>
+
+                            <div class="tarea" data-tareaid="{{tarea.id}}" data-columnaid="{{col.id}}" data-filaid="{{fila.id}}">
+                                {{ tarea.nombre }}
+                            </div>
+                            
+                            {% endfor %}
+                        </div>
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+    document.querySelectorAll(".tarea").forEach(tarea => {
+    tarea.setAttribute("draggable", "true");
+
+    tarea.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("tareaid", tarea.dataset.tareaid);
+        e.dataTransfer.setData("columnaid", tarea.dataset.columnaid);
+        e.dataTransfer.setData("filaid", tarea.dataset.filaid);
+        e.dataTransfer.setData("orden", Array.from(tarea.parentNode.children).indexOf(tarea));
+        tarea.classList.add("dragging");
+    });
+
+    tarea.addEventListener("dragend", () => {
+        tarea.classList.remove("dragging");
+    });
+});
+
+// Permitir soltar en cada celda de lista
+document.querySelectorAll(".list_tareas").forEach(celda => {
+    celda.addEventListener("dragover", e => {
+        e.preventDefault();
+        celda.classList.add("dragover");
+    });
+
+    celda.addEventListener("dragleave", () => {
+        celda.classList.remove("dragover");
+    });
+
+    celda.addEventListener("drop", e => {
+        e.preventDefault();
+        celda.classList.remove("dragover");
+
+        const tareaid = e.dataTransfer.getData("tareaid");
+        const columnaid = e.dataTransfer.getData("columnaid");
+        const filaid = e.dataTransfer.getData("filaid");
+        const orden = e.dataTransfer.getData("orden");
+
+        const ncolumnaid = celda.dataset.columnaid;
+        const nfilaid = celda.dataset.filaid;
+
+        // mover visualmente
+        const tareaEl = document.querySelector(`.tarea[data-tareaid="${tareaid}"]`);
+        celda.appendChild(tareaEl);
+
+        // llamar API
+        fetch(`/update_tabla_tarea_celda?orden=${orden}&ncolumnaid=${ncolumnaid}&nfilaid=${nfilaid}&columnaid=${columnaid}&filaid=${filaid}&tareaid=${tareaid}`)
+            .then(r => {
+                if (!r.ok) throw new Error("Error en la API");
+                return r.text();
+            })
+            .then(() => {
+                console.log("Tarea movida correctamente");
+                tareaEl.dataset.columnaid = celda.dataset.columnaid;
+                tareaEl.dataset.filaid = celda.dataset.filaid;
+            })
+            .catch(err => {
+                console.error("Error al actualizar tarea:", err);
+                alert("No se pudo mover la tarea");
+            });
+    });
+});
+
+</script>
+
+<script>
+    pintarElemento(' .columna_head  ');
+    pintarElemento(' .fila_head  ');
+    pintarElemento(' .list_tareas ');
+    pintarElemento(' .insert_tarea ');
+    pintarElemento(' .fila_buttons .button , .columna_head .button ');
+    pintarElemento(' th input[type="text"] ');
+    pintarElemento(' td input[type="text"] ');
+    
+    update_name_element_bd_table( '.tabla_name' , 'tabla' , 'nombre' , 'tablaid');
+    update_name_element_bd_table( '.col_name' , 'columna' , 'nombre' , 'columnaid');
+    update_name_element_bd_table( '.fil_name' , 'fila' , 'nombre' , 'filaid');
+    update_name_element_bd_table( '.tarea' , 'tarea' , 'nombre' , 'tareaid');
+    
+    update_color_element_bd_table(  '.columna_head' , 'columna' , 'columnaid' );
+    update_color_element_bd_table(  '.fila_head' , 'fila' , 'filaid' );
+    // update_color_element_bd_where(  '.tarea' , 'tabla_tarea' , ' tareaid = %s and columnaid = %s and filaid = %s ' , ['tareaid','columnaid','filaid'] );
+
+</script>
+
+{% endblock %}

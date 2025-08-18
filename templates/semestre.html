@@ -1,0 +1,91 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Semestre {{ semestre.codigo }}
+{% endblock %}
+
+
+{% block estilos %}
+<style>
+    .container_list {
+        height: 85vh;
+        overflow-x: auto;
+    }
+
+    .grupo {
+        border: var(--color-border1);
+        padding: 5px;
+        border-radius: 5px;
+        display: flex;
+        gap: 5px;
+    }
+
+</style>
+{% endblock %}
+
+
+{% block contenido %}
+<div class="container_title">
+    <p class="title">
+        Semestre {{ semestre.codigo }}
+    </p>
+
+</div>
+
+<div class="container_list">
+    {% for grupo in grupos %}
+    <div class="grupo">
+        <div class="">
+            {{ grupo.gr_nombre }}
+        </div>
+        <div>
+            {{ grupo.cu_nombre }}
+        </div>
+        <div>
+            {{ grupo.cu_siglas }}
+        </div>
+        <div>
+            {{ grupo.color }}
+        </div>
+        <div>
+            {{ grupo.ciclo }}
+        </div>
+        <div>
+            {{ grupo.apellidos }}
+        </div>
+        <div>
+            {{ grupo.nombres }}
+        </div>
+        <div>
+            {{ grupo.id }}
+        </div>
+        <div>
+            {{ grupo.cursoid }}
+        </div>
+        <div>
+            {% for horario in horarios if horario.grupoid == grupo.id %}
+            <div>
+                <div>
+                    {{ dias[horario.dia] }}
+                </div>
+                <div>
+                    {{ horario.h_ini }}
+                </div>
+                <div>
+                    {{ horario.h_fin }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+
+{% endblock %}

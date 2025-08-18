@@ -1,0 +1,93 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+    Semestres
+{% endblock %}
+
+
+{% block estilos %}
+<style>
+
+:root {
+    --color-h: var(--color3);
+}
+
+.container_wrap {
+    justify-content: center;
+    align-content: flex-start;
+}
+    
+.semestre {
+    width: 24%;
+    border: var(--color-border1);
+    border-radius: 5px;
+    padding: 10px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    gap: 5px;
+}
+
+.s_codigo {
+    font-size: 130%;
+}
+
+.s_fechas {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: rgb(185, 185, 185);
+}
+
+
+.semestre:hover {
+    border: 1px solid var(--color-h);
+/* }
+
+.semestre:hover * { */
+    color: var(--color-h);
+}
+
+</style>
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="container_title">
+    <p class="title">
+        Semestres
+    </p>
+
+</div>
+
+<div class="container_wrap">
+    {% for semestre in semestres %}
+    <a class="semestre {{ 'activo' if semestre.activo else '' }}" href="{{ url_for('semestre' , codigo = semestre.codigo) }}">
+        <div class="s_codigo">
+            {{ semestre.codigo }}
+        </div>
+        
+        <div class="s_fechas">
+            <div>
+                {{ semestre.f_inicio.strftime('%d/%m/%Y') }}
+            </div>
+            <div>
+                {{ semestre.f_fin.strftime('%d/%m/%Y') }}
+            </div>
+        </div>
+        
+    </a>
+    {% endfor %}
+</div>
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+
+{% endblock %}

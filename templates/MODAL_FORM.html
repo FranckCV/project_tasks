@@ -1,0 +1,76 @@
+{# modal_id - modo_modal - name #}
+
+{% set crud_dict  = CRUD_FORMS.get(name) %}
+{% set modal_title = crud_dict.get('title') %}
+{% set form_fields = crud_dict.get('form_fields') %}
+
+
+<div class="modal_space"  id="{{ modal_id }}">
+    <form class="modal_dialog modal_form" action=" {{ url_for('execute_post' , name= name) }} " method="post">
+        <div class="modal_header">
+            {{ modal_title }}
+        </div>
+        <div class="modal_body">
+
+            {% for ff in form_fields %}
+
+                {% if ff.3 == 'hidden' %}
+                    <input 
+                    name="{{ff.0}}" 
+                    id="{{ff.0}}"
+                    placeholder="{{ff.2}}"
+                    type="hidden" 
+                    {{ "required" if ff.4 else "" }}
+                    {{ "disabled" if not ff.5 else '' }}
+                    >
+                {% else %}
+                    <div class="form_field">
+                        <label for="{{ff.0}}">{{ff.1}}</label>
+
+                        {% if ff.3 == 'select' %}
+                            <select 
+                            name="{{ff.0}}" 
+                            id="{{ff.0}}"
+                            {{ "required" if ff[4] else "" }}
+                            {{ "disabled" if not ff.5 else '' }}
+                            >
+                                {% for dato in ff.6 %}
+                                <option value="{{ dato.value }}">
+                                    {{ dato.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        {% elif ff.3 == 'textarea' %}
+                            <textarea 
+                            name="{{ff.0}}" 
+                            id="{{ff.0}}"
+                            {{ "required" if ff[4] else "" }}
+                            {{ "disabled" if not ff.5 else '' }}
+                            ></textarea>
+                        {% else %}
+                            <input 
+                            name="{{ff.0}}" 
+                            id="{{ff.0}}"
+                            placeholder="{{ff.2}}"
+                            type="{{ff.3}}" 
+                            {{ "required" if ff.4 else "" }}
+                            {{ "disabled" if not ff.5 else '' }}
+                            >
+                        {% endif %}
+
+                    </div>
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+        <div class="modal_footer">
+            <button class="button close_modal" type="reset">
+                Cerrar
+            </button>
+            <button class="button submit_modal" type="submit">
+                Guardar
+            </button>
+        </div>
+    </form>
+</div>

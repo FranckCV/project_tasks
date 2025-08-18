@@ -1,7 +1,7 @@
 {% extends "MAESTRA.html" %}
 
 {% block titulo %}
-Horario {{semestre}}
+Horario {{semestre}} - {{ matricula.nombre }}
 {% endblock %}
 
 
@@ -12,7 +12,7 @@ Horario {{semestre}}
         --color-background: #081028;
 
         --sizeCol: 7.5vw;
-        --sizeRow: 4.75vh;
+        --sizeRow: 5vh;
     }
 
     section {
@@ -28,9 +28,19 @@ Horario {{semestre}}
         /* margin-top: 20px; */
     }
 
+    .side_main {
+        height: 100%;
+        gap: 15px;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .side_main button {
+        width: 100%;
+    }
+
     #listaCursos {
         background-color: #00000064;
-        /* min-height: var(--height-aside); */
         display: flex;
         flex-direction: column;
         gap: 10px;
@@ -39,7 +49,7 @@ Horario {{semestre}}
         justify-content: flex-start;
         overflow-y: scroll;
         height: 100%;
-        width: 300px ;
+        width: 25vw ;
     }
 
     #listaCursos p {
@@ -294,51 +304,62 @@ Horario {{semestre}}
 {% block contenido %}
 <div class="container_title">
     <p class="title">
-        Horario {{semestre}}
+        Horario {{semestre}} | {{ matricula.nombre }}
     </p>
 </div>
 
 <div class="content">
-        
-    <div id="listaCursos" class="general_element">
 
-        
-        {% for ciclo in ciclos %}
-        <div class="ciclo">
-            <p class="nom_ciclo">Ciclo {{ciclo.ciclo}}</p>
-            {% for curso in cursos %}
-                <div class="curso" data-curso-id="{{curso.id}}">
-                    <p class="nom_curso" style="background-color: {{ curso.color }};">
-                        {{curso.nombre}}
-                    </p>
-                    <button style="margin: 5px auto; font-size: 80%;" onclick="deseleccionarCurso('{{curso.nombre}}')" >
-                        Deseleccionar
-                    </button>
-                    {% for grupo in grupos %}
-                    {% if grupo.cursoid == curso.id  %}
-                        <div class="grupo" data-grupo-id="{{grupo.id}}" data-curso-id="{{grupo.cursoid}}" data-estado="{{ '1' if grupo.estado else '0' }}">
-                            <div class="letra_grupo">
-                                {{grupo.gr_nombre}}
-                            </div>
-                            <div class="nom_grupo">
-                                <div class="nom_docente">
-                                    {{grupo.apellidos}}
+    <form class="side_main"
+    {% if modo_form %}
+        method="post" action="{{url_for('guardar_detalle_matricula')}}"
+    {% endif %}
+    >
+        <input type="hidden" name="matriculaid" value="{{ matricula.id }}">
+        <div id="listaCursos" class="general_element">
+            {% for ciclo in ciclos %}
+            <div class="ciclo">
+                <p class="nom_ciclo">Ciclo {{ciclo.ciclo}}</p>
+                {% for curso in cursos if curso.ciclo == ciclo.ciclo %}
+                    <div class="curso" data-curso-id="{{curso.id}}">
+                        <p class="nom_curso" style="background-color: {{ curso.color }};">
+                            {{curso.nombre}}
+                        </p>
+                        <div class="button btn_cancel" style="margin: 5px auto; font-size: 80%;" onclick="deseleccionarCurso('{{curso.nombre}}')" >
+                            Deseleccionar
+                        </div>
+                        {% for grupo in grupos %}
+                        {% if grupo.cursoid == curso.id  %}
+                            <div class="grupo" data-grupo-id="{{grupo.id}}" data-curso-id="{{grupo.cursoid}}" data-estado="{{ '1' if grupo.estado else '0' }}">
+                                <div class="letra_grupo">
+                                    {{grupo.gr_nombre}}
+                                </div>
+                                <div class="nom_grupo">
+                                    <div class="nom_docente">
+                                        {{grupo.apellidos}}
+                                    </div>
+                                </div>
+                                <div class="box">
+                                    <input type="radio" {{ 'checked' if grupo.estado else '' }} 
+                                    name="curso_{{curso.id}}" value="{{grupo.id}}" curso_name="{{curso.nombre}}"
+                                    onchange="toggleGroup('{{curso.nombre}}', '{{grupo.gr_nombre}}')">
                                 </div>
                             </div>
-                            <div class="box">
-                                <input type="radio" {{ 'checked' if grupo.estado else '' }} 
-                                name="{{curso.nombre}}" 
-                                onchange="toggleGroup('{{curso.nombre}}', '{{grupo.gr_nombre}}')">
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% endfor %}
-                </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
             {% endfor %}
-        </div>
-        {% endfor %}
 
-    </div>
+        </div>
+
+        {% if modo_form %}
+        <button type="submit" class="button submit_modal">
+            Guardar matricula
+        </button>
+        {% endif %}
+    </form>
 
     <div id="grid">
     </div>
@@ -356,8 +377,24 @@ Horario {{semestre}}
 
 <script>
 
+    document.querySelectorAll('.grupo').forEach(grupo => {
+        const input = grupo.querySelector('input[type="radio"]');
+        grupo.addEventListener('click', e => {
+            // Evita que se dispare dos veces si se clicó directamente en el radio
+            if (e.target !== input) {
+                input.checked = true;
+                input.dispatchEvent(new Event('change')); // Por si tienes listeners del radio
+            }
+        });
+    });
+
+
+</script>
+
+<script>
+
     const nombresDias = ["HORA", "Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-    const cols = 8, rows = 17, sizeCell = 50 ;
+    const cols = 8, rows = 16, sizeCell = 50 ;
     const grid = [];
     const time = new Date();
     const dayActual = 0;
@@ -396,7 +433,7 @@ Horario {{semestre}}
                 }
 
                 if (i !== 0 && j === 0) {
-                    cellElement.innerHTML = `<span>${i - 1 + 7}:00</span>`;
+                    cellElement.innerHTML = `<span>${i - 1 + 7}:00 - ${i + 7}:00</span>`;
                 } else {
                     for (const act of activities) {
                         if (parseInt(dayActual) + 1 > parseInt(cellElement.getAttribute("data-day"))) {
@@ -468,7 +505,7 @@ Horario {{semestre}}
                 act.estado = false;
             }
         }
-        document.querySelectorAll(`input[name="${nombreCurso}"]`).forEach(input => {
+        document.querySelectorAll(`input[curso_name="${nombreCurso}"]`).forEach(input => {
             input.checked = false;
         });
         createGrid();

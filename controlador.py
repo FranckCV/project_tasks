@@ -1,5 +1,7 @@
 from datetime import datetime, date , timedelta 
 import bd
+import utils
+
 LISTA_GRUPOS = '( 21 , 16 , 26)'
 
 # INSERT
@@ -9,15 +11,15 @@ def insert_tarea( nombre , descripcion , color , orden , tareaid ):
         INSERT INTO tarea( nombre, descripcion, color, orden , tareaid ) VALUES
         (%s, %s, %s, %s , %s)
     '''
-    bd.sql_execute(sql,( nombre , descripcion , color , orden , tareaid ))
+    return bd.sql_execute_lastrowid(sql,( nombre , descripcion , color , orden , tareaid ))
 
 
-def insert_tabla_tarea( tareaid , filaid , columnaid , orden ):
+def insert_tabla_tarea( tareaid , filaid , columnaid , color , orden ):
     sql = '''
-        INSERT INTO tabla_tarea ( tareaid , filaid , columnaid , orden ) VALUES
-        (%s, %s, %s, %s)
+        INSERT INTO tabla_tarea ( tareaid , filaid , columnaid , color,  orden ) VALUES
+        (%s, %s, %s,%s, %s)
     '''
-    bd.sql_execute(sql,( tareaid , filaid , columnaid , orden ))
+    return bd.sql_execute_lastrowid(sql,( tareaid , filaid , columnaid , color,  orden ))
 
 
 def insert_fila( nombre, color, orden, tablaid):
@@ -52,12 +54,12 @@ def insert_grupo( nombre, docenteid , semestrecodigo , cursoid ):
     return bd.sql_execute_lastrowid(sql,( nombre.upper(), docenteid , semestrecodigo , cursoid ))
 
 
-def insert_horario_grupo( nombre, descripcion, dia, h_ini, min_ini, h_fin, min_fin, fecha_ini, fecha_fin, grupoid):
+def insert_horario_grupo( nombre, dia, h_ini, min_ini, h_fin, min_fin, grupoid):
     sql = '''
-        INSERT INTO horario_grupo( nombre, descripcion, dia, h_ini, min_ini, h_fin, min_fin, fecha_ini, fecha_fin, grupoid) VALUES
-        ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s )
+        INSERT INTO horario_grupo( nombre, dia, h_ini, min_ini, h_fin, min_fin, grupoid) VALUES
+        ( %s, %s, %s, %s, %s, %s, %s )
     '''
-    return bd.sql_execute_lastrowid(sql,( nombre, descripcion, dia, h_ini, min_ini, h_fin, min_fin, fecha_ini, fecha_fin, grupoid))
+    return bd.sql_execute_lastrowid(sql,( nombre, dia, h_ini, min_ini, h_fin, min_fin, grupoid))
 
 
 def insert_docente( nombres, apellidos ):
@@ -68,18 +70,32 @@ def insert_docente( nombres, apellidos ):
     return bd.sql_execute(sql,( nombres, apellidos ))
 
 
+def insert_matricula(nombre, semestrecodigo, usuarioid):
+    sql = '''
+        INSERT INTO matricula(nombre, estado, seleccionado, semestrecodigo, usuarioid) VALUES 
+        (%s, 0, 0, %s, %s)
+    '''
+    bd.sql_execute(sql,(nombre, semestrecodigo, usuarioid))
+
+
 def insert_grupo_horarios( nombre, docenteid , semestrecodigo , cursoid , dia1 , h_ini1 , h_fin1 , dia2 = None, h_ini2  = None, h_fin2  = None):
     grupoid = insert_grupo(nombre, docenteid , semestrecodigo , cursoid)
-    horarioid1 = insert_horario_grupo( None, None, dia1, h_ini1, 0, h_fin1, 0, None, None, grupoid)
+    horarioid1 = insert_horario_grupo( None, dia1, h_ini1, 0, h_fin1, 0, grupoid)
     if dia2 and h_ini2 and h_fin2:
-        horarioid2 = insert_horario_grupo( None, None, dia2, h_ini2, 0, h_fin2, 0, None, None, grupoid)
+        horarioid2 = insert_horario_grupo( None, dia2, h_ini2, 0, h_fin2, 0, grupoid)
 
+
+def insert_detalle_matricula(matriculaid, grupoid):
+    sql = '''
+        INSERT INTO detalle_matricula(matriculaid, grupoid) VALUES
+        ( %s , %s )
+    '''
+    bd.sql_execute(sql,(matriculaid, grupoid))
 
 
 # UPDATE
 
-# def update_table_column_id(tabla,):
-#     bd.bd_update(tabla)
+
 
 def actualizar_valor_nota_id(valor,id):
     conexion = bd.obtener_conexion()
@@ -103,27 +119,210 @@ def update_cursos_color( actual , nuevo ):
     conexion.close()
 
 
-def update_tarea_tabla( nombre , color , id ):
+def update_tabla_tarea_celda( orden , ncolumnaid , nfilaid , columnaid, filaid , tareaid ):
     sql = '''
-        UPDATE tarea SET 
-        nombre = %s ,
-        color = %s 
+        UPDATE tabla_tarea SET 
+        orden = %s ,
+        columnaid = %s ,
+        filaid = %s
+        WHERE columnaid = %s and filaid = %s and tareaid = %s
+    '''
+    bd.sql_execute(sql,( orden , ncolumnaid , nfilaid , columnaid, filaid , tareaid ))
+
+
+def update_tarea_tabla_color( color , tareaid , columnaid , filaid ):
+    sql = '''
+        UPDATE tabla_tarea SET 
+        color = %s
+        WHERE tareaid = %s and columnaid = %s and filaid = %s
+    '''
+    bd.sql_execute(sql,( color , tareaid , columnaid , filaid ))
+
+
+def update_tarea_tabla_orden( orden , tareaid , columnaid , filaid ):
+    sql = '''
+        UPDATE tabla_tarea SET 
+        orden = %s
+        WHERE tareaid = %s and columnaid = %s and filaid = %s
+    '''
+    bd.sql_execute(sql,( orden , tareaid , columnaid , filaid ))
+
+
+def update_columna_orden( orden , id  ):
+    sql = '''
+        UPDATE columna SET 
+        orden = %s
         WHERE id = %s
     '''
-    bd.sql_execute(sql,( nombre , color , id ))
+    bd.sql_execute(sql,( orden , id ))
 
 
-
-
+def update_fila_orden( orden , id  ):
+    sql = '''
+        UPDATE fila SET 
+        orden = %s
+        WHERE id = %s
+    '''
+    bd.sql_execute(sql,( orden , id ))
 
 
 
 # DELETE
 
+def delete_detalle_matricula_matriculaid(matriculaid):
+    sql = '''
+    DELETE FROM detalle_matricula WHERE matriculaid = %s
+    '''
+    return bd.sql_execute(sql,(matriculaid))
 
+
+def delete_columna(id):
+    sql = '''
+    DELETE FROM columna WHERE id = %s
+    '''
+    return bd.sql_execute(sql,(id))
+
+
+def delete_fila(id):
+    sql = '''
+    DELETE FROM fila WHERE id = %s
+    '''
+    return bd.sql_execute(sql,(id))
 
 
 # SELECT
+
+def get_bd_color( tabla , id ):
+    sql = f'''
+    SELECT color
+    FROM {tabla} 
+    WHERE id = %s
+    '''
+    data = bd.sql_select_fetchone(sql, (id) )
+    color = data.get('color') if data else utils.COLOR_DEFAULT
+    return color
+
+
+def consult_columna( id ):
+    sql = '''
+    SELECT id, nombre, color, orden, tablaid 
+    FROM columna 
+    WHERE id = %s
+    '''
+    return bd.sql_select_fetchone(sql, (id) )
+
+
+def consult_fila( id ):
+    sql = '''
+    SELECT id, nombre, color, orden, tablaid 
+    FROM fila 
+    WHERE id = %s
+    '''
+    return bd.sql_select_fetchone(sql, (id) )
+
+
+def consult_tabla_tarea(tareaid , columnaid , filaid):
+    sql = '''
+    SELECT 
+        tareaid, filaid, columnaid, color, orden
+    from tabla_tarea tab
+    where tab.tareaid = %s and tab.columnaid = %s and tab.filaid = %s
+    '''
+    return bd.sql_select_fetchone(sql,(tareaid , columnaid , filaid))
+
+
+def get_max_min_orden_bd(tabla , where , lista):
+    wheretext = f' where {where}' if where else ''
+    sql = f'''
+    SELECT 
+        IFNULL(MAX(tab.orden),1) as max ,
+        IFNULL(MIN(tab.orden),0) as min 
+    from {tabla} tab
+    {wheretext}
+    '''
+    return bd.sql_select_fetchone(sql,lista)
+
+
+def get_max_min_orden_element_tabla( e , tablaid ):
+    if e == 'C':
+        tabla = 'columna'
+    elif e == 'F':
+        tabla = 'fila'
+
+    sql = f'''
+    SELECT 
+        IFNULL(MAX(tab.orden),1) as max ,
+        IFNULL(MIN(tab.orden),0) as min 
+    from {tabla} tab
+    where tab.tablaid = %s 
+    '''
+    return bd.sql_select_fetchone(sql,( tablaid ))
+
+
+def get_max_min_orden_tabla_tarea(columnaid , filaid):
+    sql = '''
+    SELECT 
+        IFNULL(MAX(tab.orden),1) as max ,
+        IFNULL(MIN(tab.orden),0) as min 
+    from tabla_tarea tab
+    where tab.columnaid = %s and tab.filaid = %s
+    '''
+    return bd.sql_select_fetchone(sql,(columnaid , filaid))
+
+
+def get_cursos_grupos_matriculados():
+    sql = '''
+    SELECT DISTINCT
+        cu.id, 
+        cu.nombre, 
+        cu.siglas, 
+		cu.descripcion, 
+        cu.creditos, 
+        cu.ciclo, 
+        cu.icono, 
+        cu.color
+    FROM grupo gr
+    INNER JOIN detalle_matricula det on det.grupoid = gr.id
+    inner join curso cu on cu.id = gr.cursoid
+    ORDER BY cu.id ASC
+    '''
+    return bd.sql_select_fetchall(sql)
+
+
+def get_ciclos_grupos_matriculados():
+    sql = '''
+    SELECT DISTINCT
+        cu.ciclo , 
+        gr.semestrecodigo
+    FROM grupo gr
+    INNER JOIN detalle_matricula det on det.grupoid = gr.id
+    inner join curso cu on cu.id = gr.cursoid
+    '''
+    return bd.sql_select_fetchall(sql)
+
+
+def get_grupos_matriculados():
+    sql = '''
+    SELECT 
+        gr.id, 
+        gr.nombre, 
+        gr.docenteid, 
+        gr.semestrecodigo, 
+        gr.cursoid 
+    FROM grupo gr
+    INNER JOIN detalle_matricula det on det.grupoid = gr.id
+    '''
+    return bd.sql_select_fetchall(sql)
+
+
+def consult_detalle_matricula_matriculaid_grupoid(matriculaid,grupoid):
+    sql = '''
+    SELECT matriculaid, grupoid 
+    FROM detalle_matricula 
+    WHERE matriculaid = %s and grupoid = %s
+    '''
+    return bd.sql_select_fetchone(sql,(matriculaid,grupoid))
+
 
 def get_progreso_ciclo():
     sql = '''
@@ -137,24 +336,24 @@ def get_progreso_ciclo():
     FROM semestre
     WHERE activo = 1
     LIMIT 1
-
     '''
     return bd.sql_select_fetchone(sql)
 
 
 def get_promedio_final(usuarioid):
     sql = '''
-       SELECT 
+        SELECT 
             m.usuarioid,
-            ROUND(SUM(n.valor * n.porcentaje) / SUM(n.porcentaje), 2) AS promedio_general
+            ROUND(SUM(un.valor * n.porcentaje) / SUM(n.porcentaje), 2) AS promedio_general
         FROM matricula m
         JOIN detalle_matricula dm ON dm.matriculaid = m.id
         JOIN grupo g ON g.id = dm.grupoid
         JOIN unidad u ON u.grupoid = g.id
         JOIN nota n ON n.unidadid = u.id
+        join usuario_nota un on un.notaid = n.id and un.usuarioid = m.usuarioid
         WHERE m.usuarioid = %s
         AND g.semestrecodigo = (SELECT codigo FROM semestre WHERE activo = 1 LIMIT 1)
-        AND n.valor IS NOT NULL
+        AND un.valor IS NOT NULL
         GROUP BY m.usuarioid
         '''
     data = bd.sql_select_fetchone(sql,(usuarioid))
@@ -165,16 +364,17 @@ def get_promedio_curso(usuarioid):
     sql = '''
         SELECT 
             c.* , 
-            ROUND(SUM(n.valor * n.porcentaje) / SUM(n.porcentaje), 2) AS promedio
+            ROUND(SUM(un.valor * n.porcentaje) / SUM(n.porcentaje), 2) AS promedio
         FROM matricula m
         JOIN detalle_matricula dm ON dm.matriculaid = m.id
         JOIN grupo g ON g.id = dm.grupoid
         JOIN curso c ON c.id = g.cursoid
         JOIN unidad u ON u.grupoid = g.id
         JOIN nota n ON n.unidadid = u.id
+        join usuario_nota un on un.notaid = n.id and un.usuarioid = m.usuarioid
         WHERE m.usuarioid = %s
         AND g.semestrecodigo = (SELECT codigo FROM semestre WHERE activo = 1 LIMIT 1)
-        AND n.valor IS NOT NULL
+        AND un.valor IS NOT NULL
         GROUP BY c.id, c.nombre
     '''
     data = bd.sql_select_fetchall(sql,(usuarioid))
@@ -212,6 +412,37 @@ def get_cursos_grupo_semestre(semestre):
     order by 2 asc
     '''
     return bd.sql_select_fetchall(sql,(semestre))
+
+
+def get_matriculas():
+    sql = '''
+    SELECT 
+        id, 
+        nombre, 
+        estado, 
+        seleccionado, 
+        fecha, 
+        semestrecodigo, 
+        usuarioid 
+    FROM matricula
+    '''
+    return bd.sql_select_fetchall(sql)
+
+
+def consult_matricula_id(id):
+    sql = '''
+    SELECT 
+        id, 
+        nombre, 
+        estado, 
+        seleccionado, 
+        fecha, 
+        semestrecodigo, 
+        usuarioid 
+    FROM matricula
+    where id = %s
+    '''
+    return bd.sql_select_fetchone(sql,(id))
 
 
 def get_ciclos_grupos():
@@ -281,6 +512,71 @@ def get_grupos_semestre(semestre):
     return bd.sql_select_fetchall(sql,(semestre))
 
 
+def get_grupos_semestre_matriculaid(semestre , matriculaid):
+    sql = '''
+    SELECT 
+		gr.semestrecodigo ,
+		cu.nombre as cu_nombre,
+        gr.nombre as gr_nombre ,
+        cu.siglas as cu_siglas ,
+        cu.color as color ,
+        cu.ciclo as ciclo ,
+        doc.apellidos ,
+        doc.nombres ,
+        gr.id ,
+        gr.cursoid ,
+        CASE 
+            WHEN gr.id IN (
+            SELECT
+            det.grupoid
+            FROM detalle_matricula det
+            where det.matriculaid = %s           
+            ) THEN TRUE
+            ELSE FALSE
+        END as estado
+    FROM grupo gr
+    inner join curso cu on cu.id = gr.cursoid
+    inner join docente doc on doc.id = gr.docenteid
+    where gr.semestrecodigo = %s
+    order by 1 asc , 2 asc, 3 asc
+    '''
+    return bd.sql_select_fetchall(sql,(matriculaid , semestre))
+
+
+def get_data_grupos_semestre_matriculaid(semestre , matriculaid):
+    sql = '''
+    SELECT 
+        cu.nombre as name,
+        cu.siglas as letters,
+        hor.dia   as day,
+        hor.h_ini as hr_ini,
+        hor.h_fin as hr_fin,
+        cu.color as color,
+        cu.ciclo as ciclo,
+        gr.nombre as "group",
+        doc.apellidos as prof,
+        doc.nombres as prof_nom,
+        gr.id ,
+        CASE 
+            WHEN gr.id IN (
+            SELECT
+            det.grupoid
+            FROM detalle_matricula det
+            where det.matriculaid = %s    
+            ) THEN TRUE
+            ELSE FALSE
+        END as estado
+    FROM grupo gr
+    INNER JOIN curso cu ON cu.id = gr.cursoid
+    INNER JOIN docente doc ON doc.id = gr.docenteid
+    INNER JOIN horario_grupo hor ON hor.grupoid = gr.id
+    LEFT JOIN detalle_matricula det ON det.grupoid = gr.id
+    WHERE gr.semestrecodigo = %s
+    ORDER BY 1 ASC, 7 ASC , 4 asc
+    '''
+    return bd.sql_select_fetchall(sql,(matriculaid , semestre))
+
+
 def get_grupos():
     sql = '''
     SELECT 
@@ -302,7 +598,8 @@ def get_grupos():
     return bd.sql_select_fetchall(sql)
 
 
-def get_grupos_semestrecodigo(semestre):
+
+def get_data_grupos_semestrecodigo(semestre):
     sql = f'''
     SELECT 
         cu.nombre as name,
@@ -405,11 +702,39 @@ def get_ciclos():
 
 def get_semestres():
     sql = '''
-    SELECT codigo 
+    SELECT 
+        codigo ,
+        f_inicio ,
+        f_fin ,
+        activo
     FROM semestre 
     ORDER BY 1 DESC
     '''
     return bd.sql_select_fetchall(sql)
+
+def options_semestres():
+    sql = '''
+    SELECT 
+        codigo as value,
+        codigo as name
+    FROM semestre 
+    ORDER BY 1 DESC
+    '''
+    return bd.sql_select_fetchall(sql)
+
+
+def get_info_semestre_codigo(codigo):
+    sql = '''
+    SELECT 
+        codigo ,
+        f_inicio ,
+        f_fin ,
+        activo
+    FROM semestre 
+    where codigo = %s
+    ORDER BY 1 DESC
+    '''
+    return bd.sql_select_fetchone(sql,(codigo))
 
 
 def get_docentes():
@@ -419,6 +744,35 @@ def get_docentes():
     ORDER BY 3 ASC
     '''
     return bd.sql_select_fetchall(sql)
+
+
+def get_grupos_matriculaid( matriculaid ):
+    conexion = bd.obtener_conexion()
+    with conexion.cursor() as cursor:
+        sql = f'''
+            SELECT 
+                gr.semestrecodigo ,
+                cu.nombre as cu_nombre,
+                gr.nombre as gr_nombre ,
+                cu.siglas as cu_siglas ,
+                cu.color as color ,
+                cu.ciclo as ciclo ,
+                doc.apellidos ,
+                doc.nombres ,
+                gr.id ,
+                gr.docenteid ,
+                gr.cursoid
+            FROM grupo gr
+            inner join curso cu on cu.id = gr.cursoid
+            inner join docente doc on doc.id = gr.docenteid
+            inner join detalle_matricula det on det.grupoid = gr.id
+            where det.matriculaid = %s
+            order by 1 asc , 2 asc, 3 asc
+        '''
+        cursor.execute(sql,( matriculaid ))
+        elementos = cursor.fetchall() 
+    conexion.close()
+    return elementos
 
 
 def obtener_info_notas():
@@ -444,13 +798,14 @@ def obtener_cursos( matriculaid ):
                 cu.ciclo , 
                 gr.nombre as g_nombre ,
                 count(DISTINCT ud.id) as cant_ud,
-                ROUND(SUM(ud.porcentaje * (nta.porcentaje * nta.valor) / 10000) , 4) as prom,
+                ROUND(SUM(ud.porcentaje * (nta.porcentaje * un.valor) / 10000) , 4) as prom,
                 cu.color
             from curso cu
             left join grupo gr on gr.cursoid = cu.id
             left join unidad ud on ud.grupoid = gr.id
             left join nota nta on nta.unidadid = ud.id
             left join detalle_matricula det on det.grupoid = gr.id 
+            inner join usuario_nota un on un.notaid = nta.id
             where det.matriculaid = %s 
             GROUP BY cu.id
             order by  2
@@ -470,11 +825,13 @@ def obtener_unidades():
                 ud.nombre ,
                 ud.porcentaje ,
                 gr.cursoid as curso,
-                ROUND(SUM(nta.porcentaje / 100 * nta.valor) , 2) as prom,
+                ROUND(SUM(nta.porcentaje / 100 * un.valor) , 2) as prom,
                 count(nta.id)
             from unidad ud
             left join grupo gr on gr.id = ud.grupoid
             left join nota nta on nta.unidadid = ud.id
+            inner join usuario_nota un on un.notaid = nta.id
+            where un.usuarioid = 1
             GROUP BY ud.id 
         '''
         cursor.execute(sql)
@@ -491,10 +848,12 @@ def obtener_notas():
                 nta.id ,
                 nta.nombre ,
                 nta.porcentaje ,
-                nta.valor ,
+                un.valor ,
                 nta.unidadid as unidad,
                 nta.id 
             from nota nta
+            inner join usuario_nota un on un.notaid = nta.id
+            where un.usuarioid = 1
         '''
         cursor.execute(sql)
         elementos = cursor.fetchall() 
@@ -543,11 +902,12 @@ def get_filas_tablaid(tablaid):
 def get_tareas_tablaid(tablaid):
     sql = '''
     SELECT 
-        tar.id, tar.nombre, tar.descripcion, tar.color, tar.tareaid  , tbt.columnaid , tbt.filaid
+        tar.id, tar.nombre, tar.descripcion, tbt.orden , tbt.color, tar.tareaid  , tbt.columnaid , tbt.filaid
     FROM tarea tar
     left join tabla_tarea tbt on tbt.tareaid = tar.id
     left join columna col on col.id = tbt.columnaid
-    where col.tablaid = %s
+    where col.tablaid = %s 
+    order by tbt.columnaid asc, tbt.filaid asc, tbt.orden asc
     '''
     return bd.sql_select_fetchall(sql,(tablaid))
 
@@ -557,6 +917,7 @@ def get_tables():
         SELECT
         t.id ,
         t.nombre ,
+        t.fecha ,
         (SELECT COUNT(*) FROM columna c WHERE c.tablaid = t.id) AS columnas,
         (SELECT COUNT(*) FROM fila f WHERE f.tablaid = t.id) AS filas,
         (SELECT COUNT(*) 
@@ -622,19 +983,84 @@ def get_tarea_id(id):
 
 # OTROS
 
+def down_orden_columna( columnaid ):
+    columna = consult_columna(columnaid)
+    orden = columna.get('orden',0)
+    tablaid = columna.get('tablaid')
+
+    sql = '''
+        SELECT 
+            id, IFNULL(orden,0) as orden
+        FROM columna
+        WHERE tablaid = %s AND orden < %s
+        ORDER BY orden DESC
+        LIMIT 1
+    '''
+    low_col = bd.sql_select_fetchone(sql, (tablaid , orden) )
+
+    update_columna_orden( low_col.get('orden') , columnaid )
+    update_columna_orden( orden , low_col.get('id') )
 
 
+def up_orden_columna( columnaid ):
+    columna = consult_columna(columnaid)
+    orden = columna.get('orden',0)
+    tablaid = columna.get('tablaid')
+
+    sql = '''
+        SELECT id, IFNULL(orden,1)  as orden 
+        FROM columna
+        WHERE tablaid = %s AND orden > %s
+        ORDER BY orden ASC
+        LIMIT 1
+    '''
+    high_col = bd.sql_select_fetchone(sql, (tablaid , orden) )
+
+    update_columna_orden( high_col.get('orden') , columnaid )
+    update_columna_orden( orden , high_col.get('id') )
 
 
+def change_orden_fila( filaid , modo ):
+    fila = consult_fila(filaid)
+    orden = fila.get('orden',0)
+    tablaid = fila.get('tablaid')
+    sql = ''
+
+    if modo == 'M':
+        sql = '''
+            SELECT id, IFNULL(orden,1)  as orden 
+            FROM fila
+            WHERE tablaid = %s AND orden > %s
+            ORDER BY orden ASC
+            LIMIT 1
+        '''
+    elif modo == 'm':
+        sql = '''
+            SELECT 
+                id, IFNULL(orden,0) as orden
+            FROM fila  
+            WHERE tablaid = %s AND orden < %s
+            ORDER BY orden DESC
+            LIMIT 1
+        '''
+
+    sel = bd.sql_select_fetchone(sql, (tablaid , orden) )
+
+    update_fila_orden( sel.get('orden') , filaid )
+    update_fila_orden( orden , sel.get('id') )
 
 
+def register_tabla_tarea( filaid , columnaid ):
+    cfil = get_bd_color('fila' , filaid )
+    ccol = get_bd_color('columna' , columnaid )
+    color = utils.mix_colors(cfil,ccol)
 
+    tareaid = insert_tarea(f'Nueva_tarea', None , color , 0 , None)
+    orden = get_max_min_orden_tabla_tarea(columnaid , filaid)
+    max = orden.get('max')
+    tabid = insert_tabla_tarea(tareaid, filaid ,columnaid , color , max )
 
-
-
-
-
-
+    return tabid
 
 
 

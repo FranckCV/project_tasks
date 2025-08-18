@@ -5,8 +5,67 @@ import utils
 from decimal import Decimal
 import inspect
 import bd
+from functools import wraps
+import markdown
+import os
 
 app = Flask(__name__)
+
+
+
+CRUD_FORMS = {
+    'insert_docente' : {
+        'function': controlador.insert_docente , 
+        'title': 'Agregar docente' ,
+        'return' : '' ,
+        'form_fields': [
+#            ID/NAME        LABEL     PLACEHOLDER    TYPE  REQUIRED   ABLE/DISABLE   DATOS  VALIDACION
+            ['apellidos',  'Apellidos', 'Apellidos',  'text',  True ,     True ,        None ],
+            ['nombres',    'Nombres',   'Nombres',    'text',  True ,     True ,        None ],
+        ] ,
+    } ,
+    'insert_grupo_horarios' : {
+        'function': controlador.insert_grupo_horarios , 
+        'title': 'Agregar grupo' ,
+        'return' : 'grupos' ,
+        'form_fields': [
+#            ID/NAME        LABEL     PLACEHOLDER    TYPE  REQUIRED   ABLE/DISABLE   DATOS  VALIDACION
+            ['apellidos',  'Apellidos', 'Apellidos',  'text',  True ,     True ,        None ],
+            ['nombres',    'Nombres',   'Nombres',    'text',  True ,     True ,        None ],
+        ] ,
+    } ,
+#     'insert_matricula' : {
+#         'function': controlador.insert_matricula , 
+#         'title': 'Agregar matricula' ,
+#         'return' : 'matriculas' ,
+#         'form_fields': [
+# #            ID/NAME            LABEL        PLACEHOLDER TYPE       REQUIRED   ABLE/DISABLE   DATOS  VALIDACION
+#             ['nombre',          'Nombre',    'Nombre',   'text',    True ,  True ,   None , '' ],
+#             ['semestrecodigo',  'Semestre',  'Semestre', 'select',  True ,  True ,   controlador.options_semestres() , '' ],
+#             ['usuarioid',       '',          '',         'hidden',  True ,  True ,   None, '' ],
+#         ] ,
+#     }
+}
+
+
+def validar_usuario():
+    def decorator(f):
+        @wraps(f)
+        def wrapper(*args, **kwargs):
+            try:
+                username = request.cookies.get('username')
+                if username :
+                    page = f(*args, **kwargs)
+                    if page:
+                        return page
+                    else:
+                        return rdrct_error( redirect('/index') , 'PAGINA_NO_EXISTE') 
+                return rdrct_error(redirect_url('login') , 'LOGIN_INVALIDO') 
+            except Exception as e:
+                return rdrct_error(redirect_url('login') , e) 
+        return wrapper
+    return decorator
+
 
 
 @app.context_processor
@@ -14,7 +73,10 @@ def inject_globals():
     # print(utils.local_time())
     return dict(
         MENU = utils.ENLACES_MENU ,
+        CRUD_FORMS = CRUD_FORMS ,
         dias = utils.BASE_NOMBRE_DIAS ,
+        USUARUIOID = utils.USUARIOID,
+        dato_usuario = utils.USUARIO ,
 
     )
 
@@ -22,15 +84,16 @@ def inject_globals():
 matriculaid = 1
 tablaid = 1
 SEMESTRE = utils.SEMESTRE
-USUARUIOID = 1
 
 # controlador.update_cursos_color(  'yellow' ,  '#ffff33' )
 
 @app.route("/")
 def main_page():
-    return redirect(url_for('horario'))
+    return redirect(url_for('login'))
+
 
 @app.route("/index")
+@validar_usuario()
 def index():
     progreso_semestre = controlador.get_progreso_ciclo()
     promedio_general = controlador.get_promedio_final(1) 
@@ -51,10 +114,82 @@ def index():
     )
 
 
+@app.route("/matriculas")
+# @validar_usuario()
+def matriculas():
+    matriculas = controlador.get_matriculas()
+    semestres = controlador.get_semestres()
+    return render_template(
+        "matriculas.html" ,
+        matriculas = matriculas ,
+        semestres = semestres ,
+    )
+
+
+@app.route("/matricula")
+# @validar_usuario()
+def matricula():
+    id = request.args.get('id')
+    matricula = controlador.consult_matricula_id(id)
+    matricula_grupos = controlador.get_grupos_matriculaid(id)
+    semestre = matricula.get('semestrecodigo')
+
+    ciclos = controlador.get_ciclos_grupos_semestre(semestre)
+    cursos = controlador.get_cursos_grupo_semestre(semestre)
+    grupos = controlador.get_grupos_semestre_matriculaid(semestre,id)
+    horarios = controlador.get_horario_grupo()
+
+    data = controlador.get_data_grupos_semestre_matriculaid(semestre,id)
+    return render_template(
+        "horario.html" ,
+        matricula = matricula ,
+        semestre = semestre ,
+        ciclos = ciclos ,
+        cursos = cursos ,
+        grupos = grupos ,
+        horarios = horarios ,
+        data = data ,
+        modo_form = True ,
+    )
+
+
+@app.route("/semestres")
+@validar_usuario()
+def semestres():
+    semestres = controlador.get_semestres()
+
+    return render_template(
+        "semestres.html" ,
+        semestres = semestres ,
+    )
+
+
+@app.route("/semestre")
+# @validar_usuario()
+def semestre():
+    codigo = request.args.get('codigo')
+    semestre = controlador.get_info_semestre_codigo(codigo)
+    grupos = controlador.get_grupos_semestre(codigo)
+    horarios = controlador.get_horario_grupo()
+    dias = utils.BASE_NOMBRE_DIAS
+    return render_template(
+        "semestre.html" ,
+        grupos = grupos ,
+        semestre = semestre ,
+        horarios = horarios ,
+        dias = dias , 
+    )
+
+
+
+
+
+
 @app.route("/notas")
+@validar_usuario()
 def notas():
-    semestre = SEMESTRE
-    usuarioid = USUARUIOID
+    # semestre = SEMESTRE
+    # usuarioid = USUARUIOID
 
     cursos = controlador.obtener_cursos( matriculaid )
     unidades = controlador.obtener_unidades()
@@ -68,6 +203,7 @@ def notas():
 
 
 @app.route("/docentes")
+@validar_usuario()
 def docentes():
     titulo = 'Docentes'
     funcion = 'guardar_docente'
@@ -86,7 +222,7 @@ def docentes():
         lista.append(f)
 
     return render_template(
-        "FORM_CRUD.html" ,
+        "docentes.html" ,
         lista = lista ,
         titulo = titulo ,
         funcion = funcion ,
@@ -95,6 +231,7 @@ def docentes():
 
 
 @app.route("/cursos")
+@validar_usuario()
 def cursos():
     cursos = controlador.get_cursos()
     ciclos = controlador.get_ciclos()
@@ -106,6 +243,7 @@ def cursos():
 
 
 @app.route("/grupos_curso/<int:id>")
+@validar_usuario()
 def grupos_curso(id):
     curso = controlador.get_curso_id(id)
     semestres = controlador.get_semestres()
@@ -124,6 +262,7 @@ def grupos_curso(id):
 
 
 @app.route("/test")
+@validar_usuario()
 def test():
     return render_template(
         "crear_grupo.html" ,
@@ -131,6 +270,7 @@ def test():
 
 
 @app.route("/grupos")
+@validar_usuario()
 def grupos():
     todos_cursos = controlador.get_cursos()
     semestres = controlador.get_semestres()
@@ -152,6 +292,7 @@ def grupos():
 
 
 @app.route("/horario")
+# @validar_usuario()
 def horario():
     actual = request.args.get('semestre')
     semestre = actual if actual else utils.SEMESTRE
@@ -160,7 +301,7 @@ def horario():
     grupos = controlador.get_grupos_semestre(semestre)
     horarios = controlador.get_horario_grupo()
 
-    data = controlador.get_grupos_semestrecodigo(semestre)
+    data = controlador.get_data_grupos_semestrecodigo(semestre)
     return render_template(
         "horario.html" ,
         semestre = semestre ,
@@ -169,10 +310,12 @@ def horario():
         grupos = grupos ,
         horarios = horarios ,
         data = data ,
+        matricula = {} ,
     )
 
 
 @app.route("/data_grupo/<semestre>")
+@validar_usuario()
 def data_grupo(semestre):
     data = controlador.get_grupos_semestre(semestre)
     return render_template(
@@ -181,37 +324,8 @@ def data_grupo(semestre):
     ) 
 
 
-# @app.route("/test")
-# def test():
-#     id = request.args.get('id') 
-#     tareaid = id if id else None
-#     tarea_info = controlador.get_tarea_id(tareaid) if tareaid else {}
-#     tareas_planas = controlador.get_tareas(tareaid) 
-#     tareas_arbol = construir_arbol_tareas(tareas_planas)
-#     return render_template(
-#         "test.html" ,
-#         tareaid = tareaid ,
-#         tareas = tareas_arbol ,
-#         tarea_info = tarea_info ,
-#     )
-
-
-@app.route('/nueva_tarea')
-def nueva_tarea():
-    id = request.args.get('id') 
-    tareaid = id if id else None
-    orden = controlador.get_orden_tarea(tareaid).get('max') + 1
-    date = utils.format_now("%Y-%m-%d %H:%M:%S")
-    tarea = controlador.get_tarea_id(tareaid)
-    color = tarea.get('color') if tarea else '#fff'
-    controlador.insert_tarea( f'Nueva tarea {date}', None , color , orden , tareaid )
-    if id:
-        return redirect(url_for('tareas' , id = tareaid))
-    else:
-        return redirect(url_for('tareas'))
-
-
 @app.route("/tareas")
+@validar_usuario()
 def tareas():
     id = request.args.get('id') 
     tareaid = id if id else None
@@ -241,7 +355,8 @@ def construir_arbol_tareas(tareas):
     return raiz
 
 
-@app.route("/mis_tablas")
+@app.route("/tablas")
+# @validar_usuario()
 def tablas():
     tablas = controlador.get_tables()
     return render_template(
@@ -251,13 +366,14 @@ def tablas():
 
 
 @app.route("/tabla/<int:tablaid>")
-def ver_tabla(tablaid):
+# @validar_usuario()
+def tabla(tablaid):
     tabla_info = controlador.get_tabla_info(tablaid)
     columnas = controlador.get_columnas_tablaid(tablaid)
     filas = controlador.get_filas_tablaid(tablaid)
     tareas = controlador.get_tareas_tablaid(tablaid)
     return render_template(
-        "ver_tabla.html" ,
+        "tabla.html" ,
         tabla_info = tabla_info ,
         columnas = columnas ,
         filas = filas ,
@@ -265,14 +381,251 @@ def ver_tabla(tablaid):
     )
 
 
+@app.route("/unidades")
+# @validar_usuario()
+def unidades():
+    semestres = controlador.get_semestres()
+    grupos = controlador.get_grupos_matriculados()
+    ciclos = controlador.get_ciclos_grupos_matriculados()
+    cursos = controlador.get_cursos_grupos_matriculados
+    return render_template(
+        "unidades.html" ,
+        grupos = grupos ,
+        semestres= semestres ,
+        ciclos = ciclos ,
+        cursos = cursos ,
+    )
+
+
+
+
+
+
+
+
+@app.route('/nueva_tarea')
+@validar_usuario()
+def nueva_tarea():
+    id = request.args.get('id') 
+    tareaid = id if id else None
+    orden = controlador.get_orden_tarea(tareaid).get('max') + 1
+    date = utils.format_now("%Y-%m-%d %H:%M:%S")
+    tarea = controlador.get_tarea_id(tareaid)
+    color = tarea.get('color') if tarea else '#fff'
+    controlador.insert_tarea( f'Nueva tarea {date}', None , color , orden , tareaid )
+    if id:
+        return redirect(url_for('tareas' , id = tareaid))
+    else:
+        return redirect(url_for('tareas'))
+
+
 @app.route('/nueva_tabla')
+@validar_usuario()
 def nueva_tabla():
-    date = utils.format_now("%Y-%m-%d")
+    date = utils.format_now("%Y%m%d%H%M%S")
     id = controlador.insert_tabla( f'Nueva tabla {date}', 1 )
-    return redirect(url_for('ver_tabla' , tablaid = id ))
+    return redirect(url_for('tabla' , tablaid = id ))
+
+
+@app.route('/nueva_matricula')
+# @validar_usuario()
+def nueva_matricula():
+    user_id = request.cookies.get('id')
+    semestre = request.args.get('semestre')
+    date = utils.format_now("%Y%m%d%H%M%S") 
+    controlador.insert_matricula( f'Modelo {semestre} {date}', semestre , user_id )
+    return redirect(url_for('matriculas'))
+
+
+@app.route('/nueva_columna')
+# @validar_usuario()
+def nueva_columna():
+    tablaid = request.args.get('tablaid')
+    date = utils.format_now("%Y%m%d%H%M%S") 
+    orden = controlador.get_max_min_orden_element_tabla('C' , tablaid).get('max')
+    controlador.insert_columna(f'Columna{date}', utils.COLOR_DEFAULT , orden ,tablaid )
+    return redirect(url_for('tabla' , tablaid = tablaid))
+
+
+@app.route('/nueva_fila')
+# @validar_usuario()
+def nueva_fila():
+    tablaid = request.args.get('tablaid')
+    date = utils.format_now("%Y%m%d%H%M%S")
+    orden = controlador.get_max_min_orden_element_tabla('F' , tablaid).get('max')
+    controlador.insert_fila(f'Fila{date}', utils.COLOR_DEFAULT , orden ,tablaid )
+    return redirect(url_for('tabla' , tablaid = tablaid))
+
+
+@app.route('/nueva_tabla_tarea')
+# @validar_usuario()
+def nueva_tabla_tarea():
+    tablaid = request.args.get('tablaid')
+    filaid = request.args.get('filaid')
+    columnaid = request.args.get('columnaid')
+
+    controlador.register_tabla_tarea( filaid , columnaid )
+
+    return redirect(url_for('tabla' , tablaid = tablaid))
+
+
+
+
+@app.route('/info')
+# @validar_usuario()
+def info():
+    return render_template(
+        '_info.html' ,
+    )
+
+
+MD_FILE = "README.md"
+
+@app.route("/get_markdown")
+def get_markdown():
+    if os.path.exists(MD_FILE):
+        with open(MD_FILE, "r", encoding="utf-8") as f:
+            return f.read()
+    return ""
+
+@app.route("/save_markdown", methods=["POST"])
+def save_markdown():
+    data = request.get_json()
+    with open(MD_FILE, "w", encoding="utf-8") as f:
+        f.write(data.get("content", ""))
+    return jsonify({"msg": "Markdown guardado con éxito ✅"})
+
+
+@app.route("/login")
+def login():
+    username = request.cookies.get('username')
+    user_username = utils.USUARIO.get('username')
+    if username and user_username == username: 
+        return redirect('/index')
+    resp = make_response(render_template('login.html'))
+    resp.delete_cookie('username')
+    return resp
+
+
+@app.route("/procesar_login", methods=["POST"])
+def procesar_login():
+    try:
+        username = request.form["username"]
+        password = request.form["password"]
+        resp = resp_login( username , password )
+        return resp
+    except Exception as e:
+        return rdrct_error(redirect_url('login')  , e)
+
+
+@app.route("/logout")
+def logout():
+    try:
+        resp = make_response(redirect_login())
+        resp.delete_cookie('username')
+        resp.delete_cookie('correo')
+        return resp
+    except Exception as e:
+        return rdrct_error(redirect_login(),e)
+
+
+def resp_login( username , password ):
+    user_id       = utils.USUARIO.get('id')
+    user_username = utils.USUARIO.get('username')
+    user_password = utils.USUARIO.get('password')
+    if user_username == username and user_password == password:
+        resp = make_response(redirect_url('login'))
+        resp.set_cookie('id', str(user_id))
+        resp.set_cookie('username', username)
+        return resp
+    else:
+        return rdrct_error(redirect_url('login') ,'LOGIN_INVALIDO')
+
+
+def rdrct_error(resp_redirect , e):
+    resp = make_response(resp_redirect)
+    error_message = str(e)
+
+    for clave in utils.ERRORES:
+        if clave in error_message:
+            msg = utils.ERRORES[clave]
+            break 
+    else:
+        msg =  'ERROR DESCONOCIDO ENCONTRADO: '+error_message
+
+    resp.set_cookie('error', msg , max_age=30)
+    return resp 
+
+
+def redirect_login():
+    # return redirect(url_for('panel'))
+    return redirect_url('login')
+
+
+def redirect_url(url):
+    return redirect(url_for(url))
+
+
 
 
 ######################## METODOS POST ########################
+
+
+@app.route('/update_tabla_tarea_celda')
+def update_tabla_tarea_celda():
+    orden = request.args.get('orden')
+    ncolumnaid = request.args.get('ncolumnaid')
+    nfilaid = request.args.get('nfilaid')
+    columnaid = request.args.get('columnaid')
+    filaid = request.args.get('filaid')
+    tareaid = request.args.get('tareaid')
+    
+    controlador.update_tabla_tarea_celda( orden , ncolumnaid , nfilaid , columnaid, filaid , tareaid)
+
+    return jsonify({'respuesta_orden': orden})
+
+
+@app.route('/delete_columna') 
+def delete_columna():
+    columnaid = request.args.get('columnaid')
+    c = controlador.consult_columna(columnaid)
+    controlador.delete_columna(columnaid)
+    tablaid = c.get('tablaid')
+    return redirect(url_for('tabla',tablaid = tablaid))
+
+
+@app.route('/delete_fila') 
+def delete_fila():
+    id = request.args.get('filaid')
+    c = controlador.consult_fila(id)
+    controlador.delete_fila(id)
+    tablaid = c.get('tablaid')
+    return redirect(url_for('tabla',tablaid = tablaid))
+
+
+@app.route('/update_orden_columna') 
+def update_orden_columna():
+    modo = request.args.get('modo')
+    columnaid = request.args.get('columnaid')
+    c = controlador.consult_columna(columnaid)
+    tablaid = c.get('tablaid')
+    if modo == 'm':
+        controlador.down_orden_columna(columnaid)
+    elif modo == 'M':
+        controlador.up_orden_columna(columnaid)
+    return redirect(url_for('tabla',tablaid = tablaid))
+
+
+@app.route('/change_orden_fila')
+def change_orden_fila():
+    modo = request.args.get('modo')
+    filaid = request.args.get('filaid')
+    c = controlador.consult_fila(filaid)
+    tablaid = c.get('tablaid')
+    controlador.change_orden_fila(filaid, modo)
+    return redirect(url_for('tabla',tablaid = tablaid))
+
+
 
 @app.route('/guardar_tabla_elemento', methods=['POST'])
 def guardar_tabla_elemento():
@@ -292,7 +645,7 @@ def guardar_tabla_elemento():
         valores.append(valor)
     f( *valores )
 
-    return redirect(url_for('ver_tabla'))
+    return redirect(url_for('tabla'))
 
 
 @app.route('/update_row', methods=['POST'])
@@ -305,6 +658,25 @@ def update_row():
     f(*valores)
 
     return redirect(url_for(page))
+
+
+@app.route('/api_bd_update', methods=['POST'])
+def api_bd_update():
+    try:
+        data = request.get_json()
+
+        tabla =    data.get("tabla")
+        columnas = data.get("columnas")
+        valores =  data.get('valores')
+        where =    data.get('where')
+        where_v =  data.get('where_v')
+
+        bd.bd_update(tabla, columnas, valores, where, where_v)
+        rpta = f''' Tabla: {tabla} , Columnas: {columnas} , Valores: {valores} , where: {where} , where_v: {where_v} '''
+
+        return jsonify({'respuesta': rpta})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/update_column_table_id', methods=['POST'])
@@ -340,7 +712,6 @@ def guardar_nota():
             return jsonify({"success": False, "error": "Formato de nota inválido"}), 400
 
         nueva_nota = max(Decimal('0.00'), min(Decimal('20.00'), nueva_nota))  # Limita el valor entre 0 y 20
-
         controlador.actualizar_valor_nota_id(nueva_nota, id_nota)
 
         return jsonify({"success": True})
@@ -381,8 +752,30 @@ def guardar_grupo_horarios():
     f = controlador.insert_grupo_horarios
     valores = utils.request_values_parameters(f)
     f( *valores )
-
     return redirect(url_for('grupos'))
+
+
+@app.route('/guardar_detalle_matricula', methods=['POST'])
+def guardar_detalle_matricula():
+    matriculaid = request.form['matriculaid']
+    controlador.delete_detalle_matricula_matriculaid(matriculaid)
+    rf = request.form
+    for f in rf:
+        if f.startswith('curso_'):
+            grupoid = rf.get(f)
+            controlador.insert_detalle_matricula(matriculaid, grupoid)
+    return redirect(url_for('matricula', id=matriculaid))
+
+
+@app.route('/execute_post=<name>', methods=['POST'])
+def execute_post(name):
+    crud_dict = CRUD_FORMS.get(name)
+    f = crud_dict.get('function')
+    re = crud_dict.get('return')
+    valores = utils.request_values_parameters(f)
+    f( *valores )
+
+    return re
 
 
 if __name__ == "__main__":

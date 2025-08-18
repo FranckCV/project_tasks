@@ -1,0 +1,43 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Matricula {{ matricula.id }}
+{% endblock %}
+
+
+{% block estilos %}
+<style>
+    .container_list {
+        height: 85vh;
+        overflow-x: auto;
+    }
+
+
+</style>
+{% endblock %}
+
+
+{% block contenido %}
+<div class="container_title">
+    <p class="title">
+        Matricula {{ matricula.nombre }} 
+    </p>
+
+</div>
+
+<div class="container_list">
+    {% for grupo in grupos %}
+    <div>
+        {{ grupo }}
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+
+{% endblock %}

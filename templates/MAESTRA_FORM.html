@@ -1,0 +1,255 @@
+{% extends 'MAESTRA_BASE.html' %}
+
+
+{% block estilos_html %}
+<style>
+    :root {
+        --border-size: 1px;
+        --border-radius-size: 25px;
+        /* --color-text: color-mix(in srgb, var(--color-base) 90%, black 100%); */
+        --color-text: #ffffff;
+        /* --color-placeholder: color-mix(in srgb, var(--color-base) 55%, var(--color-contrast) 100%); */
+        --color-placeholder: #ffffffe1;
+        --color-focus: #ffffff44;
+    }
+
+    body.general_body {
+        background: url(/static/img/bg.jpg);
+        background-color:
+            color-mix(in srgb,
+                var(--colorbg2) 20%,
+                color-mix(in srgb,
+                    var(--color2) 70%,
+                    var(--color3) 80%
+                    ) 40%
+                ) ;
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-blend-mode: luminosity;
+    }
+
+    section {
+        background-color: transparent;
+    }
+
+    header,
+    aside,
+    footer {
+        display: none;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        color: var(--color-contrast);
+        align-items: center;
+        background-color: color-mix(in srgb, var(--color-base) 15%, transparent 90%);
+        text-align: center;
+        padding: 20px;
+        padding-inline: 30px;
+        backdrop-filter: blur(20px);
+
+        border: 1px solid rgba(255, 255, 255, 0.608);
+        border-radius: 24px;
+        width: fit-content;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+
+    img {
+        width: 70px;
+    }
+
+    .logo_icon {
+        width: min-content;
+        display: flex;
+        justify-content: center;
+    }
+
+    .logo_icon:hover {
+        transform: translatey(-3px);
+    }
+
+    .img {
+        width: 15%;
+        aspect-ratio: 1 / 1;
+        background-color: color-mix(in srgb, var(--color-base) 90%, #9b9b9b 70%);
+        background-image: url(/static/img/logo.png);
+        background-position: center;
+        background-size: cover;
+        background-blend-mode: luminosity;
+        display: inline-block;
+    }
+
+    .inputs {
+        display: grid;
+        grid-template-columns: 1fr;
+        flex-direction: column;
+        column-gap: 20px;
+        row-gap: 28px;
+        align-items: center;
+        justify-content: flex-start;
+        max-height: 40vh;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--color1) #f0f0f0;
+        width: fit-content;
+        margin-bottom: 20px;
+        align-items: start;
+    }
+
+    .inputs::-webkit-scrollbar-thumb {
+        background-color: var(--color1);
+        border-radius: 50px;
+    }
+
+    .input_box {
+        position: relative;
+        height: fit-content;
+        width: 300px;
+    }
+
+    .input_box i {
+        position: absolute;
+        right: 20px;
+        top: 0;
+        transform: translateY(130%);
+    }
+
+    .inputs .input_box select,
+    .inputs .input_box input {
+        color: var(--color-text);
+        width: 100%;
+        border-radius: var(--border-radius-size);
+        border: 0px;
+        background-color: transparent;
+        padding-inline: 20px;
+        padding-block: 20px;
+        font-size: 100%;
+        height: 0px;
+        border: 1px solid rgba(255, 255, 255, 0.678);
+        outline: none;
+    }
+
+    .inputs .input_box select {
+        height: 40px;
+        padding-block: 0;
+    }
+
+    .inputs .input_box input:autofill {
+        background-color: transparent !important;
+    }
+
+    .input_box input:focus {
+        background-color: var(--color-focus);
+    }
+
+    input::placeholder {
+        color: var(--color-placeholder);
+    }
+
+    .input_box input:focus::placeholder {
+        color: #00000086;
+    }
+
+    .btn {
+        background-color: var(--color-contrast);
+        color: var(--color-base);
+        padding-inline: 25px;
+        padding-block: 10px;
+        border-radius: var(--border-radius-size);
+        border: 0px solid;
+        margin-inline: 10px;
+        margin-block: 10px;
+        font-weight: bold;
+    }
+
+    .btn:hover {
+        background-color: var(--color-base);
+    }
+
+    h2 {
+        /* color: var(--color-base); */
+        /* text-shadow: 1px 1px 0px #808080; */
+        padding-inline: 15px;
+        font-size: 175%;
+        margin-bottom: 20px;
+        font-weight: bolder;
+        /* text-shadow: 0px 0px 5px #808080; */
+        text-shadow: 0 2px 10px #0000007a;
+    }
+
+    input[type="checkbox"] {
+        color: var(--color-base);
+    }
+
+    p {
+        margin-top: 10px;
+    }
+
+    p b {
+        color: var(--color-base);
+    }
+
+    a {
+        /* color: var(--color-thr); */
+        color: white;
+        font-weight: bold;
+    }
+
+    a:hover {
+        /* color: color-mix(in srgb, var(--color-sec) 100%, #ffffff 40%); */
+        text-decoration: underline;
+    }
+</style>
+
+{% block estilos %}
+{% endblock %}
+{% endblock %}
+
+
+{% block titulo_html %}
+{% block titulo %}
+{% endblock %}
+{% endblock %}
+
+
+{% block body_html %}
+
+<section class="general_element">
+    <form id="" name="" {% if URL_POST %} method="POST" action="{{url_for(URL_POST)}}" {% endif %}>
+        <!-- <a class="logo_icon" href="{{url_for('main_page')}}">
+            <img class="img_logo_empresa" src="{{URL_IMG_LOGO}}" alt="logo">
+        </a> -->
+
+        <h2>{{TITULO_FORM}}</h2>
+
+        <div class="inputs">
+            {% block contenido_form %}
+            {% endblock %}
+        </div>
+
+        {% block pre_btn %}
+        {% endblock %}
+
+        <div id="send">
+            <input type="submit" class="btn" value="{{BTN_NAME}}" required>
+        </div>
+
+        {% block post_btn %}
+        {% endblock %}
+
+    </form>
+</section>
+
+{% endblock %}
+
+
+{% block scripts_html %}
+{% block scripts %}
+{% endblock %}
+{% endblock %}

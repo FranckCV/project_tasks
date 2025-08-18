@@ -1,0 +1,82 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Info
+{% endblock %}
+
+
+{% block estilos %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+
+<style>
+    .content {
+        /* height: 50vh; */
+        /* width: 80vw; */
+        /* overflow: scroll; */
+        background-color: rgba(255, 255, 255, 0.556);
+        padding: 10px;
+    }
+
+    /* Limitar el alto y hacer scroll */
+    /* .EasyMDEContainer {
+        max-height: 70vh;
+        overflow: auto;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    } */
+
+    /* Área de escritura */
+    .EasyMDEContainer .CodeMirror {
+        /* min-height: 200px;    */
+        height: 60vh !important;  
+        width: 700px !important; 
+    }
+
+    /* Vista previa Markdown */
+    .EasyMDEContainer .editor-preview {
+        background: #fafafa;
+        color: rgb(49, 49, 49);
+    }
+</style>
+
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="content">
+    <textarea id="editor"></textarea>
+</div>
+<button id="guardar">💾 Guardar</button>
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+<script>
+const easyMDE = new EasyMDE({ element: document.getElementById("editor") });
+
+// Cargar contenido .md desde el servidor
+fetch("/get_markdown")
+  .then(res => res.text())
+  .then(md => easyMDE.value(md));
+
+// Guardar cambios al servidor
+document.getElementById("guardar").addEventListener("click", () => {
+    fetch("/save_markdown", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: easyMDE.value() })
+    })
+    .then(res => res.json())
+    .then(data => alert(data.msg))
+    .catch(err => alert("Error al guardar"));
+});
+</script>
+
+{% endblock %}

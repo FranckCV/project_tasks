@@ -8,7 +8,7 @@ Mis tablas
 {% block estilos %}
 <style>
     .container_grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
 
     }
 
@@ -33,9 +33,15 @@ Mis tablas
         font-size: 130%;
     }
 
+    .tabla_fecha {
+        color: rgba(255, 255, 255, 0.538);
+        font-size: 95%;
+    }
+
     .tabla_num {
         display: flex;
         justify-content: center;
+        width: 100%;
         /* gap: 10px; */
     }
 
@@ -47,6 +53,8 @@ Mis tablas
         border-left: 1px solid #ffffff41;
         padding-inline: 20px;
         padding-block: 5px;
+        width: 100%;
+        font-size: 90%;
     }
 
     .tabla_num > *:first-of-type {
@@ -76,7 +84,7 @@ Mis tablas
 
 <div class="container_grid">
     {% for tabla in tablas %}
-    <a class="tabla" href="{{ url_for('ver_tabla' , tablaid = tabla.id) }}">
+    <a class="tabla" href="{{ url_for('tabla' , tablaid = tabla.id) }}">
         <div class="tabla_nombre">
             {{ tabla.nombre }}
         </div>
@@ -106,6 +114,10 @@ Mis tablas
                 </div>
             </div>
 
+        </div>
+
+        <div class="tabla_fecha">
+            {{ tabla.fecha }}
         </div>
     </a>
     {% endfor %}

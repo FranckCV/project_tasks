@@ -145,9 +145,6 @@ def bd_update(tabla, columnas, valores, where, where_valores):
     Retorna:
         int - número de filas afectadas
 
-
-
-
     filas_afectadas = bd_update(
         "usuario",
         ["correo", "edad"],
@@ -164,6 +161,10 @@ def bd_update(tabla, columnas, valores, where, where_valores):
     '''
     all_values = valores + where_valores
     return sql_execute(sql, all_values)
+
+
+def update_column_table_id(tabla, columna , valor , id):
+    return bd_update(tabla, [columna], [valor], " id = %s ", [id])
 
 
 def bd_delete(tabla, where, where_valores):

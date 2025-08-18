@@ -1,0 +1,45 @@
+{% extends "MAESTRA_FORM.html" %}
+
+
+{% block titulo %}
+
+{% endblock %}
+
+
+{% block estilos %}
+
+{% endblock %}
+
+
+{% set TITULO_FORM = 'Inicio de sesión' %}
+{% set URL_POST = 'procesar_login' %}
+{% set URL_BG = 'bg1.jpg' %}
+
+{% block contenido_form %}
+
+<div class="input_box">
+    <input type="text" name="username" id="username" placeholder="Usuario" required>
+    <i class="fa-solid fa-envelope"></i>
+</div>
+
+<div class="input_box">
+    <input type="password" name="password" id="password" placeholder="Contraseña" required>
+    <i class="fa-solid fa-lock"></i>
+</div>
+
+{% endblock %}
+
+{% block pre_btn %}
+<!-- <p><a href="">¿Olvidaste tu contraseña?</a></p> -->
+{% endblock %}
+
+{% set BTN_NAME = 'Iniciar sesión' %}
+
+{% block post_btn %}
+<!-- <p>¿No tienes una cuenta?&nbsp;<a href="">Regístrate</a></p> -->
+{% endblock %}
+
+
+{% block scripts %}
+
+{% endblock %}

@@ -1,109 +1,39 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends 'MAESTRA_BASE.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" href="/static/img/icono.png" type="image/x-icon">
-    <link rel="stylesheet" href="/static/css/common_styles/bootstrap.min.css" />
-    <link rel="stylesheet" href="/static/css/common_styles/all.min.css" />
-    <link rel="stylesheet" href="/static/css/common_styles/fonts.css" />
-    
-    <!-- <link rel="stylesheet" href="/static/css/common_styles/fontawesome.min.css" /> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
 
-    <link rel="stylesheet" href="/static/css/common_styles/common_style.css" />
+{% block estilos_html %}
     {% block estilos %}
     {% endblock %}
-    <title>
-        {% block titulo %}
-        {% endblock %} | Academico
-    </title>
-</head>
+{% endblock %}
 
-<body class="general_body">
 
-    <aside class="general_element">
-        {% for e in MENU %}
-        <a class="aside_item" href="{{url_for(e.enlace)}}">
-            <i class="{{ e.icono }}"></i>
-            <p>{{ e.nombre }}</p>
-        </a>
-        {% endfor %}
-    </aside>
+{% block titulo_html %}
+    {% block titulo %}
+    {% endblock %}
+{% endblock %}
 
-    <section class="general_element">
-        {% block contenido %}
-        {% endblock %}
-    </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-        crossorigin="anonymous"></script>
-    <script src="/static/js/common_scripts/common_script.js"></script>
-    <script src="/static/js/modal.js"></script>
+{% block body_html %}
 
-    <script>
-        function ajustarColorTexto(e) {
-            let bgColor = window.getComputedStyle(e).backgroundColor;
+<aside class="general_element">
+    {% for e in MENU %}
+    <a class="aside_item" href="{{url_for(e.enlace)}}">
+        <i class="{{ e.icono }}"></i>
+        <p>{{ e.nombre }}</p>
+    </a>
+    {% endfor %}
+</aside>
 
-            let rgb = bgColor.match(/\d+/g).map(Number);
+<section class="general_element">
+    {% block contenido %}
+    {% endblock %}
+</section>
 
-            let brillo = (rgb[0] * 0.299 + rgb[1] * 0.587 + rgb[2] * 0.114);
+{% endblock %}
 
-            e.style.color = brillo > 128 ? 'black' : 'white';
-        }
 
-        function pintarElemento(e) {
-            document.querySelectorAll(e).forEach(div => {
-                if (div) {
-                    ajustarColorTexto(div);
-                }
-            });
-        }
-
-        pintarElemento('header');
-        
-    </script>
-
-    
-    <script>
-        function update_column_table_id( tabla , columna , valor , id ) {
-            fetch('/update_column_table_id', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    tabla: tabla,
-                    columna: columna ,
-                    valor: valor ,
-                    id : id
-                })
-            })
-            .then(response => {
-                if (!response.ok) throw new Error("Error al actualizar");
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-            })
-            .catch(err => {
-                alert("Error al actualizar valor");
-                console.error(err);
-            });
-        }
-
-    </script>
-
+{% block scripts_html %}
     {% block scripts %}
     {% endblock %}
+{% endblock %}
 
-</body>
-
-</html>

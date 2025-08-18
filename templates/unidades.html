@@ -1,0 +1,44 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Unidades
+{% endblock %}
+
+
+{% block estilos %}
+<style>
+    .container_list {
+        height: 85vh;
+        overflow-x: auto;
+    }
+
+
+</style>
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="container_title">
+    <p class="title">
+        Unidades
+    </p>
+</div>
+
+<div class="container_list">
+    {% for grupo in grupos %}
+    <div>
+        {{ grupo }}
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+
+{% endblock %}

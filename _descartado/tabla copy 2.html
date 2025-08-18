@@ -1,0 +1,183 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Ver tabla {{ tabla_info['nombre'] }}
+{% endblock %}
+
+
+{% block estilos %}
+
+<style>
+    th {
+        min-width: 150px;
+        max-width: 200px;
+    }
+
+    td,
+    th {
+        border: 1px solid white;
+        text-align: center;
+    }
+
+    .td_tareas {
+        height: 100%;
+        position: relative;
+    }
+
+    .list_tareas {
+        min-height: 47px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        height: 100%;
+        gap: 5px;
+        position: relative;
+        height: 100%;
+    }
+
+    .tarea {
+        display: flex;
+        padding-inline: 10px;
+        padding-block: 5px;
+        border-radius: 5px;
+        width: fit-content;
+    }
+
+    .tarea:hover {
+        box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.57);
+    }
+
+    .section_tabla {
+        display: flex;
+        gap: 30px;
+        height: 100%;
+        width: 100%;
+    }
+
+    .insert_tarea {
+        --size: 0px;
+
+        border-radius: 0px;
+        border-bottom-left-radius: 5px;
+        background-color: rgb(0, 136, 98);
+        color: white;
+        height: 15px;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        position: absolute;
+        z-index: 99;
+        right: var(--size);
+        top: var(--size);
+    }
+
+
+    .container_tabla {
+        overflow: auto;
+        max-width: 900px;
+        max-height: 80vh;
+    }
+
+    .container_forms {
+        width: 200px;
+        gap: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .container_forms form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+</style>
+
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="container_title">
+    <p class="title">
+        {{tabla_info.nombre}}
+    </p>
+</div>
+
+<div class="section_tabla">
+
+    <div class="container_tabla">
+        <table>
+            <thead>
+                <th>
+
+                </th>
+                {% for col in columnas %}
+                <th data-columnaid="{{ col.id }}" style="background-color: {{ col.color }} ;">
+                    {{ col['nombre'] }}
+                </th>
+                {% endfor %}
+                <th>
+                    <a class="" href="{{url_for('nueva_columna' , tablaid = tabla_info.id )}}">
+                        <i class="fa-solid fa-plus"></i>
+                    </a>
+                </th>
+            </thead>
+            <tbody>
+                {% for fila in filas %}
+                <tr>
+                    <td style="background-color: {{ fila.color }} ;" data-filaid="{{ fila.id }}">
+                        {{ fila.nombre }}
+                    </td>
+                    {% for col in columnas %}
+                    <td class="td_tareas">
+                        <a class="insert_tarea" href="{{url_for('nueva_tabla_tarea' , columnaid = col.id , filaid = fila.id , tablaid = tabla_info.id )}}">
+                            <i class="fa-solid fa-plus"></i>
+                        </a>
+                        <div class="list_tareas" data-columnaid="{{col.id}}" data-filaid="{{fila.id}}">
+                            {% for tarea in tareas %}
+                            {% if fila.id == tarea.filaid and col.id == tarea.columnaid %}
+                            <div class="tarea" style=" background-color: {{ tarea.color }}; "
+                                data-target="update_tarea_{{tarea.id}}">
+                                {{ tarea.nombre }}
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+
+                <tr>
+                    <td>
+                        <a class="" href="{{url_for('nueva_fila' , tablaid = tabla_info.id )}}">
+                            <i class="fa-solid fa-plus"></i>
+                        </a>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+
+
+
+
+{% block scripts %}
+
+<script>
+    pintarElemento(' th , td , .tarea ');
+
+</script>
+
+{% endblock %}

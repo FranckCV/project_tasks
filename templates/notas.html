@@ -18,11 +18,11 @@ Notas
         gap: 10px;
         font-size: 97.5%;
         margin: 0;
-        width: 100%;
+        width: 95%;
         overflow-x: auto;
         overflow-y: auto;
         max-height: 80vh;
-        width: 80vw;
+        /* width: 90vw; */
         scrollbar-width: thin;
         scrollbar-color: #1672c2c1 #f0f0f0;
     }
@@ -62,7 +62,7 @@ Notas
     .s_unidad {
         font-size: 95%;
         display: grid;
-        grid-template-columns: 25px repeat(2, var(--witdh-nota));
+        grid-template-columns: calc( var(--witdh-nota) / 2 ) repeat(2, var(--witdh-nota));
         grid-template-areas:
             " n_unidad p_unidad v_unidad "
             " n_unidad c_unidad c_unidad "

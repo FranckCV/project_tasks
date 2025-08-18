@@ -1,0 +1,144 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+    Matriculas
+{% endblock %}
+
+
+{% block estilos %}
+<style>
+
+:root {
+    --color-h: var(--color3);
+}
+
+.list_semestres {
+    overflow-y: auto;
+    height: 90vh;
+    gap: 10px;
+}
+
+.container_wrap {
+    /* justify-content: center; */
+    align-content: flex-start;
+    height: auto;
+}
+
+.matricula {
+    border-radius: 5px;
+    border: var(--color-border1);
+    padding: 5px;
+    padding-inline: 10px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    /* width: 20vw; */
+    gap: 5px;
+}
+
+.nombre {
+    font-size: 130%;
+}
+
+.fecha {
+    color: rgb(162, 162, 162);
+}
+
+.semestre_codigo {
+    font-size: 120%;
+}
+
+.m_info {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.matricula:hover {
+    border: 1px solid var(--color-h);
+}
+
+.matricula:hover .nombre {
+    color: var(--color-h); 
+}
+
+.btns_semestre {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 5px;
+    /* border-bottom: var(--color-border1); */
+}
+
+.block_semestre .container_wrap {
+    border-bottom: var(--color-border1);
+    padding: 5px;
+}
+
+.block_semestre {
+    height: 100%;
+}
+
+
+</style>
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="container_title">
+    <p class="title">
+        Matriculas
+    </p>
+
+</div>
+
+
+<div class="container_list list_semestres">
+    {% for semestre in semestres  %}
+    <div class="block_semestre">
+        <div class="btns_semestre">
+            <div class="semestre_codigo">
+                {{semestre.codigo}}
+            </div>
+
+            <a class="button btn_insert" href="{{ url_for('nueva_matricula' , semestre = semestre.codigo) }}">
+                <i class="fa-solid fa-plus"></i>
+                <!-- <p>
+                    Agregar
+                </p> -->
+            </a>
+        </div>
+
+
+        <div class="container_wrap">
+            {% for matricula in matriculas if matricula.semestrecodigo == semestre.codigo %}
+            <a class="matricula" href="{{ url_for('matricula' , id = matricula.id ) }}">
+                <div class="nombre">
+                    {{ matricula.nombre }}
+                </div>
+
+                <div class="m_info">
+                    <div class="semestre">
+                        {{ matricula.semestrecodigo }}
+                    </div>
+                    <div class="fecha">
+                        {{ matricula.fecha.strftime('%d/%m/%Y %H:%M:%S') }}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+
+{% endblock %}

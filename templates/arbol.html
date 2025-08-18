@@ -9,28 +9,26 @@ Mis tablas
 <style>
 
     .container_list {
-        gap: 10px;
-        /* max-height: 80vh; */
+        gap: 3px;
         overflow-x: auto;
     }
 
-    /* .container_list::-webkit-scrollbar {
-        width: 20px;
-    } */
-    
     .tarea {
-        padding: 10px;
-        padding-block: 5px;
-        border-radius: 5px;
+        padding: 2px;
+        border-radius: 30px;
         color: white;
-        font-size: 90%;
+        font-size: 80%;
         display: grid;
         align-items: center;
-        grid-template-columns: 20px 40px auto 150px 20px;
-        gap: 10px;
+        grid-template-columns: 
+            20px
+            40px
+            auto
+            150px
+            20px
+        ;
+        gap: 5px;
         background-color: var(--colorbg3);
-        /* justify-content: space-between; */
-        /* background-color: #9421ff; */
     }
 
     .tarea a {
@@ -39,12 +37,14 @@ Mis tablas
     }
     
     .color_tarea {
-        height: 15px;
-        width:  15px;
-        border-radius: 30px;
+        height: 10px;
+        /* width:  15px; */
+        aspect-ratio: 1 / 1;
+        border-radius: 999px;
         justify-self: center;
         aspect-ratio: 1 / 1 ;
-        border: 1px solid #ffffff7c;
+        border: 1px solid #333333;
+        /* border: 1px solid #ffffff7c; */
     }
 
     .select_padre {
@@ -59,6 +59,7 @@ Mis tablas
         border-radius:5px;
         border: 1px solid white;
         color: white;
+        font-size: 80%;
     }
 
 
@@ -96,9 +97,8 @@ Mis tablas
 {% macro render_tarea(tarea, nivel=0) %}
     <style>
         .tarea[data-tarea-id="{{tarea.id}}"] {
-            margin-left: {{ nivel * 30 }}px;
+            margin-left: {{ nivel * 25 }}px;
             border: 1px solid {{tarea.color}} ;
-            /* border: 1px solid color-mix(in srgb, {{tarea.color}} 70%, transparent 40%); */
         }
 
         .tarea[data-tarea-id="{{tarea.id}}"]:hover {
@@ -109,7 +109,26 @@ Mis tablas
             background-color: color-mix(in srgb, {{tarea.color}} 20%, transparent 90%);
             border-color: {{tarea.color}};
         }
+
     </style>
+
+    <!-- <style>
+        .tarea[data-tarea-id="{{tarea.id}}"] {
+            background-color: {{tarea.color}};
+            margin-left: {{ nivel * 25 }}px ;
+        }
+
+        .tarea[data-tarea-id="{{tarea.id}}"]:hover {
+            box-shadow: 0px 0px 5px {{ tarea.color }};
+        }
+
+        .tarea[data-tarea-id="{{tarea.id}}"] .color_tarea {
+            border-color: color-mix(in srgb, rgb(89, 89, 89) 100%, {{tarea.color}} 100% );
+            background-color: color-mix(in srgb, {{tarea.color}} 20%, transparent 90%);
+        }
+        
+    </style> -->
+
     <div class="tarea" data-tarea-id="{{tarea.id}}" >
         <div class="color_tarea"></div>
         <input type="color" class="color_picker" value="{{tarea.color}}" data-id="{{tarea.id}}" style="position: absolute; top: 20%; left: 50%; display: none; z-index: 10;" />
@@ -205,46 +224,7 @@ document.querySelectorAll(".select_padre").forEach(select => {
 </script>
 
 <script>
-document.querySelectorAll('.tarea_nom').forEach(div => {
-    div.addEventListener('dblclick', () => {
-        if (div.querySelector('input')) return;  // evitar múltiples inputs
 
-        const currentText = div.textContent.trim();
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.value = currentText;
-        input.style.width = '100%';
-        input.style.fontFamily = 'inherit';
-        input.style.fontSize = 'inherit';
-        input.style.border = 'none';
-        input.style.outline = 'none';
-        input.style.background = 'transparent';
-
-        div.innerHTML = '';
-        div.appendChild(input);
-        input.focus();
-
-        pintarElemento(' .tarea input ');
-
-
-        const guardar = () => {
-            const nuevoTexto = input.value.trim();
-            if (nuevoTexto && nuevoTexto !== currentText) {
-                const id = div.dataset.id;
-                update_column_table_id("tarea", "nombre", nuevoTexto, id);
-            }
-            div.textContent = nuevoTexto || currentText;
-        };
-
-        input.addEventListener('blur', guardar);
-        input.addEventListener('keydown', e => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                input.blur();
-            }
-        });
-    });
-});
 </script>
 
 <script>

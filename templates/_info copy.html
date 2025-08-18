@@ -1,0 +1,41 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Info
+{% endblock %}
+
+
+{% block estilos %}
+
+<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css"> -->
+
+<style>
+    .contenido {
+        height: 95vh;
+        overflow: scroll;
+        width: 100%;
+        
+    }
+</style>
+
+{% endblock %}
+
+
+{% block contenido %}
+
+<div class="contenido">
+
+    <div class="markdown-body">
+    {{content|safe}}
+</div>
+
+</div>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+
+{% endblock %}
