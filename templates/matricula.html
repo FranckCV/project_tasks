@@ -12,6 +12,56 @@ Matricula {{ matricula.id }}
         overflow-x: auto;
     }
 
+    .cont > * ,
+    .cont {
+        display: flex;
+        gap: 20px;
+        width: 100%;
+    }
+    
+    .cont > * {
+        height: 100%;
+        flex-direction: column;
+    }
+
+    .cont_info {
+        width: 100%;
+    }
+
+    .container_list {
+        height: 62.5vh;
+        /* height: 70%; */
+    }
+
+    .container_info {
+        /* width: 25%; */
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .container_info tr td:first-of-type {
+        font-weight: bold;
+        background-color: white;
+        color: var(--colorbg1);
+    }
+
+    .container_info table {
+        border-collapse: separate;
+        border-spacing: 2px;
+        font-size: 90%;
+    }
+
+    .container_info td {
+        text-align: center;
+        border: 1px solid white;
+        border-radius: 5px;
+    }
+
+    .grupo {
+        border: 1px solid white;
+    }
+
 
 </style>
 {% endblock %}
@@ -22,15 +72,79 @@ Matricula {{ matricula.id }}
     <p class="title">
         Matricula {{ matricula.nombre }} 
     </p>
-
+    
 </div>
 
-<div class="container_list">
-    {% for grupo in grupos %}
-    <div>
-        {{ grupo }}
+<div class="cont">
+    <div class="cont_info">   
+        <div class="container_info">
+            <table class="">
+                <tbody>
+                    <tr>
+                        <td>ID</td><td>{{matricula.id}}</td>
+                    </tr>
+                    <tr>
+                        <td>ESTADO</td><td>{{ 'Activo' if matricula.estado == 1 else 'Inactivo' }}</td>
+                    </tr>
+                    <tr>
+                        <td>SELECCIONADO</td><td>{{ 'Si' if matricula.seleccionado == 1 else 'No' }}</td>
+                    </tr>
+                    <tr>
+                        <td>FECHA</td><td>{{ matricula.fecha }}</td>
+                    </tr>
+                    <tr>
+                        <td>SEMESTRE</td><td>{{ matricula.semestrecodigo }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="container_list container_grupos">
+            {% for grupo in matricula_grupos %}
+            <style>
+                .grupo[data-grupoid="{{ grupo.id }}"] {
+                    color: {{ grupo.color }};
+                }
+            </style>
+            <a class="grupo" data-grupoid="{{ grupo.id }}" href="{{url_for('grupo' , id = grupo.id )}}">
+
+                <div class="curso">
+                    {{ grupo.cu_nombre }}
+                </div>
+                
+                <div class="nombre">
+                    {{ grupo.gr_nombre }}
+                </div>
+
+                <div class="siglas">
+                    {{ grupo.cu_siglas }}
+                </div>
+                
+                <div class="ciclo">
+                    {{ grupo.ciclo }}
+                </div>
+                
+                <div class="docente">
+                    {{ grupo.apellidos }} ,
+                    {{ grupo.nombres }}
+                </div>
+
+                <div class="horarios">
+                    {% for horario in horarios if horario.grupoid == grupo.id %}
+                    <div class="horario">
+                        {{ horario.dia }}
+                        {{ horario.h_ini }}
+                        {{ horario.h_fin }}
+                    </div>
+                    {% endfor %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
     </div>
-    {% endfor %}
+    <div>
+        {% include 'HORARIO_GRID.html' %}
+    </div>
 </div>
 
 {% endblock %}

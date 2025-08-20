@@ -184,6 +184,8 @@
         function update_name_element_bd_table(selector , tabla , columna , datasetKey) {
             document.querySelectorAll(selector).forEach(div => {
                 div.addEventListener('dblclick', () => {
+                    div.style.width = '100%';    
+                    div.style.height = '100%';    
                     if (div.querySelector('.inputUpdateText')) return;  // evitar múltiples inputs
 
                     const currentText = div.textContent.trim();
@@ -191,8 +193,14 @@
                     input.classList.add('inputUpdateText');
                     input.type = 'text';
                     input.value = currentText;
+                    // input.style.minWidth = '50px';
+                    // input.style.width =  `${div.offsetWidth + 3}px` ;
+                    // input.style.height =  `${div.offsetHeight - 1}px` ;
+                    input.style.width =  `${div.clientWidth + 3 }px` ;
+                    input.style.height =  `${div.clientHeight }px` ;
                     input.style.width = '100%';
-                    input.style.minWidth = '50px';
+                    input.style.height = '100%';
+                    // input.style.display = 'flex';
                     input.style.fontFamily = 'inherit';
                     input.style.fontSize = 'inherit';
                     input.style.border = 'none';
@@ -213,6 +221,8 @@
                             update_column_table_id(tabla, columna, nuevoTexto, valor);
                         }
                         div.textContent = nuevoTexto || currentText;
+                        div.style.removeProperty('width');
+                        div.style.removeProperty('height');
                     };
 
                     input.addEventListener('blur', guardar);

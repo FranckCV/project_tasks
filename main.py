@@ -115,7 +115,7 @@ def index():
 
 
 @app.route("/matriculas")
-# @validar_usuario()
+@validar_usuario()
 def matriculas():
     matriculas = controlador.get_matriculas()
     semestres = controlador.get_semestres()
@@ -139,7 +139,50 @@ def matricula():
     grupos = controlador.get_grupos_semestre_matriculaid(semestre,id)
     horarios = controlador.get_horario_grupo()
 
-    data = controlador.get_data_grupos_semestre_matriculaid(semestre,id)
+    data = controlador.get_data_grupos_semestre_matriculaid(id)
+    return render_template(
+        "matricula.html" ,
+        matricula = matricula ,
+        semestre = semestre ,
+        ciclos = ciclos ,
+        cursos = cursos ,
+        grupos = grupos ,
+        matricula_grupos = matricula_grupos,
+        horarios = horarios ,
+        data = data ,
+        modo_form = True ,
+    )
+
+
+@app.route("/grupo")
+@validar_usuario()
+def grupo():
+    id = request.args.get('id')
+    grupo = controlador.consult_grupo_id(id)
+    unidades = controlador.get_unidad_grupoid(id)
+    notas = controlador.get_nota_grupoid(id)
+    return render_template(
+        "grupo_unidades.html" ,
+        grupo = grupo ,
+        unidades = unidades ,
+        notas = notas ,
+    )
+
+
+@app.route("/horario_matricula")
+@validar_usuario()
+def horario_matricula():
+    id = request.args.get('id')
+    matricula = controlador.consult_matricula_id(id)
+    matricula_grupos = controlador.get_grupos_matriculaid(id)
+    semestre = matricula.get('semestrecodigo')
+
+    ciclos = controlador.get_ciclos_grupos_semestre(semestre)
+    cursos = controlador.get_cursos_grupo_semestre(semestre)
+    grupos = controlador.get_grupos_semestre_matriculaid(semestre,id)
+    horarios = controlador.get_horario_grupo()
+
+    data = controlador.get_data_grupos_semestre_matriculaid(id)
     return render_template(
         "horario.html" ,
         matricula = matricula ,
@@ -165,7 +208,7 @@ def semestres():
 
 
 @app.route("/semestre")
-# @validar_usuario()
+@validar_usuario()
 def semestre():
     codigo = request.args.get('codigo')
     semestre = controlador.get_info_semestre_codigo(codigo)
@@ -179,10 +222,6 @@ def semestre():
         horarios = horarios ,
         dias = dias , 
     )
-
-
-
-
 
 
 @app.route("/notas")
@@ -442,7 +481,7 @@ def nueva_matricula():
 def nueva_columna():
     tablaid = request.args.get('tablaid')
     date = utils.format_now("%Y%m%d%H%M%S") 
-    orden = controlador.get_max_min_orden_element_tabla('C' , tablaid).get('max')
+    orden = controlador.get_max_min_orden_element_tabla('C' , tablaid).get('max') + 1
     controlador.insert_columna(f'Columna{date}', utils.COLOR_DEFAULT , orden ,tablaid )
     return redirect(url_for('tabla' , tablaid = tablaid))
 
@@ -452,7 +491,7 @@ def nueva_columna():
 def nueva_fila():
     tablaid = request.args.get('tablaid')
     date = utils.format_now("%Y%m%d%H%M%S")
-    orden = controlador.get_max_min_orden_element_tabla('F' , tablaid).get('max')
+    orden = controlador.get_max_min_orden_element_tabla('F' , tablaid).get('max') + 1
     controlador.insert_fila(f'Fila{date}', utils.COLOR_DEFAULT , orden ,tablaid )
     return redirect(url_for('tabla' , tablaid = tablaid))
 

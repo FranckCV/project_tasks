@@ -203,6 +203,9 @@ def get_bd_color( tabla , id ):
     return color
 
 
+
+
+
 def consult_columna( id ):
     sql = '''
     SELECT id, nombre, color, orden, tablaid 
@@ -512,6 +515,57 @@ def get_grupos_semestre(semestre):
     return bd.sql_select_fetchall(sql,(semestre))
 
 
+def consult_grupo_id( id ):
+    sql = '''
+    SELECT 
+		gr.semestrecodigo ,
+		cu.nombre as cu_nombre,
+        gr.nombre as gr_nombre ,
+        cu.siglas as cu_siglas ,
+        cu.color as color ,
+        cu.ciclo as ciclo ,
+        doc.apellidos ,
+        doc.nombres ,
+        gr.id ,
+        gr.cursoid
+    FROM grupo gr
+    inner join curso cu on cu.id = gr.cursoid
+    inner join docente doc on doc.id = gr.docenteid
+    where gr.id = %s
+    order by 1 asc , 2 asc, 3 asc
+    '''
+    return bd.sql_select_fetchone(sql,( id ))
+
+
+def get_unidad_grupoid(grupoid):
+    sql = '''
+    SELECT 
+        id, 
+        nombre, 
+        porcentaje, 
+        nro, 
+        grupoid 
+    FROM unidad 
+    WHERE grupoid = %s
+    '''
+    return bd.sql_select_fetchall(sql,(grupoid))
+
+
+def get_nota_grupoid(grupoid):
+    sql = '''
+    SELECT 
+        nta.id, 
+        nta.nombre, 
+        nta.porcentaje, 
+        nta.nro, 
+        nta.unidadid 
+    FROM nota nta
+    INNER JOIN unidad ud on ud.id = nta.unidadid
+    WHERE ud.grupoid = %s
+    '''
+    return bd.sql_select_fetchall(sql,(grupoid))
+
+
 def get_grupos_semestre_matriculaid(semestre , matriculaid):
     sql = '''
     SELECT 
@@ -543,7 +597,7 @@ def get_grupos_semestre_matriculaid(semestre , matriculaid):
     return bd.sql_select_fetchall(sql,(matriculaid , semestre))
 
 
-def get_data_grupos_semestre_matriculaid(semestre , matriculaid):
+def get_data_grupos_semestre_matriculaid(matriculaid):
     sql = '''
     SELECT 
         cu.nombre as name,
@@ -571,10 +625,9 @@ def get_data_grupos_semestre_matriculaid(semestre , matriculaid):
     INNER JOIN docente doc ON doc.id = gr.docenteid
     INNER JOIN horario_grupo hor ON hor.grupoid = gr.id
     LEFT JOIN detalle_matricula det ON det.grupoid = gr.id
-    WHERE gr.semestrecodigo = %s
     ORDER BY 1 ASC, 7 ASC , 4 asc
     '''
-    return bd.sql_select_fetchall(sql,(matriculaid , semestre))
+    return bd.sql_select_fetchall(sql,(matriculaid ))
 
 
 def get_grupos():

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-08-2025 a las 18:28:17
+-- Tiempo de generación: 21-08-2025 a las 01:30:06
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.1.17
 
@@ -64,7 +64,15 @@ INSERT INTO `columna` (`id`, `nombre`, `color`, `orden`, `tablaid`) VALUES
 (22, 'BD', '#ff811a', 13, 1),
 (23, 'Usuario', '#32c8a2', 14, 1),
 (24, 'Responsividad', '#391b7e', 15, 1),
-(25, 'Completo', '#737373', 16, 1);
+(25, 'Completo', '#737373', 16, 1),
+(28, 'Doctrina', '#7c33d7', 1, 3),
+(29, 'Redes', '#b31919', 3, 3),
+(30, 'Investigacion', '#e5c810', 2, 3),
+(31, 'NASA', '#50bcf2', 7, 3),
+(32, 'AUDIT', '#425276', 4, 3),
+(33, 'Gobierno', '#1f44ff', 5, 3),
+(34, 'Mineria', '#ff7e29', 8, 3),
+(35, 'Moviles', '#3cdd4f', 6, 3);
 
 -- --------------------------------------------------------
 
@@ -340,7 +348,7 @@ CREATE TABLE `fila` (
 
 INSERT INTO `fila` (`id`, `nombre`, `color`, `orden`, `tablaid`) VALUES
 (1, 'CRUD UNIDAD_NOTA', '#093f86', 2, 1),
-(2, 'Tareas', '#3ca0b4', 11, 1),
+(2, 'Tareas', '#3ca0b4', 10, 1),
 (3, 'Tabla', '#2a32a2', 4, 1),
 (4, 'Calendario', '#395ca2', 9, 1),
 (5, 'Tablas', '#1d27b9', 3, 1),
@@ -354,10 +362,19 @@ INSERT INTO `fila` (`id`, `nombre`, `color`, `orden`, `tablaid`) VALUES
 (13, '-GENERAL-', '#0d101c', 0, 1),
 (14, 'Dashboard', '#0d707d', 1, 1),
 (15, 'Notas', '#142643', 7, 1),
-(16, 'Crud actividad', '#339cff', 10, 1),
+(16, 'Crud actividad', '#339cff', 11, 1),
 (17, 'Modelos de matricula', '#1a40ff', 8, 1),
-(18, 'Docentes', '#b5b5b5', 11, 1),
-(19, 'Grupos', '#b5b5b5', 11, 1);
+(18, 'Docentes', '#b5b5b5', 13, 1),
+(19, 'Grupos', '#b5b5b5', 12, 1),
+(20, 'Lunes 25', '#343187', 2, 3),
+(21, 'Martes 26', '#343187', 3, 3),
+(22, 'Miercoles 27', '#343187', 4, 3),
+(23, 'Completo', '#1c1c1c', 1, 3),
+(24, 'Jueves 28', '#343187', 5, 3),
+(25, 'Vienes 29', '#343187', 6, 3),
+(26, 'Sabado 30', '#343187', 7, 3),
+(27, 'Domingo 31', '#343187', 8, 3),
+(28, 'Grupo', '#b5b5b5', 14, 1);
 
 -- --------------------------------------------------------
 
@@ -826,7 +843,7 @@ CREATE TABLE `tabla` (
 INSERT INTO `tabla` (`id`, `nombre`, `color`, `fecha`, `espacioid`) VALUES
 (1, 'Gestion PRJ', '#FFFFFF', '2025-07-27 05:50:09', 1),
 (2, 'Pendientes', '#FFFFFF', '2025-07-27 05:50:09', 1),
-(3, 'Nueva tabla 2025-07-26', '#FFFFFF', '2025-07-27 05:50:09', 1);
+(3, 'TAREAS', '#FFFFFF', '2025-07-27 05:50:09', 1);
 
 -- --------------------------------------------------------
 
@@ -888,7 +905,7 @@ INSERT INTO `tabla_tarea` (`tareaid`, `filaid`, `columnaid`, `color`, `orden`) V
 (85, 1, 21, '#320606', 2),
 (86, 14, 22, '#348096', 5),
 (87, 3, 22, '#994627', 0),
-(88, 13, 3, '#b74f7f', 6),
+(88, 13, 25, '#b74f7f', 6),
 (89, 6, 20, '#ff5300', 1),
 (90, 3, 21, '#8a6b0a', 8),
 (91, 6, 3, '#9a8d6e', 8),
@@ -906,7 +923,14 @@ INSERT INTO `tabla_tarea` (`tareaid`, `filaid`, `columnaid`, `color`, `orden`) V
 (103, 13, 21, '#2f8738', 2),
 (104, 3, 21, '#3e987b', 9),
 (105, 18, 20, '#98c7cd', 1),
-(106, 19, 3, '#98c7cd', 2);
+(106, 19, 3, '#98c7cd', 2),
+(107, 2, 21, '#47cf84', 1),
+(108, 13, 3, '#064479', 5),
+(109, 20, 28, '#71928b', 1),
+(110, 21, 30, '#f27c15', 1),
+(111, 21, 30, '#f27c15', 1),
+(112, 21, 30, '#f27c15', 6),
+(113, 21, 30, '#f27c15', 6);
 
 -- --------------------------------------------------------
 
@@ -1048,7 +1072,14 @@ INSERT INTO `tarea` (`id`, `nombre`, `descripcion`, `color`, `orden`, `tareaid`)
 (103, 'mejorar funcion update_name para que alto y ancho se mantengan', NULL, '#2f8738', 0, NULL),
 (104, 'implementar desplazamiento de filas', NULL, '#3e987b', 0, NULL),
 (105, 'mejorar aspecto', NULL, '#98c7cd', 0, NULL),
-(106, 'Permitir agregar varios grupos por curso', NULL, '#98c7cd', 0, NULL);
+(106, 'Permitir agregar varios grupos por curso', NULL, '#98c7cd', 0, NULL),
+(107, 'Agregar tareas sin reiniciar la pagina', NULL, '#47cf84', 0, NULL),
+(108, 'Agregar Dashboard en Menu', NULL, '#064479', 0, NULL),
+(109, 'Definir nombre del grupo', NULL, '#71928b', 0, NULL),
+(110, 'Introduccion', NULL, '#f27c15', 0, NULL),
+(111, 'Antecedentes', NULL, '#f27c15', 0, NULL),
+(112, 'Objetivos', NULL, '#f27c15', 0, NULL),
+(113, 'Bases Teoricas', NULL, '#f27c15', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -1090,8 +1121,8 @@ CREATE TABLE `unidad` (
 --
 
 INSERT INTO `unidad` (`id`, `nombre`, `porcentaje`, `nro`, `grupoid`) VALUES
-(1, 'DSI 1', 35.00, NULL, 2),
-(2, 'DSI 2', 30.00, NULL, 2),
+(1, 'Desarrolla un sistema inteligente mediante el uso de la lógica difusa y en relación a un problema complejo propuesto.', 35.00, NULL, 2),
+(2, 'Desarrolla un sistema inteligente mediante el uso de algoritmos genéticos y en relación a un problema complejo propuesto.', 30.00, NULL, 2),
 (3, 'DSI 3', 35.00, NULL, 2),
 (4, 'FDRD 1', 30.00, NULL, 4),
 (5, 'FDRD 2', 30.00, NULL, 4),
@@ -1394,7 +1425,7 @@ ALTER TABLE `actividad`
 -- AUTO_INCREMENT de la tabla `columna`
 --
 ALTER TABLE `columna`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de la tabla `curso`
@@ -1424,7 +1455,7 @@ ALTER TABLE `etiqueta`
 -- AUTO_INCREMENT de la tabla `fila`
 --
 ALTER TABLE `fila`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de la tabla `grupo`
@@ -1478,7 +1509,7 @@ ALTER TABLE `tablero`
 -- AUTO_INCREMENT de la tabla `tarea`
 --
 ALTER TABLE `tarea`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_actividad`

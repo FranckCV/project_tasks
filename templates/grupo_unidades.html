@@ -1,0 +1,106 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+    Grupo {{ grupo.semestrecodigo }} - {{ grupo.gr_nombre }} - {{ grupo.cu_nombre }}
+{% endblock %}
+
+
+{% block estilos %}
+<style>
+    :root {
+        --color-curso: {{ grupo.color }};
+    }
+
+    .container_unidad * {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .unidad {
+        border: 1px solid var(--color-curso);
+        gap: 10px;
+        flex-direction: column;
+        /* padding: 10px; */
+        /* padding-block: 5px; */
+        border-radius: 5px;
+    }
+
+    .u_info {
+        padding: 5px;
+        padding-inline: 10px;
+        background-color: var(--color-curso);
+    }
+
+    .u_por , .n_por {
+        border-radius: 5px;
+        background-color: white;
+        color: var(--colorbg1);
+        padding-inline: 5px;
+        font-weight: bold;
+    }
+
+    .u_por {
+        color: var(--color-curso);
+    }
+
+    .u_nota {
+        flex-direction: column;
+        gap: 5px;
+        padding-inline: 10px;
+        padding-bottom: 10px;
+    }
+
+</style>
+{% endblock %}
+
+
+{% block contenido %}
+
+
+<div class="container_title">
+    <p class="title">
+        Grupo {{ grupo.semestrecodigo }} - {{ grupo.gr_nombre }} - {{ grupo.cu_nombre }}
+    </p>
+</div>
+
+<div class="container_list container_unidad">
+    {% for unidad in unidades %}
+    <div class="unidad">
+        <div class="u_info">
+            <div class="u_nom" data-unidadid="{{ unidad.id }}">
+                {{ unidad.nombre }}
+            </div>
+            <div class="u_por">
+                {{ unidad.porcentaje }} %
+            </div>
+        </div>
+        <div class="u_nota">
+            {% for nota in notas if nota.unidadid == unidad.id %}
+            <div class="nota">
+                <div class="n_nom" data-notaid="{{ nota.id }}">
+                    {{ nota.nombre }} 
+                </div>
+                <div class="n_por">
+                    {{ nota.porcentaje }} %
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+<script>
+    // pintarElemento('.u_por');
+
+    update_name_element_bd_table( '.u_nom' , 'unidad' , 'nombre' , 'unidadid');
+    update_name_element_bd_table( '.m_nom' , 'nota' , 'nombre' , 'notaid');
+    
+</script>
+{% endblock %}
