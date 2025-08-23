@@ -71,13 +71,14 @@ def validar_usuario():
 @app.context_processor
 def inject_globals():
     # print(utils.local_time())
+    main_paleta = controlador.get_paleta_actual()
     return dict(
         MENU = utils.ENLACES_MENU ,
         CRUD_FORMS = CRUD_FORMS ,
         dias = utils.BASE_NOMBRE_DIAS ,
         USUARUIOID = utils.USUARIOID,
         dato_usuario = utils.USUARIO ,
-
+        main_paleta = main_paleta ,
     )
 
 
@@ -114,6 +115,18 @@ def index():
     )
 
 
+@app.route("/configuracion")
+@validar_usuario()
+def configuracion():
+    paletas = controlador.get_paleta()
+    paleta_actual = controlador.get_paleta_actual()
+    return render_template(
+        "configuracion.html",
+        paletas = paletas ,
+        paleta_actual = paleta_actual ,
+    )
+
+
 @app.route("/matriculas")
 @validar_usuario()
 def matriculas():
@@ -124,6 +137,14 @@ def matriculas():
         matriculas = matriculas ,
         semestres = semestres ,
     )
+
+
+# @app.route("/paleta")
+# @validar_usuario()
+# def paleta():
+#     return render_template(
+#         "configuracion.html",
+#     )
 
 
 @app.route("/matricula")
@@ -436,10 +457,20 @@ def unidades():
     )
 
 
+@app.route('/change_paleta')
+@validar_usuario()
+def change_paleta():
+    id = request.args.get('id')
+    controlador.change_estado_paleta(id)
+    return redirect_url('configuracion')
 
 
-
-
+@app.route('/delete_paleta')
+@validar_usuario()
+def delete_paleta():
+    id = request.args.get('id')
+    controlador.delete_paleta(id)
+    return redirect_url('configuracion')
 
 
 @app.route('/nueva_tarea')
@@ -467,7 +498,7 @@ def nueva_tabla():
 
 
 @app.route('/nueva_matricula')
-# @validar_usuario()
+@validar_usuario()
 def nueva_matricula():
     user_id = request.cookies.get('id')
     semestre = request.args.get('semestre')
@@ -477,7 +508,7 @@ def nueva_matricula():
 
 
 @app.route('/nueva_columna')
-# @validar_usuario()
+@validar_usuario()
 def nueva_columna():
     tablaid = request.args.get('tablaid')
     date = utils.format_now("%Y%m%d%H%M%S") 
@@ -487,7 +518,7 @@ def nueva_columna():
 
 
 @app.route('/nueva_fila')
-# @validar_usuario()
+@validar_usuario()
 def nueva_fila():
     tablaid = request.args.get('tablaid')
     date = utils.format_now("%Y%m%d%H%M%S")
@@ -497,17 +528,22 @@ def nueva_fila():
 
 
 @app.route('/nueva_tabla_tarea')
-# @validar_usuario()
+@validar_usuario()
 def nueva_tabla_tarea():
     tablaid = request.args.get('tablaid')
     filaid = request.args.get('filaid')
     columnaid = request.args.get('columnaid')
-
     controlador.register_tabla_tarea( filaid , columnaid )
-
     return redirect(url_for('tabla' , tablaid = tablaid))
 
 
+@app.route('/change_ver_tabla')
+@validar_usuario()
+def change_ver_tabla():
+    tablaid = request.args.get('tablaid')
+    controlador.ver_tareas_tabla( tablaid )
+
+    return redirect(url_for('tabla' , tablaid = tablaid))
 
 
 @app.route('/info')
@@ -563,6 +599,7 @@ def logout():
         resp = make_response(redirect_login())
         resp.delete_cookie('username')
         resp.delete_cookie('correo')
+        resp.delete_cookie('id')
         return resp
     except Exception as e:
         return rdrct_error(redirect_login(),e)
@@ -718,6 +755,36 @@ def api_bd_update():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route('/api_check_tarea', methods=['POST'])
+def api_check_tarea():
+    try:
+        data = request.get_json()
+        id =    data.get("id")
+        controlador.check_tarea( id )
+        estado = controlador.get_tarea_id(id).get('completo',0)
+        rpta = f''' TAREA ID {id} '''
+        return jsonify({'respuesta': rpta , 'estado' : estado})
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api_nueva_tabla_tarea')
+@validar_usuario()
+def api_nueva_tabla_tarea():
+    try:
+        data =      request.get_json()
+        filaid =    data.get('filaid')
+        columnaid = data.get('columnaid')
+        tid = controlador.register_tabla_tarea( filaid , columnaid )
+        rpta = f''' FIL ID {filaid} , COL ID {columnaid} , TAR ID {tid} '''
+        tarea = controlador.get_tarea_id(tid)
+        return jsonify({'respuesta': rpta , 'tareaid' : tid , 'tarea' : tarea })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route('/update_column_table_id', methods=['POST'])
 def update_column_table_id():
     try:
@@ -806,6 +873,15 @@ def guardar_detalle_matricula():
     return redirect(url_for('matricula', id=matriculaid))
 
 
+@app.route('/guardar_paleta', methods=['POST'])
+def guardar_paleta():
+    f = controlador.insert_paleta
+    valores = utils.request_values_parameters(f)
+    id = f( *valores )
+    controlador.change_estado_paleta(id)
+    return redirect(url_for('configuracion'))
+
+
 @app.route('/execute_post=<name>', methods=['POST'])
 def execute_post(name):
     crud_dict = CRUD_FORMS.get(name)
@@ -813,7 +889,6 @@ def execute_post(name):
     re = crud_dict.get('return')
     valores = utils.request_values_parameters(f)
     f( *valores )
-
     return re
 
 

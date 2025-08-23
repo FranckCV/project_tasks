@@ -28,22 +28,23 @@ ERRORES = {
 
 
 ENLACES_MENU= [
-    {'nombre' : 'Tablas' , 'icono': 'ri-table-line' , 'enlace': 'tablas' , 'color': '' } ,
-    {'nombre' : 'Semestres' , 'icono': 'fa-solid fa-calendar-days' , 'enlace': 'semestres' , 'color': '' } ,
-    {'nombre' : 'Docentes' , 'icono': 'fa-solid fa-user-tie' , 'enlace': 'docentes' , 'color': '' } ,
-    {'nombre' : 'Cursos' , 'icono': 'fa-solid fa-layer-group' , 'enlace': 'cursos' , 'color': '' } ,
-    {'nombre' : 'Grupos' , 'icono': 'fa-solid fa-list' , 'enlace': 'grupos' , 'color': '' } ,
-    {'nombre' : 'Matriculas' , 'icono': 'fa-solid fa-grip' , 'enlace': 'matriculas' , 'color': '' } ,
-    {'nombre' : 'Notas' , 'icono': 'fa-solid fa-graduation-cap' , 'enlace': 'notas' , 'color': '' } ,
-    {'nombre' : 'Tareas' , 'icono': 'fa-solid fa-bars-staggered' , 'enlace': 'tareas' , 'color': '' } ,
-    {'nombre' : 'Horario' , 'icono': 'fa-solid fa-clock' , 'enlace': 'horario' , 'color': '' } ,
-    
-    {'nombre' : 'Unidades' , 'icono': 'fa-solid fa-clock' , 'enlace': 'unidades' , 'color': '' } ,
+    {'nombre' : 'Perfil' ,        'icono': 'fa-solid fa-circle-xmark' ,     'enlace': 'test' ,          'color': '' } ,
+    {'nombre' : 'Configuracion' , 'icono': 'fa-solid fa-gear' ,             'enlace': 'configuracion' , 'color': '' } , 
+    {'nombre' : 'Dashboard' ,     'icono': 'ri-dashboard-fill' ,            'enlace': 'index' ,         'color': '' } ,
+    {'nombre' : 'Notas' ,         'icono': 'fa-solid fa-graduation-cap' ,   'enlace': 'notas' ,         'color': '' } ,
+    {'nombre' : 'Tablas' ,        'icono': 'ri-table-line' ,                'enlace': 'tablas' ,        'color': '' } ,
+    {'nombre' : 'Tareas' ,        'icono': 'fa-solid fa-bars-staggered' ,   'enlace': 'tareas' ,        'color': '' } ,
+    {'nombre' : 'Horario' ,       'icono': 'fa-solid fa-clock' ,            'enlace': 'horario' ,       'color': '' } ,
+    {'nombre' : 'Calendario' ,    'icono': 'fa-solid fa-circle-xmark' ,     'enlace': 'test' ,          'color': '' } ,
+    {'nombre' : 'Matriculas' ,    'icono': 'fa-solid fa-grip' ,             'enlace': 'matriculas',     'color': '' } ,
+    {'nombre' : 'Grupos' ,        'icono': 'fa-solid fa-list' ,             'enlace': 'grupos' ,        'color': '' } ,
     
     {'nombre' : 'Test' , 'icono': 'fa-solid fa-code' , 'enlace': 'test' , 'color': '' } ,
     {'nombre' : 'Info' , 'icono': 'fa-solid fa-circle-info' , 'enlace': 'info' , 'color': '' } ,
 
-    {'nombre' : '_' , 'icono': 'fa-solid fa-circle-x' , 'enlace': 'test' , 'color': '' } ,
+    # {'nombre' : 'Semestres' , 'icono': 'fa-solid fa-calendar-days' , 'enlace': 'semestres' , 'color': '' } ,
+    # {'nombre' : 'Cursos' , 'icono': 'fa-solid fa-layer-group' , 'enlace': 'cursos' , 'color': '' } ,
+    # {'nombre' : 'Unidades' , 'icono': 'fa-solid fa-clock' , 'enlace': 'unidades' , 'color': '' } ,
     
 ]
 

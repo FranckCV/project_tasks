@@ -1,4 +1,6 @@
 DROP TABLE 
+`paleta`,
+`sistema`,
 `prerrequisito`,
 `usuario_nota` ,
 `lista_tarea`,
@@ -11,18 +13,18 @@ DROP TABLE
 `etiqueta_tarea`,
 `espacio`,
 `etiqueta`,
+`unidad`,
 `fila`,
 `grupo`,
 `lista`,
 `nota`,
-`semestre`,
 `tabla`,
 `tablero`,
 `tarea`,
 `actividad`,
 `tipo_actividad`,
-`unidad`,
 `usuario`,
+`semestre`,
 `curso`,
 `docente`
 ;

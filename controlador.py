@@ -93,6 +93,15 @@ def insert_detalle_matricula(matriculaid, grupoid):
     bd.sql_execute(sql,(matriculaid, grupoid))
 
 
+def insert_paleta(color1, color2, color3, color4, color5, colorbg1, colorbg2, colorbg3, estado=0):
+    sql = '''
+        INSERT INTO paleta(color1, color2, color3, color4, color5, colorbg1, colorbg2, colorbg3, estado) VALUES
+        (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+    '''
+    return bd.sql_execute_lastrowid(sql,(color1, color2, color3, color4, color5, colorbg1, colorbg2, colorbg3, estado))
+
+
+
 # UPDATE
 
 
@@ -190,6 +199,13 @@ def delete_fila(id):
     return bd.sql_execute(sql,(id))
 
 
+def delete_paleta(id):
+    sql = '''
+    DELETE FROM paleta WHERE id = %s
+    '''
+    return bd.sql_execute(sql,(id))
+
+
 # SELECT
 
 def get_bd_color( tabla , id ):
@@ -203,7 +219,32 @@ def get_bd_color( tabla , id ):
     return color
 
 
+def get_paleta():
+    sql = f'''
+    SELECT 
+        id, 
+        color1, color2, color3, color4, color5,
+        colorbg1, colorbg2, colorbg3, 
+        estado 
+    FROM paleta
+    '''
+    data = bd.sql_select_fetchall(sql )
+    return data
 
+
+def get_paleta_actual():
+    sql = f'''
+    SELECT 
+        id, 
+        color1, color2, color3, color4, color5,
+        colorbg1, colorbg2, colorbg3, 
+        estado 
+    FROM paleta
+    where estado = 1
+    limit 1
+    '''
+    data = bd.sql_select_fetchone(sql )
+    return data
 
 
 def consult_columna( id ):
@@ -923,7 +964,8 @@ def get_tabla_info(id):
     select
         tab.id ,
         tab.nombre ,
-        tab.espacioid
+        tab.espacioid ,
+        tab.ver
     from tabla tab
     where tab.id = %s
     '''
@@ -955,12 +997,14 @@ def get_filas_tablaid(tablaid):
 def get_tareas_tablaid(tablaid):
     sql = '''
     SELECT 
-        tar.id, tar.nombre, tar.descripcion, tbt.orden , tbt.color, tar.tareaid  , tbt.columnaid , tbt.filaid
+        tar.id, tar.nombre, tar.descripcion, tbt.orden , 
+        tbt.color, tar.tareaid ,
+        tbt.columnaid , tbt.filaid , tar.completo
     FROM tarea tar
     left join tabla_tarea tbt on tbt.tareaid = tar.id
     left join columna col on col.id = tbt.columnaid
     where col.tablaid = %s 
-    order by tbt.columnaid asc, tbt.filaid asc, tbt.orden asc
+    order by tbt.columnaid asc, tbt.filaid asc, tar.completo asc , tbt.orden asc
     '''
     return bd.sql_select_fetchall(sql,(tablaid))
 
@@ -1026,7 +1070,7 @@ def get_tareas(tareaid=None):
 def get_tarea_id(id):
     sql = '''
     SELECT 
-        tar.id, tar.nombre, tar.descripcion, tar.color, tar.tareaid  
+        tar.id, tar.nombre, tar.descripcion, tar.color, tar.tareaid  , tar.completo
     FROM tarea tar
     where tar.id = %s
     '''
@@ -1110,12 +1154,44 @@ def register_tabla_tarea( filaid , columnaid ):
 
     tareaid = insert_tarea(f'Nueva_tarea', None , color , 0 , None)
     orden = get_max_min_orden_tabla_tarea(columnaid , filaid)
-    max = orden.get('max')
+    max = orden.get('max') + 1
     tabid = insert_tabla_tarea(tareaid, filaid ,columnaid , color , max )
 
-    return tabid
+    return tareaid
 
 
+def change_estado_paleta( pid ):
+    sql1 = '''
+        UPDATE paleta SET 
+        estado = 1
+        WHERE id = %s
+    '''
+    bd.sql_execute(sql1,( pid ))
+    
+    sql2 = '''
+        UPDATE paleta SET 
+        estado = 0
+        WHERE id != %s
+    '''
+    bd.sql_execute(sql2,( pid ))
+
+
+def check_tarea( id ):
+    sql = '''
+        UPDATE tarea SET 
+        completo = 1 - completo
+        WHERE id = %s
+    '''
+    bd.sql_execute(sql,( id ))
+
+
+def ver_tareas_tabla( id ):
+    sql = '''
+        UPDATE tabla SET 
+        ver = 1 - ver
+        WHERE id = %s
+    '''
+    bd.sql_execute(sql,( id ))
 
 
 # def obtener_max_minuto_acts():

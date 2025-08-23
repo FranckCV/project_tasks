@@ -8,15 +8,63 @@
     <link rel="stylesheet" href="/static/css/common_styles/bootstrap.min.css" />
     <link rel="stylesheet" href="/static/css/common_styles/all.min.css" />
     <link rel="stylesheet" href="/static/css/common_styles/fonts.css" />
-    
+
     <!-- <link rel="stylesheet" href="/static/css/common_styles/fontawesome.min.css" /> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css"/>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
 
+    <style>
+        :root {
+            --color-border1: 1px solid #ffffff4f;
+
+            --color1: {{ main_paleta.color1 }};
+            --color2: {{ main_paleta.color2 }};
+            --color3: {{ main_paleta.color3 }};
+            --color4: {{ main_paleta.color4 }};
+            --color5: {{ main_paleta.color5 }};
+            --colorbg1: {{ main_paleta.colorbg1 }};
+            --colorbg2: {{ main_paleta.colorbg2 }};
+            --colorbg3: {{ main_paleta.colorbg3 }};
+
+           
+
+            /* 
+            --color1: #161a2c;
+            --color2: #6422ff;
+            --color3: #00ADB5;
+            --colorbg2: color-mix(in srgb, var(--colorbg1) 100%, black 75%);
+            --colorbg3: color-mix(in srgb, var(--colorbg1) 100%, #ffffff 5%); */
+
+
+
+            /* --color-r: color-mix(in srgb, white 0%, #ff0000 100%);
+            --color-g: color-mix(in srgb, white 0%, #00ff00 100%);
+            --color-b: color-mix(in srgb, white 0%, #0000ff 100%); 
+            
+            
+            --color-r: #ff0000 ;
+            --color-g: #00ff00 ;
+            --color-b: #0000ff ; 
+            
+            
+            --color-base: #2885ff;
+            --color1:   color-mix(in srgb, var(--color-base) 100%, #222222 50%);
+            --color2:   color-mix(in srgb, var(--color-base) 100%, var(--color-b) 50%);
+            --color3:   color-mix(in srgb, var(--color-base) 100%, var(--color-g) 50%);
+            --color4:   color-mix(in srgb, var(--color-base) 100%, #5d5d5d 50%);
+            --color5:   color-mix(in srgb, var(--color-base) 100%, var(--color-r) 50%);
+            --colorbg1: color-mix(in srgb, var(--color-base) 25%, #171717 100%);
+            --colorbg2: color-mix(in srgb, var(--color-base) 25%, #000000 100%);
+            --colorbg3: color-mix(in srgb, var(--color-base) 25%, #242424 100%);  */
+
+        }
+    </style>
     <link rel="stylesheet" href="/static/css/common_styles/common_style.css" />
     {% block estilos_html %}
     {% endblock %}
@@ -85,19 +133,19 @@
                 }
             });
         }
-        
-        function update_bd_table( tabla , columnas , valores , where , where_v ) {
+
+        function update_bd_table(tabla, columnas, valores, where, where_v) {
             fetch('/api_bd_update', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    tabla:    tabla,
-                    columnas: columnas ,
-                    valores:  valores ,
-                    where:    where ,
-                    where_v : where_v
+                    tabla: tabla,
+                    columnas: columnas,
+                    valores: valores,
+                    where: where,
+                    where_v: where_v
                 })
             })
             .then(response => {
@@ -112,8 +160,8 @@
                 console.error(err);
             });
         }
-        
-        function update_column_table_id( tabla , columna , valor , id ) {
+
+        function update_column_table_id(tabla, columna, valor, id) {
             fetch('/update_column_table_id', {
                 method: 'POST',
                 headers: {
@@ -121,22 +169,22 @@
                 },
                 body: JSON.stringify({
                     tabla: tabla,
-                    columna: columna ,
-                    valor: valor ,
-                    id : id
+                    columna: columna,
+                    valor: valor,
+                    id: id
                 })
             })
-            .then(response => {
-                if (!response.ok) throw new Error("Error al actualizar");
-                return response.json();
-            })
-            .then(data => {
-                console.log(data);
-            })
-            .catch(err => {
-                alert("Error al actualizar valor");
-                console.error(err);
-            });
+                .then(response => {
+                    if (!response.ok) throw new Error("Error al actualizar");
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(err => {
+                    alert("Error al actualizar valor");
+                    console.error(err);
+                });
         }
 
         document.querySelectorAll('.tarea_nom').forEach(div => {
@@ -180,12 +228,12 @@
                 });
             });
         });
-        
-        function update_name_element_bd_table(selector , tabla , columna , datasetKey) {
+
+        function update_name_element_bd_table(selector, tabla, columna, datasetKey) {
             document.querySelectorAll(selector).forEach(div => {
                 div.addEventListener('dblclick', () => {
-                    div.style.width = '100%';    
-                    div.style.height = '100%';    
+                    div.style.width = '100%';
+                    div.style.height = '100%';
                     if (div.querySelector('.inputUpdateText')) return;  // evitar múltiples inputs
 
                     const currentText = div.textContent.trim();
@@ -196,8 +244,8 @@
                     // input.style.minWidth = '50px';
                     // input.style.width =  `${div.offsetWidth + 3}px` ;
                     // input.style.height =  `${div.offsetHeight - 1}px` ;
-                    input.style.width =  `${div.clientWidth + 3 }px` ;
-                    input.style.height =  `${div.clientHeight }px` ;
+                    input.style.width = `${div.clientWidth + 3}px`;
+                    input.style.height = `${div.clientHeight}px`;
                     input.style.width = '100%';
                     input.style.height = '100%';
                     // input.style.display = 'flex';
@@ -244,7 +292,7 @@
             // #abc, #aabbcc, #rrggbbaa
             if (colorStr.startsWith('#')) {
                 if (colorStr.length === 4) {
-                return '#' + [...colorStr.slice(1)].map(c => c + c).join('');
+                    return '#' + [...colorStr.slice(1)].map(c => c + c).join('');
                 }
                 if (colorStr.length === 7) return colorStr;
                 if (colorStr.length === 9) return '#' + colorStr.slice(1, 7); // descarta alfa
@@ -255,7 +303,7 @@
                 /^rgba?\(\s*([\d.]+)\s*[, ]\s*([\d.]+)\s*[, ]\s*([\d.]+)(?:\s*[,/]\s*([\d.]+))?\s*\)$/
             );
             if (m) {
-                const toHex = n => Math.max(0, Math.min(255, Math.round(+n))).toString(16).padStart(2,'0');
+                const toHex = n => Math.max(0, Math.min(255, Math.round(+n))).toString(16).padStart(2, '0');
                 return '#' + toHex(m[1]) + toHex(m[2]) + toHex(m[3]);
             }
 
@@ -263,37 +311,38 @@
             return '#000000';
         }
 
-        function update_color_element_bd_table(selector, tabla, datasetKey) {
+        function update_color_element_bd_table(selector, tabla, datasetKey , estilos = [['-e-','backgroundColor', '-color-']] ) {
             document.querySelectorAll(selector).forEach(div => {
                 div.style.position = 'relative';
                 if (div.querySelector('.inputUpdateColor')) return; // evitar duplicados
 
                 const id = div.dataset[datasetKey];
                 const colorActual = cssColorToHexAdvanced(window.getComputedStyle(div).backgroundColor);
-                
+
                 const input = document.createElement('input');
                 input.type = 'color';
                 input.classList.add('inputUpdateColor');
-
-                input.style.backgroundColor = colorActual;
-                input.value = colorActual; // color inicial
-                // console.log('bg',window.getComputedStyle(div).backgroundColor);
-                // console.log('value',input.value);
+                input.value = colorActual; 
                 input.dataset.id = id;
                 div.appendChild(input);
-
-                // Click en el div abre el selector
-                // div.addEventListener('click', () => {
-                //     input.click();
-                // });
 
                 // Cuando el usuario elige un color
                 input.addEventListener('input', () => {
                     const newColor = input.value;
 
-                    // aplicar al div visible
-                    div.style.backgroundColor = newColor;
-                    ajustarColorTexto(div);
+                    estilos.forEach(ss => {
+                        const val = ss[2].replace('-color-',newColor);
+                        if (ss[0]=='-e-') {
+                            div.style[ss[1]] = val;
+                            ajustarColorTexto(div);
+                        } else {
+                            const elements = document.querySelectorAll( ss[0].replace('-id-',id) );
+                            elements.forEach(element => {
+                                element.style[ss[1]] = val;
+                                ajustarColorTexto(element);
+                            });
+                        }
+                    });
 
                     // actualizar en BD
                     update_column_table_id(tabla, "color", newColor, id);
@@ -322,7 +371,7 @@
             return ctx.fillStyle;
         }
 
-        function update_color_element_bd_where(selector, tabla, whereClause , datasetKeys) {
+        function update_color_element_bd_where(selector, tabla, whereClause, datasetKeys , estilos = [['-e-','backgroundColor', '-color-']] ) {
             document.querySelectorAll(selector).forEach(div => {
                 div.style.position = 'relative';
                 if (div.querySelector('.inputUpdateColor')) return; // evitar duplicados
@@ -334,32 +383,84 @@
                 const input = document.createElement('input');
                 input.type = 'color';
                 input.classList.add('inputUpdateColor');
-
-                input.style.backgroundColor = colorActual;
                 input.value = colorActual;
                 div.appendChild(input);
-
-                // Click en el div abre el selector
-                // div.addEventListener('click', () => {
-                //     input.click();
-                // });
 
                 // Cuando el usuario elige un color
                 input.addEventListener('input', () => {
                     const newColor = input.value;
 
                     // aplicar al div visible
-                    div.style.backgroundColor = newColor;
-                    ajustarColorTexto(div);
-                    
+                    estilos.forEach(ss => {
+                        const val = ss[2].replace('-color-',newColor);
+                        if (ss[0]=='-e-') {
+                            div.style[ss[1]] = val;
+                            ajustarColorTexto(div);
+                        } else {
+                            const elements = document.querySelectorAll( ss[0].replace('-id-',id) );
+                            elements.forEach(element => {
+                                element.style[ss[1]] = val;
+                                ajustarColorTexto(element);
+                            });
+                        }
+                    });
+
                     // actualizar en BD
-                    update_bd_table(tabla, ["color"], [newColor], whereClause , whereValues);
-                    
+                    update_bd_table(tabla, ["color"], [newColor], whereClause, whereValues);
+
+                });
+            });
+        }
+        
+        async function api_check_tarea(id) {
+            try {
+                const response = await fetch('/api_check_tarea', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+
+                if (!response.ok) throw new Error("Error al actualizar");
+
+                const data = await response.json();
+                // console.log(data.estado);
+                return data.estado;
+            } catch (err) {
+                console.error(err);
+                alert("Error al actualizar valor");
+                return null; // o lo que necesites
+            }
+        }
+
+        function check_tareas(selector, datasetKey) {
+            document.querySelectorAll(selector).forEach(div => {
+                div.style.position = 'relative';
+                const id = div.dataset[datasetKey];
+
+                if (!div.querySelector('.buttonCheckTarea')) {
+
+                    div.innerHTML += `
+                    <div class="buttonCheckTarea" data-tareaid="${id}">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>                
+                    `;
+                }
+
+                div.querySelector('.buttonCheckTarea').addEventListener('click', async () => {
+                    const rpta = await api_check_tarea(id);
+                    if (rpta == 1) {
+                        div.classList.add('tarea_completa');
+                    } else {
+                        div.classList.remove('tarea_completa');
+                    }
                 });
             });
         }
 
-
+    
+        
+        
+    
     </script>
 
     {% block scripts_html %}

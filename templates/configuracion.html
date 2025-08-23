@@ -1,0 +1,135 @@
+{% extends "MAESTRA.html" %}
+
+{% block titulo %}
+Configuración
+{% endblock %}
+
+
+{% block estilos %}
+<style>
+    .content {
+        display: flex;
+        height: 100%;
+
+    }
+
+    .iframe-container  {
+        width: 275px;
+        height: 220px;
+        overflow: hidden;
+        margin-bottom: 10px;
+        border: var(--color-border1);
+    }
+
+
+    iframe {
+        width: 1500px;
+        height: 1000px;
+        transform: scale(0.180);
+        transform-origin: 0 0;
+    }
+
+    .container_form {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-direction: column;
+    }
+
+    .form_paleta {
+        height: 100%;
+    }
+
+    .paleta ,
+    .paleta_items {
+        display: flex;
+        align-items: center;
+    }
+
+    .p_item {
+        width: 75px;
+        height: 25px;
+        /* aspect-ratio: 1 / 1; */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: var(--color-border1);
+    }
+        
+</style>
+{% endblock %}
+
+
+{% block contenido %}
+<div class="container_title">
+    <p class="title tabla_name"> 
+        Configuración
+    </p>
+</div>
+
+<div class="content">
+    <div class="container_form">
+        <div class="form_paleta">
+            <form action="{{ url_for('guardar_paleta') }}" method="post">
+                <div>
+                    <input type="color" value="{{ main_paleta.color1 }}" name="color1" id="color1">
+                    <input type="color" value="{{ main_paleta.color2 }}" name="color2" id="color2">
+                    <input type="color" value="{{ main_paleta.color3 }}" name="color3" id="color3">
+                    <input type="color" value="{{ main_paleta.color4 }}" name="color4" id="color4">
+                    <input type="color" value="{{ main_paleta.color5 }}" name="color5" id="color5">
+                    <input type="color" value="{{ main_paleta.colorbg1 }}" name="colorbg1" id="colorbg1">
+                    <input type="color" value="{{ main_paleta.colorbg2 }}" name="colorbg2" id="colorbg2">
+                    <input type="color" value="{{ main_paleta.colorbg3 }}" name="colorbg3" id="colorbg3">
+                </div>
+                <div>
+                    <button type="submit" class="">Guardar</button>
+                    <button type="reset" class="">Restablecer</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="cont_preview">
+            <div class="iframe-container">
+                <iframe src="/" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div class="container_list">
+        {% for paleta in paletas %}
+        <div class="paleta">
+            <div class="paleta_items">
+                <div class="p_item" style="background-color: {{ paleta.color1 }};"  >{{ 'Null' if not paleta.color1   else '' }}</div>
+                <div class="p_item" style="background-color: {{ paleta.color2 }};"  >{{ 'Null' if not paleta.color2   else '' }}</div>
+                <div class="p_item" style="background-color: {{ paleta.color3 }};"  >{{ 'Null' if not paleta.color3   else '' }}</div>
+                <div class="p_item" style="background-color: {{ paleta.color4 }};"  >{{ 'Null' if not paleta.color4   else '' }}</div>
+                <div class="p_item" style="background-color: {{ paleta.color5 }};"  >{{ 'Null' if not paleta.color5   else '' }}</div>
+                <div class="p_item" style="background-color: {{ paleta.colorbg1 }};">{{ 'Null' if not paleta.colorbg1 else '' }}</div>
+                <div class="p_item" style="background-color: {{ paleta.colorbg2 }};">{{ 'Null' if not paleta.colorbg2 else '' }}</div>
+                <div class="p_item" style="background-color: {{ paleta.colorbg3 }};">{{ 'Null' if not paleta.colorbg3 else '' }}</div>
+            </div>
+            <div class="paleta_buttona">
+                {% if paleta.estado != 1 %}
+                <a href="{{ url_for('change_paleta', id = paleta.id ) }}">
+                    <i class="fa-solid fa-circle-check"></i>
+                </a>
+                <a href="{{ url_for('delete_paleta', id = paleta.id ) }}">
+                    <i class="fa-solid fa-trash"></i>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+
+{% block scripts %}
+
+
+{% endblock %}

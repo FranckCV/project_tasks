@@ -310,9 +310,86 @@ Ver tabla {{ tabla_info['nombre'] }}
         right: 20%;
     }
 
+    .tarea_completa {
+        text-decoration: line-through;
+        color: #878787;
+    }
+
+    :root {
+        --sizeP:  5px ;
+        --sizeI: 20px;
+        --color_off : rgb(0, 220, 59);
+        --color_on : red;
+    }
+
+    .btn_modo {
+        background-color: color-mix(in srgb,  var(--color_btn) 15%, transparent 100%);
+        border: 1px solid var(--color_btn);
+        color: var(--color_btn);
+    }
+
+    .btn_modo.on {
+        --color_btn :var(--color_on);
+    }
+    
+    .btn_modo.off {
+        --color_btn :var(--color_off);
+    }
+
+    .tarea .buttonCheckTarea {
+        position: absolute;
+        top: var(--sizeP);
+        left: var(--sizeP);
+    }
+    
+    .buttonCheckTarea i {
+        font-size: calc( var(--sizeI) / 1.75 ) ;
+    }
+
+    .tarea {
+        padding-left: calc( var(--sizeI) + var(--sizeP) );
+    }
+
+    :root {
+        --bg_table: #3b3b3b;
+        --sizeT: 2px;
+    }
+
+    .container_tabla {
+        padding: var(--sizeT);
+    }
+    
+    thead th {
+        background: var(--bg_table);
+        position: sticky;
+        top: var(--sizeT);
+        z-index: 110;    
+    }
+
+    tbody td.head_fila {
+        position: sticky;
+        left: var(--sizeT);
+        background: var(--bg_table); 
+        z-index: 109;     
+    }
+
+    thead th:first-child {
+        position: sticky;
+        top: var(--sizeT);
+        left: var(--sizeT);
+        z-index: 111; 
+    }
+
 
 </style>
 
+{% if tabla_info.ver == 0 %}
+<style>
+    .tarea_completa {
+        display: none;
+    }
+</style>
+{% endif %}
 
 {% endblock %}
 
@@ -323,6 +400,12 @@ Ver tabla {{ tabla_info['nombre'] }}
     <p class="title tabla_name" data-tablaid="{{tabla_info.id}}"> 
         {{tabla_info.nombre}}
     </p>
+
+    <div>
+        <a class="button btn_modo {{ 'on' if tabla_info.ver == 1 else 'off' }}" href="{{ url_for('change_ver_tabla' , tablaid = tabla_info.id ) }}">
+            {{ 'Ocultar' if tabla_info.ver == 1 else 'Mostrar' }} tareas completas
+        </a>
+    </div>
 </div>
 
 <div class="section_tabla">
@@ -361,7 +444,7 @@ Ver tabla {{ tabla_info['nombre'] }}
 
                     th[data-columnaid="{{ col.id }}"] .columna_head {
                         border-radius: 5px;
-                        border: 1px solid {{ col.color }};
+                        /* border: 1px solid {{ col.color }}; */
                         background-color: {{ col.color }} ;
                         /* background-color: color-mix(
                             in srgb, 
@@ -378,13 +461,13 @@ Ver tabla {{ tabla_info['nombre'] }}
 
                 <th data-columnaid="{{ col.id }}">
                     <div class="columna_head" data-columnaid="{{ col.id }}">
-                        <a class="button" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'm' ) }}">
+                        <a class="button btn_move" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'm' ) }}">
                             <i class="fa-solid fa-caret-left"></i>
                         </a>
                         <div class="col_name" data-columnaid="{{ col.id }}" >
                             {{ col['nombre'] }}
                         </div>
-                        <a class="button" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'M' ) }}">
+                        <a class="button btn_move" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'M' ) }}">
                             <i class="fa-solid fa-caret-right"></i>
                         </a>
                     <a class="button btn_delete" href="{{ url_for('delete_columna' , columnaid = col.id ) }}">
@@ -488,7 +571,8 @@ Ver tabla {{ tabla_info['nombre'] }}
                                         );
                                 }
                             </style>
-                            {% for tarea in tareas if fila.id == tarea.filaid and col.id == tarea.columnaid %}
+
+                            {% for tarea in tareas if fila.id == tarea.filaid and col.id == tarea.columnaid and ( tarea.completo == 0 or tarea.completo == tabla_info.ver ) %}
 
                             <style>
                                 /* .tarea[data-tareaid="{{tarea.id}}"] { */
@@ -496,7 +580,7 @@ Ver tabla {{ tabla_info['nombre'] }}
                                 /* } */
                             </style>
 
-                            <div class="tarea" data-tareaid="{{tarea.id}}" data-columnaid="{{col.id}}" data-filaid="{{fila.id}}">
+                            <div class="tarea {{ 'tarea_completa' if tarea.completo else '' }}" data-tareaid="{{tarea.id}}" data-columnaid="{{col.id}}" data-filaid="{{fila.id}}">
                                 {{ tarea.nombre }}
                             </div>
                             
@@ -592,8 +676,72 @@ document.querySelectorAll(".list_tareas").forEach(celda => {
     update_name_element_bd_table( '.fil_name' , 'fila' , 'nombre' , 'filaid');
     update_name_element_bd_table( '.tarea' , 'tarea' , 'nombre' , 'tareaid');
     
-    update_color_element_bd_table(  '.columna_head' , 'columna' , 'columnaid' );
+    const eCol = [
+        ['-e-','backgroundColor', '-color-'] ,
+        ['.columna_head[data-columnaid="-id-"] .btn_move','backgroundColor', '-color-'] ,
+    ];
+
+    update_color_element_bd_table(  '.columna_head' , 'columna' , 'columnaid' , eCol);
     update_color_element_bd_table(  '.fila_head' , 'fila' , 'filaid' );
+
+    check_tareas('.tarea', 'tareaid');
+
+</script>
+
+<script>
+    function nueva_tabla_tarea2( filaid , columnaid) {
+        fetch('/api_nueva_tabla_tarea', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                filaid: filaid,
+                columnaid: columnaid
+            })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Error al actualizar");
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(err => {
+            alert("Error al actualizar valor");
+            console.error(err);
+        });
+    }
+
+    async function nueva_tabla_tarea( filaid , columnaid) {
+        try {
+            const response = await fetch('/api_check_tarea', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    filaid: filaid,
+                    columnaid: columnaid
+                })
+            });
+
+            if (!response.ok) throw new Error("Error al actualizar");
+
+            const data = await response.json();
+            return data.tarea;
+        } catch (err) {
+            console.error(err);
+            alert("Error al actualizar valor");
+            return null; // o lo que necesites
+        }
+    }
+
+    // document.querySelectorAll('.insert_tarea').forEach(btn => {
+    //     btn.addEventListener('click' , () => {
+    //         const fid = btn.dataset.fila_id;
+    //         const cid = btn.dataset.columna_id;
+    //         nueva_tabla_tarea( fid , cid );
+    //     });
+    // });
 
 </script>
 
