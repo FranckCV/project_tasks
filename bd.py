@@ -4,21 +4,21 @@ from pymysql.cursors import DictCursor
 # SQLALCHEMY_DATABASE_URI = 'mysql://ulkkuhuq5vq6ly5k:k1huLwTpahIIbyRds33S@b1maiitpask5s6u7x1or-mysql.services.clever-cloud.com:3306/b1maiitpask5s6u7x1or'
 
 
-# BD_HOST = 'b1maiitpask5s6u7x1or-mysql.services.clever-cloud.com'
-# BD_USER = 'ulkkuhuq5vq6ly5k'
-# BD_PSWD = 'k1huLwTpahIIbyRds33S'
-# BD_DBNM = 'b1maiitpask5s6u7x1or'
+BD_HOST = 'b1maiitpask5s6u7x1or-mysql.services.clever-cloud.com'
+BD_USER = 'ulkkuhuq5vq6ly5k'
+BD_PSWD = 'k1huLwTpahIIbyRds33S'
+BD_DBNM = 'b1maiitpask5s6u7x1or'
 
 # BD_HOST = 'FranckCv.mysql.pythonanywhere-services.com'
 # BD_USER = 'FranckCv'
 # BD_PSWD = 'mysql2025'
 # BD_DBNM = 'FranckCv$bd_academic'
 
-BD_HOST = 'localhost'
-BD_PORT = 3306
-BD_USER = 'root'
-BD_PSWD = ''
-BD_DBNM = 'bd_academic'
+# BD_HOST = 'localhost'
+# BD_PORT = 3306
+# BD_USER = 'root'
+# BD_PSWD = ''
+# BD_DBNM = 'bd_academic'
 
 def obtener_conexion():
     return pymysql.connect(
