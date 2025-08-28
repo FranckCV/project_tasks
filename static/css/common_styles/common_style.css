@@ -456,6 +456,7 @@ option[selected] {
     }
     
     .aside_item p {
-        display: none;
+        /* display: none; */
+        font-size: 50%;
     }
 }
