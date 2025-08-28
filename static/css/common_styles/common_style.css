@@ -1,10 +1,13 @@
 :root {
+    /* --cell-width: 600px; */
+
     --heigh-header: 65px;
     --height-footer: 50vh;
     --height-aside: 90vh;
     --height-section: 1vh;
     --width-aside: 95px;
     /* --width-aside: 7.5vw; */
+
 
 }
 
@@ -443,11 +446,11 @@ option[selected] {
     }
 
     aside {
-        width: 60px;
+        width: 70px !important;
     }
 
     .aside_item {
-        font-size: 70%;
+        font-size: 80%;
         /* height: 35px; */
         padding-block: 10px;
     }
