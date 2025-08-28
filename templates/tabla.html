@@ -143,8 +143,9 @@ Ver tabla {{ tabla_info['nombre'] }}
 
     .columna_head {
         display: flex;
+        justify-content: center;
         gap: 5px;
-        justify-content: space-between;
+        /* justify-content: space-between; */
         height: -webkit-fill-available;
         align-items: center;
     }
@@ -260,10 +261,7 @@ Ver tabla {{ tabla_info['nombre'] }}
     }
 
     .columna_head {
-        display: flex;
         gap: 5px;
-        justify-content: space-between;
-        align-items: center;
         min-height: 100%;
         box-sizing: border-box;
     }
@@ -401,8 +399,8 @@ Ver tabla {{ tabla_info['nombre'] }}
 
     .btn_drag_fila {
         position: absolute;
-        left: 5px;
-        top: 50%;
+        right: 5px;
+        top: 5px;
         transform: translateY(-50%);
         z-index: 120;
     }
@@ -415,6 +413,14 @@ Ver tabla {{ tabla_info['nombre'] }}
         opacity: 0.5;
         outline: 2px dashed #fff;
     }
+
+        
+    @media (max-width: 600px) {
+        .cell_insert {
+            min-width: 100px;
+        }
+    }
+
 
 </style>
 
@@ -448,7 +454,7 @@ Ver tabla {{ tabla_info['nombre'] }}
     <div class="container_tabla">
         <table>
             <thead>
-                <th>
+                <th class="cell_insert">
                     <div class="btns_insert">
                         <a class="button btn_insert" href="{{url_for('nueva_fila' , tablaid = tabla_info.id )}}">
                             <i class="fa-solid fa-plus"></i>
@@ -486,6 +492,9 @@ Ver tabla {{ tabla_info['nombre'] }}
                         <div class="col_name" data-columnaid="{{ col.id }}" >
                             {{ col['nombre'] }}
                         </div>
+                        <!-- <div class="col_btns">
+
+                        </div> -->
                         <!-- <a class="button btn_move" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'M' ) }}">
                             <i class="fa-solid fa-caret-right"></i>
                         </a> -->
