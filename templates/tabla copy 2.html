@@ -381,6 +381,41 @@ Ver tabla {{ tabla_info['nombre'] }}
     }
 
 
+
+    th.dragging {
+        opacity: 0.5;
+        outline: 2px dashed #fff;
+    }
+
+    .btn_drag_col {
+        position: absolute;
+        top: -5px;
+        left: 30px;
+        z-index: 100;
+        cursor: grab;
+    }
+
+    .btn_drag_col:active {
+        cursor: grabbing;
+    }
+
+    .btn_drag_fila {
+        position: absolute;
+        left: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 120;
+    }
+
+    .fila_head {
+        position: relative;
+    }
+
+    tr.dragging {
+        opacity: 0.5;
+        outline: 2px dashed #fff;
+    }
+
 </style>
 
 {% if tabla_info.ver == 0 %}
@@ -427,30 +462,10 @@ Ver tabla {{ tabla_info['nombre'] }}
                 </th>
                 {% for col in columnas %}
                 <style>
-                    /* th[data-columnaid="{{ col.id }}"] {
-                        background-color: {{ col.color }} ;
-                    }
-                    th[data-columnaid="{{ col.id }}"] .col_name ,
-                    th[data-columnaid="{{ col.id }}"] .col_name input {
-                        background-color: {{ col.color }} ;
-                    } */
-                    /* th[data-columnaid="{{ col.id }}"] .col_name {
-                        background-color: color-mix(
-                            in srgb, 
-                            transparent     25%, 
-                            {{ col.color }} 25%
-                            ) ;
-                    } */
 
                     th[data-columnaid="{{ col.id }}"] .columna_head {
                         border-radius: 5px;
-                        /* border: 1px solid {{ col.color }}; */
                         background-color: {{ col.color }} ;
-                        /* background-color: color-mix(
-                            in srgb, 
-                            transparent     75%, 
-                            {{ col.color }} 75%
-                            ) ; */
                     }
 
                     th[data-columnaid="{{ col.id }}"] .button {
@@ -461,18 +476,22 @@ Ver tabla {{ tabla_info['nombre'] }}
 
                 <th data-columnaid="{{ col.id }}">
                     <div class="columna_head" data-columnaid="{{ col.id }}">
-                        <a class="button btn_move" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'm' ) }}">
+                        <!-- <a class="button btn_move" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'm' ) }}">
                             <i class="fa-solid fa-caret-left"></i>
-                        </a>
+                        </a> -->
+                        <!-- <a class="button btn_drag_col" 
+                        draggable="true" title="Mover columna">
+                            <i class="fa-solid fa-up-down-left-right"></i>
+                        </a> -->
                         <div class="col_name" data-columnaid="{{ col.id }}" >
                             {{ col['nombre'] }}
                         </div>
-                        <a class="button btn_move" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'M' ) }}">
+                        <!-- <a class="button btn_move" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'M' ) }}">
                             <i class="fa-solid fa-caret-right"></i>
-                        </a>
-                    <a class="button btn_delete" href="{{ url_for('delete_columna' , columnaid = col.id ) }}">
+                        </a> -->
+                    <!-- <a class="button btn_delete" href="{{ url_for('delete_columna' , columnaid = col.id ) }}">
                         <i class="fa-solid fa-trash"></i>
-                    </a>
+                    </a> -->
                     </div>
                 </th>
                 {% endfor %}
@@ -507,14 +526,14 @@ Ver tabla {{ tabla_info['nombre'] }}
                             <div class="fil_name" data-filaid="{{ fila.id }}">
                                 {{ fila.nombre }}
                             </div>
-                            <div class="fila_buttons">
+                            <!-- <div class="fila_buttons">
                                 <a class="button" href="{{ url_for('change_orden_fila' , filaid = fila.id , modo = 'm' ) }}">
                                     <i class="fa-solid fa-caret-up"></i>
                                 </a>
                                 <a class="button" href="{{ url_for('change_orden_fila' , filaid = fila.id , modo = 'M' ) }}">
                                     <i class="fa-solid fa-caret-down"></i>
                                 </a>
-                            </div>
+                            </div> -->
                         </div>
                     </td>
                     {% for col in columnas %}
@@ -545,11 +564,6 @@ Ver tabla {{ tabla_info['nombre'] }}
                                 {{ col.color}}  100%, 
                                 {{ fila.color}} 100%
                             );
-                            /* border: 1px dashed color-mix(
-                                in srgb, 
-                                {{ col.color}}  75%, 
-                                {{ fila.color}} 75%
-                            ); */
                             background-color: color-mix(
                                 in srgb, 
                                 {{ col.color}}  10%, 
@@ -577,12 +591,6 @@ Ver tabla {{ tabla_info['nombre'] }}
 
                             {% for tarea in tareas if fila.id == tarea.filaid and col.id == tarea.columnaid and ( tarea.completo == 0 or tarea.completo == tabla_info.ver ) %}
 
-                            <style>
-                                /* .tarea[data-tareaid="{{tarea.id}}"] { */
-                                    /* background-color: {{ tarea.color }}; */
-                                /* } */
-                            </style>
-
                             <div class="tarea {{ 'tarea_completa' if tarea.completo else '' }}" data-tareaid="{{tarea.id}}" data-columnaid="{{col.id}}" data-filaid="{{fila.id}}">
                                 {{ tarea.nombre }}
                             </div>
@@ -603,65 +611,65 @@ Ver tabla {{ tabla_info['nombre'] }}
 
 <script>
     document.querySelectorAll(".tarea").forEach(tarea => {
-    tarea.setAttribute("draggable", "true");
+        tarea.setAttribute("draggable", "true");
 
-    tarea.addEventListener("dragstart", e => {
-        e.dataTransfer.setData("tareaid", tarea.dataset.tareaid);
-        e.dataTransfer.setData("columnaid", tarea.dataset.columnaid);
-        e.dataTransfer.setData("filaid", tarea.dataset.filaid);
-        e.dataTransfer.setData("orden", Array.from(tarea.parentNode.children).indexOf(tarea));
-        tarea.classList.add("dragging");
+        tarea.addEventListener("dragstart", e => {
+            e.dataTransfer.setData("tareaid", tarea.dataset.tareaid);
+            e.dataTransfer.setData("columnaid", tarea.dataset.columnaid);
+            e.dataTransfer.setData("filaid", tarea.dataset.filaid);
+            e.dataTransfer.setData("orden", Array.from(tarea.parentNode.children).indexOf(tarea));
+            tarea.classList.add("dragging");
+        });
+
+        tarea.addEventListener("dragend", () => {
+            tarea.classList.remove("dragging");
+        });
     });
 
-    tarea.addEventListener("dragend", () => {
-        tarea.classList.remove("dragging");
+    // Permitir soltar en cada celda de lista
+    document.querySelectorAll(".list_tareas").forEach(celda => {
+        celda.addEventListener("dragover", e => {
+            e.preventDefault();
+            celda.classList.add("dragover");
+        });
+
+        celda.addEventListener("dragleave", () => {
+            celda.classList.remove("dragover");
+        });
+
+        celda.addEventListener("drop", e => {
+            e.preventDefault();
+            celda.classList.remove("dragover");
+
+            const tareaid = e.dataTransfer.getData("tareaid");
+            const columnaid = e.dataTransfer.getData("columnaid");
+            const filaid = e.dataTransfer.getData("filaid");
+            const orden = e.dataTransfer.getData("orden");
+
+            const ncolumnaid = celda.dataset.columnaid;
+            const nfilaid = celda.dataset.filaid;
+
+            // mover visualmente
+            const tareaEl = document.querySelector(`.tarea[data-tareaid="${tareaid}"]`);
+            celda.appendChild(tareaEl);
+
+            // llamar API
+            fetch(`/update_tabla_tarea_celda?orden=${orden}&ncolumnaid=${ncolumnaid}&nfilaid=${nfilaid}&columnaid=${columnaid}&filaid=${filaid}&tareaid=${tareaid}`)
+                .then(r => {
+                    if (!r.ok) throw new Error("Error en la API");
+                    return r.text();
+                })
+                .then(() => {
+                    console.log("Tarea movida correctamente");
+                    tareaEl.dataset.columnaid = celda.dataset.columnaid;
+                    tareaEl.dataset.filaid = celda.dataset.filaid;
+                })
+                .catch(err => {
+                    console.error("Error al actualizar tarea:", err);
+                    alert("No se pudo mover la tarea");
+                });
+        });
     });
-});
-
-// Permitir soltar en cada celda de lista
-document.querySelectorAll(".list_tareas").forEach(celda => {
-    celda.addEventListener("dragover", e => {
-        e.preventDefault();
-        celda.classList.add("dragover");
-    });
-
-    celda.addEventListener("dragleave", () => {
-        celda.classList.remove("dragover");
-    });
-
-    celda.addEventListener("drop", e => {
-        e.preventDefault();
-        celda.classList.remove("dragover");
-
-        const tareaid = e.dataTransfer.getData("tareaid");
-        const columnaid = e.dataTransfer.getData("columnaid");
-        const filaid = e.dataTransfer.getData("filaid");
-        const orden = e.dataTransfer.getData("orden");
-
-        const ncolumnaid = celda.dataset.columnaid;
-        const nfilaid = celda.dataset.filaid;
-
-        // mover visualmente
-        const tareaEl = document.querySelector(`.tarea[data-tareaid="${tareaid}"]`);
-        celda.appendChild(tareaEl);
-
-        // llamar API
-        fetch(`/update_tabla_tarea_celda?orden=${orden}&ncolumnaid=${ncolumnaid}&nfilaid=${nfilaid}&columnaid=${columnaid}&filaid=${filaid}&tareaid=${tareaid}`)
-            .then(r => {
-                if (!r.ok) throw new Error("Error en la API");
-                return r.text();
-            })
-            .then(() => {
-                console.log("Tarea movida correctamente");
-                tareaEl.dataset.columnaid = celda.dataset.columnaid;
-                tareaEl.dataset.filaid = celda.dataset.filaid;
-            })
-            .catch(err => {
-                console.error("Error al actualizar tarea:", err);
-                alert("No se pudo mover la tarea");
-            });
-    });
-});
 
 </script>
 
@@ -682,17 +690,174 @@ document.querySelectorAll(".list_tareas").forEach(celda => {
     const eCol = [
         ['-e-','backgroundColor', '-color-'] ,
         ['.columna_head[data-columnaid="-id-"] .btn_move','backgroundColor', '-color-'] ,
+        // ['.list_tareas[data-columnaid="-id-"] ','border', ' 1px dashed color-mix( in srgb, -color- 10%, -color- 10% ) '] ,
+        // ['.list_tareas[data-columnaid="-id-"] ','backgroundColor', ' color-mix( in srgb, -color- 10%, -color- 10% ) '] ,
+    ];
+
+    const eFil = [
+        ['-e-','backgroundColor', '-color-'] ,
+        ['.columna_head[data-columnaid="-id-"] .btn_move','backgroundColor', '-color-'] ,
     ];
 
     update_color_element_bd_table(  '.columna_head' , 'columna' , 'columnaid' , eCol);
     update_color_element_bd_table(  '.fila_head' , 'fila' , 'filaid' );
 
     check_tareas('.tarea', 'tareaid');
-
 </script>
 
-<script>
 
+<script>
+   // Añadir botones de arrastre a las columnas
+document.querySelectorAll('th[data-columnaid]').forEach(th => {
+    const columnaHead = th.querySelector('.columna_head');
+    const dragBtn = document.createElement('a');
+    dragBtn.className = 'button btn_drag_col';
+    dragBtn.innerHTML = '<i class="fa-solid fa-up-down-left-right"></i>';
+    dragBtn.title = 'Mover columna';
+    dragBtn.draggable = true;
+    
+    columnaHead.insertBefore(dragBtn, columnaHead.firstChild);
+});
+
+// ========== DRAG AND DROP PARA FILAS ==========
+
+// Añadir botones de arrastre a las filas
+document.querySelectorAll('td.head_fila[data-filaid]').forEach(td => {
+    const filaHead = td.querySelector('.fila_head');
+    const dragBtn = document.createElement('a');
+    dragBtn.className = 'button btn_drag_fila';
+    dragBtn.innerHTML = '<i class="fa-solid fa-up-down-left-right"></i>';
+    dragBtn.title = 'Mover fila';
+    dragBtn.draggable = true;
+    
+    filaHead.insertBefore(dragBtn, filaHead.firstChild);
+});
+
+// Variables para el drag and drop de filas
+let draggedRow = null;
+
+// Eventos para los botones de drag de filas
+document.querySelectorAll('.btn_drag_fila').forEach(btn => {
+    btn.addEventListener('dragstart', e => {
+        draggedRow = e.target.closest('tr');
+        draggedRow.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+    });
+
+    btn.addEventListener('dragend', () => {
+        if (draggedRow) {
+            draggedRow.classList.remove('dragging');
+            draggedRow = null;
+        }
+    });
+});
+
+// Permitir drop en las filas
+document.querySelectorAll('td.head_fila[data-filaid]').forEach(td => {
+    td.addEventListener('dragover', e => {
+        if (draggedRow && td.closest('tr') !== draggedRow) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+    });
+
+    td.addEventListener('drop', e => {
+        if (draggedRow && td.closest('tr') !== draggedRow) {
+            e.preventDefault();
+            
+            const targetRow = td.closest('tr');
+            const tbody = targetRow.parentNode;
+            const draggedIndex = Array.from(tbody.children).indexOf(draggedRow);
+            const targetIndex = Array.from(tbody.children).indexOf(targetRow);
+            
+            // Mover la fila
+            if (draggedIndex < targetIndex) {
+                tbody.insertBefore(draggedRow, targetRow.nextSibling);
+            } else {
+                tbody.insertBefore(draggedRow, targetRow);
+            }
+
+            console.log('fila dragged',draggedIndex);
+            console.log('fila target',targetIndex);
+        }
+    });
+});
+
+// Variables para el drag and drop de columnas
+let draggedColumn = null;
+let draggedColumnIndex = null;
+
+// Eventos para los botones de drag de columnas
+document.querySelectorAll('.btn_drag_col').forEach(btn => {
+    btn.addEventListener('dragstart', e => {
+        draggedColumn = e.target.closest('th');
+        draggedColumnIndex = Array.from(draggedColumn.parentNode.children).indexOf(draggedColumn);
+        draggedColumn.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+    });
+
+    btn.addEventListener('dragend', () => {
+        if (draggedColumn) {
+            draggedColumn.classList.remove('dragging');
+            draggedColumn = null;
+            draggedColumnIndex = null;
+        }
+    });
+});
+
+// Permitir drop en las columnas
+document.querySelectorAll('th[data-columnaid]').forEach(th => {
+    th.addEventListener('dragover', e => {
+        if (draggedColumn && th !== draggedColumn) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+    });
+
+    th.addEventListener('drop', e => {
+        if (draggedColumn && th !== draggedColumn) {
+            e.preventDefault();
+            
+            const targetIndex = Array.from(th.parentNode.children).indexOf(th);
+            const table = document.querySelector('table');
+            
+            // Mover header
+            if (draggedColumnIndex < targetIndex) {
+                th.parentNode.insertBefore(draggedColumn, th.nextSibling);
+            } else {
+                th.parentNode.insertBefore(draggedColumn, th);
+            }
+
+            console.log(`columna dragged`,draggedColumnIndex);
+            console.log(`columna target`,targetIndex);
+            
+            
+            // Mover todas las celdas de la columna en tbody
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const cells = Array.from(row.children);
+                // Buscar las celdas por data-columnaid en lugar de por índice
+                const draggedColumnId = draggedColumn.dataset.columnaid;
+                const targetColumnId = th.dataset.columnaid;
+                
+                const draggedCell = row.querySelector(`td[data-columnaid="${draggedColumnId}"]`);
+                const targetCell = row.querySelector(`td[data-columnaid="${targetColumnId}"]`);
+
+                if (draggedCell && targetCell) {
+                    if (draggedColumnIndex < targetIndex) {
+                        row.insertBefore(draggedCell, targetCell.nextSibling);
+                    } else {
+                        row.insertBefore(draggedCell, targetCell);
+                    }
+                }
+            });
+        }
+    });
+});
+</script>
+    
+    
+<script>
     async function api_nueva_tabla_tarea( filaid , columnaid) {
         try {
             const response = await fetch('/api_nueva_tabla_tarea', {

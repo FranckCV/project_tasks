@@ -1,0 +1,6 @@
+Flask==2.3.2
+pymysql==1.1.1
+colour
+markdown
+pytz
+gunicorn==21.2.0

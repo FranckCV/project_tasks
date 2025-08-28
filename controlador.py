@@ -1070,7 +1070,7 @@ def get_tareas(tareaid=None):
 def get_tarea_id(id):
     sql = '''
     SELECT 
-        tar.id, tar.nombre, tar.descripcion, tar.color, tar.tareaid  , tar.completo
+        tar.id, tar.nombre, tar.descripcion, tar.color, tar.tareaid , tar.completo
     FROM tarea tar
     where tar.id = %s
     '''
@@ -1115,6 +1115,34 @@ def up_orden_columna( columnaid ):
 
     update_columna_orden( high_col.get('orden') , columnaid )
     update_columna_orden( orden , high_col.get('id') )
+
+
+def reorder_columna( columanid ):
+    col = consult_columna(columanid)
+    orden = col.get('orden',0)
+    tablaid = col.get('tablaid')
+    sql = ''
+
+    if modo == 'M':
+        sql = '''
+            SELECT id, IFNULL(orden,1)  as orden 
+            FROM fila
+            WHERE tablaid = %s AND orden > %s
+            ORDER BY orden ASC
+            LIMIT 1
+        '''
+    elif modo == 'm':
+        sql = '''
+            SELECT 
+                id, IFNULL(orden,0) as orden
+            FROM fila  
+            WHERE tablaid = %s AND orden < %s
+            ORDER BY orden DESC
+            LIMIT 1
+        '''
+
+    sel = bd.sql_select_fetchone(sql, (tablaid , orden) )
+
 
 
 def change_orden_fila( filaid , modo ):

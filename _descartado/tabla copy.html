@@ -8,45 +8,69 @@ Ver tabla {{ tabla_info['nombre'] }}
 {% block estilos %}
 
 <style>
+    table {
+        font-size: 90%;
+        table-layout: fixed;
+        border-collapse: separate;
+        border-spacing: 2px;
+    }
+
+    tr {
+        display: table-row; /* por defecto */
+    }
+
     th {
         min-width: 150px;
-        max-width: 200px;
+        max-width: 400px;
+        /* display: flex; */
+        width: fit-content;
     }
+
+    /* td {
+        height: 100%;
+    } */
 
     td,
     th {
-        border: 1px solid white;
+        /* border: 1px solid white; */
+        /* border: 1px solid rgba(255, 255, 255, 0.281); */
         text-align: center;
+        padding: 0;
     }
 
-    .td_tareas {
-        height: 100%;
+    td.td_tareas {
+        /* height: 100%; */
         position: relative;
+        vertical-align: top;
+        padding: 0;
     }
 
     .list_tareas {
-        min-height: 47px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 10px;
-        height: 100%;
+        justify-content: center;
+        padding: 5px;
         gap: 5px;
-        position: relative;
+        width: 100%;  
         height: 100%;
+        position: relative;
+        min-height: 100%;
+        box-sizing: border-box;
     }
 
     .tarea {
         display: flex;
         padding-inline: 10px;
-        padding-block: 5px;
+        padding-block: 3px;
         border-radius: 5px;
-        width: fit-content;
+        justify-content: center;
+        width: 100%;
     }
 
-    .tarea:hover {
+    /* .tarea:hover {
         box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.57);
-    }
+    } */
 
     .section_tabla {
         display: flex;
@@ -60,7 +84,7 @@ Ver tabla {{ tabla_info['nombre'] }}
 
         border-radius: 0px;
         border-bottom-left-radius: 5px;
-        background-color: rgb(0, 136, 98);
+        /* background-color: rgb(0, 136, 98); */
         color: white;
         height: 15px;
         aspect-ratio: 1 / 1;
@@ -77,8 +101,10 @@ Ver tabla {{ tabla_info['nombre'] }}
 
     .container_tabla {
         overflow: auto;
-        max-width: 900px;
-        max-height: 80vh;
+        /* max-width: 900px; */
+        max-height: 85vh;
+        background-color: rgba(0, 0, 0, 0.316);
+        border-radius: 5px;
     }
 
     .container_forms {
@@ -93,7 +119,176 @@ Ver tabla {{ tabla_info['nombre'] }}
         flex-wrap: wrap;
         gap: 5px;
     }
+
+    .btns_insert {
+        display: flex;
+        gap: 5px;
+        padding: 5px;
+        justify-content: center;
+    }
+
+    .btns_insert .button {
+        gap:     5px;
+        padding: 5px;
+        font-size: 100%;
+        width: 100%;
+        justify-content: center;
+    }
+
+    td input ,
+    th input {
+        text-align: center;
+    }
+
+    .columna_head {
+        display: flex;
+        gap: 5px;
+        justify-content: space-between;
+        height: -webkit-fill-available;
+        align-items: center;
+    }
+
+    .col_name {
+        padding-block: 5px;
+    }
+
+    .col_arrows {
+        display: flex;
+        /* justify-content: space-between; */
+    }
+
+    .columna_head .button {
+        width: fit-content;
+        padding-inline: 5px;
+        height: -webkit-fill-available;
+    }
+
+    .fila_head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .fila_buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        height: -webkit-fill-available;
+    }
+
+    .fila_buttons * {
+        height: 100%;
+        padding: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .fila_buttons .button {
+        /* height: 30px; */
+    }
+
+    .fila_buttons i {
+        padding: 0;
+    }
+
+    .fil_name {
+        width: 100%;
+        height: -webkit-fill-available;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .button i {
+        font-size: 85%;
+    }
+
+    tr {
+        display: table-row;
+    }
+
+    td, th {
+        text-align: center;
+        padding: 0;
+        vertical-align: top;
+        height: 1px; 
+    }
+
+    td.td_tareas {
+        position: relative;
+        padding: 0;
+        height: 1px;
+    }
+
+    .list_tareas {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 5px;
+        gap: 5px;
+        box-sizing: border-box;
+        min-height: 100%; 
+    }
+
+    td.head_fila {
+        position: relative;
+        padding: 0;
+        height: 1px; 
+    }
+
+    .fila_head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 100%;
+        box-sizing: border-box;
+    }
+
+    th {
+        min-width: 150px;
+        max-width: 400px;
+        width: fit-content;
+        padding: 0;
+        height: 1px; 
+    }
+
+    .columna_head {
+        display: flex;
+        gap: 5px;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 100%;
+        box-sizing: border-box;
+    }
+
+    .btns_insert {
+        display: flex;
+        gap: 5px;
+        padding: 5px;
+        justify-content: center;
+        min-height: 100%;
+        box-sizing: border-box;
+    }
+
+    .insert_tarea {
+        --size: 0px;
+        border-radius: 5px;
+        color: white;
+        height: 15px;
+        aspect-ratio: 1 / 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        position: absolute;
+        z-index: 99;
+        right: var(--size);
+        top: var(--size);
+    }
 </style>
+
 
 {% endblock %}
 
@@ -101,201 +296,194 @@ Ver tabla {{ tabla_info['nombre'] }}
 {% block contenido %}
 
 <div class="container_title">
-    <p class="title">
+    <p class="title tabla_name" data-tablaid="{{tabla_info.id}}"> 
         {{tabla_info.nombre}}
     </p>
 </div>
 
 <div class="section_tabla">
 
-
-    <div class="container_forms">
-
-        <div>
-            <p>
-                COLUMNAS
-            </p>
-            <form action=" {{ url_for('guardar_tabla_elemento') }}?elemento=columna " method="post">
-
-                <input type="text" name="nombre" id="" required>
-                <input type="color" name="color" id="" required>
-                <input type="number" name="orden" id="">
-                <input type="submit" value="Guardar">
-            </form>
-        </div>
-        <div>
-            <p>
-                FILAS
-            </p>
-            <form action=" {{ url_for('guardar_tabla_elemento') }}?elemento=fila " method="post">
-
-                <input type="text" name="nombre" id="" required>
-                <input type="color" name="color" id="" required>
-                <input type="number" name="orden" id="">
-                <input type="submit" value="Guardar">
-            </form>
-        </div>
-        <!-- <div>
-            <p>
-                TAREAS
-            </p>
-            <form action=" " method="post">
-
-                <input type="text" name="nombre" id="" required>
-                <input type="color" name="color" id="" required>
-                <select name="columnaid" id="">
-                    {% for col in columnas %}
-                    <option value="{{col.id}}">
-                        {{col.nombre}}
-                    </option>
-                    {% endfor %}
-                </select>
-                <select name="filaid" id="">
-                    {% for col in filas %}
-                    <option value="{{col.id}}">
-                        {{col.nombre}}
-                    </option>
-                    {% endfor %}
-                </select>
-                <input type="submit" value="Guardar">
-            </form>
-        </div> -->
-
-    </div>
-
     <div class="container_tabla">
         <table>
             <thead>
                 <th>
-
+                    <div class="btns_insert">
+                        <a class="button btn_insert" href="{{url_for('nueva_fila' , tablaid = tabla_info.id )}}">
+                            <i class="fa-solid fa-plus"></i>
+                            Row
+                        </a>
+                        <a class="button btn_insert" href="{{url_for('nueva_columna' , tablaid = tabla_info.id )}}">
+                            <i class="fa-solid fa-plus"></i>
+                            Col
+                        </a>
+                    </div>
                 </th>
                 {% for col in columnas %}
-                <th data-columnaid="{{ col.id }}" style="background-color: {{ col.color }} ;">
-                    {{ col['nombre'] }}
+                <style>
+                    /* th[data-columnaid="{{ col.id }}"] {
+                        background-color: {{ col.color }} ;
+                    }
+                    th[data-columnaid="{{ col.id }}"] .col_name ,
+                    th[data-columnaid="{{ col.id }}"] .col_name input {
+                        background-color: {{ col.color }} ;
+                    } */
+                    /* th[data-columnaid="{{ col.id }}"] .col_name {
+                        background-color: color-mix(
+                            in srgb, 
+                            transparent     25%, 
+                            {{ col.color }} 25%
+                            ) ;
+                    } */
+
+                    th[data-columnaid="{{ col.id }}"] .columna_head {
+                        border-radius: 5px;
+                        border: 1px solid {{ col.color }};
+                        background-color: {{ col.color }} ;
+                        /* background-color: color-mix(
+                            in srgb, 
+                            transparent     75%, 
+                            {{ col.color }} 75%
+                            ) ; */
+                    }
+
+                    th[data-columnaid="{{ col.id }}"] .button {
+                        background-color: {{ col.color }};
+                    }
+
+                </style>
+
+                <th data-columnaid="{{ col.id }}">
+                    <div class="columna_head" data-columnaid="{{ col.id }}">
+                        <a class="button" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'm' ) }}">
+                            <i class="fa-solid fa-caret-left"></i>
+                        </a>
+                        <div class="col_name" data-columnaid="{{ col.id }}" >
+                            {{ col['nombre'] }}
+                        </div>
+                        <a class="button" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'M' ) }}">
+                            <i class="fa-solid fa-caret-right"></i>
+                        </a>
+                    </div>
                 </th>
                 {% endfor %}
+                
             </thead>
             <tbody>
                 {% for fila in filas %}
                 <tr>
-                    <td style="background-color: {{ fila.color }} ;" data-filaid="{{ fila.id }}">
-                        {{ fila.nombre }}
+                    <style>
+                        /* td.head_fila[data-filaid="{{ fila.id }}"] {
+                            background-color: {{ fila.color }} ;
+                        } */
+
+                        td[data-filaid="{{ fila.id }}"] .fila_head {
+                            border-radius: 5px;
+                            border: 1px solid {{ fila.color }};
+                            /* background-color: {{ fila.color }} ; */
+                            background-color: color-mix(
+                            in srgb, 
+                            transparent 75%, 
+                            {{ fila.color }}  75%
+                            ) ;
+                        }
+
+                        td[data-filaid="{{ fila.id }}"] .button {
+                            background-color: {{ fila.color }};
+                        }
+                    </style>
+
+                    <td class="head_fila" data-filaid="{{ fila.id }}">
+                        <div class="fila_head">
+                            <div class="fil_name" data-filaid="{{ fila.id }}">
+                                {{ fila.nombre }}
+                            </div>
+                            <div class="fila_buttons">
+                                <a class="button" href="{{ url_for('change_orden_fila' , filaid = fila.id , modo = 'm' ) }}">
+                                    <i class="fa-solid fa-caret-up"></i>
+                                </a>
+                                <a class="button" href="{{ url_for('change_orden_fila' , filaid = fila.id , modo = 'M' ) }}">
+                                    <i class="fa-solid fa-caret-down"></i>
+                                </a>
+                            </div>
+                        </div>
                     </td>
                     {% for col in columnas %}
-                    <td class="td_tareas">
-                        <div class="insert_tarea clickable-modal" data-target="insert_tarea_c_{{col.id}}_f_{{fila.id}}"
-                            id="">
+                    <style>
+                        td[data-columnaid="{{col.id}}"][data-filaid="{{fila.id}}"] .insert_tarea {
+                            background-color: color-mix(
+                                in srgb,
+                                {{ col.color}}  100%, 
+                                {{ fila.color}} 100%
+                                );
+                            /* background-color: color-mix(
+                                in srgb, 
+                                black 00%, 
+                                color-mix(
+                                    in srgb, 
+                                    {{ col.color}}  50%, 
+                                    {{ fila.color}} 50%
+                                ) 90%
+                                ); */
+                        }
+
+                        .list_tareas[data-columnaid="{{col.id}}"][data-filaid="{{fila.id}}"] {
+                            /* margin: 5px; */
+                            border-radius: 5px;
+                            border: 1px dashed color-mix(
+                                in srgb, 
+                                {{ col.color}}  75%, 
+                                {{ fila.color}} 75%
+                            );
+                            background-color: color-mix(
+                                in srgb, 
+                                {{ col.color}}  15%, 
+                                {{ fila.color}} 15%
+                            );
+                        }
+                    </style>
+                    <td class="td_tareas" data-columnaid="{{col.id}}" data-filaid="{{fila.id}}">
+                        <a class="insert_tarea" href="{{url_for('nueva_tabla_tarea' , columnaid = col.id , filaid = fila.id , tablaid = tabla_info.id )}}">
                             <i class="fa-solid fa-plus"></i>
-                        </div>
+                        </a>
                         <div class="list_tareas" data-columnaid="{{col.id}}" data-filaid="{{fila.id}}">
-                            {% for tarea in tareas %}
-                            {% if fila.id == tarea.filaid and col.id == tarea.columnaid %}
-                            <div class="tarea clickable-modal" style=" background-color: {{ tarea.color }}; "
-                                data-target="update_tarea_{{tarea.id}}">
+                            {% for tarea in tareas if fila.id == tarea.filaid and col.id == tarea.columnaid %}
+
+                            <style>
+                                .tarea[data-tareaid="{{tarea.id}}"] {
+                                    background-color: {{ tarea.color }};
+                                }
+                            </style>
+
+                            <div class="tarea" data-tareaid="{{tarea.id}}" >
                                 {{ tarea.nombre }}
                             </div>
-                            {% endif %}
+                            
                             {% endfor %}
                         </div>
                     </td>
                     {% endfor %}
                 </tr>
                 {% endfor %}
-
             </tbody>
         </table>
-
     </div>
 </div>
-
-
-{% for tarea in tareas %}
-<div class="modal_space" id="update_tarea_{{tarea.id}}">
-    <form class="modal_dialog modal_form" action=" {{ url_for('guardar_tabla_elemento') }}?elemento=tarea "
-        method="post">
-        <div class="modal_header">
-            Editar tarea
-        </div>
-        <div class="modal_body">
-            <div class="form_field">
-                <label for="">Nombre</label>
-                <input type="text" name="nombre" id="" value="{{tarea.nombre}}" required>
-            </div>
-            <div class="form_field">
-                <label for="">Color</label>
-                <input type="color" name="color" id="" value="{{tarea.color}}" required>
-            </div>
-
-        </div>
-        <div class="modal_footer">
-            <button class="button close_modal" type="reset">
-                Cerrar
-            </button>
-            <button class="button submit_modal" type="submit">
-                Guardar
-            </button>
-        </div>
-    </form>
-</div>
-{% endfor %}
-
-
-{% for fila in filas %}
-{% for col in columnas %}
-<div class="modal_space" id="insert_tarea_c_{{col.id}}_f_{{fila.id}}">
-    <form class="modal_dialog modal_form" action=" {{ url_for('guardar_tabla_elemento') }}?elemento=tarea "
-        method="post">
-        <div class="modal_header">
-            Agregar tarea
-        </div>
-        <div class="modal_body">
-            <div class="form_field">
-                <label for="">Nombre</label>
-                <input type="text" name="nombre" id="" required>
-            </div>
-            <div class="form_field">
-                <label for="">Color</label>
-                <input type="color" name="color" id="" required>
-            </div>
-            <div class="form_field">
-                <label for="">Fila</label>
-                <input type="text" name="" id="" value="{{fila.nombre}}" disabled>
-            </div>
-            <div class="form_field">
-                <label for="">Columna</label>
-                <input type="text" name="" id="" value="{{col.nombre}}" disabled>
-            </div>
-
-            <input type="hidden" name="filaid" value="{{fila.id}}">
-            <input type="hidden" name="columnaid" value="{{col.id}}">
-
-        </div>
-        <div class="modal_footer">
-            <button class="button close_modal" type="reset">
-                Cerrar
-            </button>
-            <button class="button submit_modal" type="submit">
-                Guardar
-            </button>
-        </div>
-    </form>
-</div>
-{% endfor %}
-{% endfor %}
-
-
-
 {% endblock %}
 
-
-
-
-
-
 {% block scripts %}
-
 <script>
-    pintarElemento(' th , td , .tarea ');
+    pintarElemento(' .columna_head  ');
+    pintarElemento(' .fila_head  ');
+    pintarElemento(' .tarea ');
+    pintarElemento(' .insert_tarea ');
+    pintarElemento(' .fila_buttons .button , .columna_head .button ');
+    pintarElemento(' th input[type="text"] ');
+    pintarElemento(' td input[type="text"] ');
+    update_name_element_bd_table( '.tabla_name' , 'tabla' , 'nombre' , 'tablaid');
+    update_name_element_bd_table( '.col_name' , 'columna' , 'nombre' , 'columnaid');
+    update_name_element_bd_table( '.fil_name' , 'fila' , 'nombre' , 'filaid');
+    update_name_element_bd_table( '.tarea' , 'tarea' , 'nombre' , 'tareaid');
+    update_color_element_bd_table(  '.columna_head' , 'columna' , 'columnaid' );
 
 </script>
 

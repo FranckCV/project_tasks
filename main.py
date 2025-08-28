@@ -12,7 +12,6 @@ import os
 app = Flask(__name__)
 
 
-
 CRUD_FORMS = {
     'insert_docente' : {
         'function': controlador.insert_docente , 
@@ -679,6 +678,19 @@ def delete_fila():
     return redirect(url_for('tabla',tablaid = tablaid))
 
 
+@app.route('/reorder_columna_tabla') 
+def reorder_columna_tabla():
+    modo = request.args.get('modo')
+    columnaid = request.args.get('columnaid')
+    c = controlador.consult_columna(columnaid)
+    tablaid = c.get('tablaid')
+    if modo == 'm':
+        controlador.down_orden_columna(columnaid)
+    elif modo == 'M':
+        controlador.up_orden_columna(columnaid)
+    return redirect(url_for('tabla',tablaid = tablaid))
+
+
 @app.route('/update_orden_columna') 
 def update_orden_columna():
     modo = request.args.get('modo')
@@ -769,17 +781,17 @@ def api_check_tarea():
         return jsonify({"error": str(e)}), 500
 
 
-@app.route('/api_nueva_tabla_tarea')
+@app.route('/api_nueva_tabla_tarea', methods=['POST'])
 @validar_usuario()
 def api_nueva_tabla_tarea():
     try:
         data =      request.get_json()
         filaid =    data.get('filaid')
-        columnaid = data.get('columnaid')
+        columnaid = data.get('columnaid') 
         tid = controlador.register_tabla_tarea( filaid , columnaid )
         rpta = f''' FIL ID {filaid} , COL ID {columnaid} , TAR ID {tid} '''
         tarea = controlador.get_tarea_id(tid)
-        return jsonify({'respuesta': rpta , 'tareaid' : tid , 'tarea' : tarea })
+        return jsonify({'respuesta': rpta , 'tarea' : tarea })
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -892,5 +904,46 @@ def execute_post(name):
     return re
 
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=9000, debug=True)
+
+# API para actualizar orden de columnas
+@app.route('/api_update_columnas_orden', methods=['POST'])
+def api_update_columnas_orden():
+    try:
+        data = request.get_json()
+        columnas_orden = data['columnas_orden']  # Lista de IDs en el nuevo orden
+        
+        # Actualizar orden de cada columna
+        for i, columna_id in enumerate(columnas_orden):
+            bd.sql_execute(
+                "UPDATE columna SET orden = %s WHERE id = %s",
+                (i + 1, columna_id)
+            )
+        
+        # connection.commit()
+        return jsonify({"success": True})
+        
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+# API para actualizar orden de filas
+@app.route('/api_update_filas_orden', methods=['POST'])
+def api_update_filas_orden():
+    try:
+        data = request.get_json()
+        filas_orden = data['filas_orden']  # Lista de IDs en el nuevo orden
+        
+        # Actualizar orden de cada fila
+        for i, fila_id in enumerate(filas_orden):
+            bd.sql_execute(
+                "UPDATE fila SET orden = %s WHERE id = %s",
+                (i + 1, fila_id)
+            )
+        
+        # connection.commit()
+        return jsonify({"success": True})
+        
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500

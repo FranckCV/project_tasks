@@ -3,19 +3,13 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-08-2025 a las 22:22:45
+-- Tiempo de generación: 27-08-2025 a las 07:05:16
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.1.17
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Base de datos: `bd_academic`
@@ -65,15 +59,19 @@ INSERT INTO `columna` (`id`, `nombre`, `color`, `orden`, `ancho`, `tablaid`) VAL
 (22, 'BD', '#f9811f', 13, 0.000, 1),
 (23, 'Usuario', '#7d0ab2', 14, 0.000, 1),
 (24, 'Responsividad', '#2ce26c', 15, 0.000, 1),
-(28, 'Doctrina', '#7c33d7', 1, 0.000, 3),
-(29, 'Redes', '#b31919', 3, 0.000, 3),
-(30, 'Investigacion', '#e5c810', 2, 0.000, 3),
-(31, 'NASA', '#50bcf2', 7, 0.000, 3),
+(28, 'Doctrina', '#7826f2', 4, 0.000, 3),
+(29, 'Redes', '#b31919', 6, 0.000, 3),
+(30, 'Investigacion', '#e5c810', 5, 0.000, 3),
+(31, 'NASA', '#50bcf2', 10, 0.000, 3),
 (32, 'AUDIT', '#425276', 8, 0.000, 3),
-(33, 'Gobierno', '#1f44ff', 4, 0.000, 3),
-(34, 'Mineria', '#ff7e29', 6, 0.000, 3),
-(35, 'Moviles', '#09ec23', 5, 0.000, 3),
-(36, 'Otros', '#b5b5b5', 16, NULL, 1);
+(33, 'Gobierno', '#1f44ff', 7, 0.000, 3),
+(34, 'Mineria', '#ff7e29', 3, 0.000, 3),
+(35, 'Moviles', '#09ec23', 9, 0.000, 3),
+(36, 'Otros', '#b5b5b5', 16, NULL, 1),
+(37, 'DSI', '#ffbc70', 1, NULL, 3),
+(38, 'Yo', '#b5b5b5', 2, NULL, 3),
+(39, 'Columna20250825105111', '#007533', 1, NULL, 2),
+(40, 'Columna20250825105119', '#b5b5b5', 2, NULL, 2);
 
 -- --------------------------------------------------------
 
@@ -358,8 +356,8 @@ INSERT INTO `fila` (`id`, `nombre`, `color`, `orden`, `tablaid`) VALUES
 (8, 'AUDIT', '#208dbc', 2, 2),
 (9, 'DSI', '#e61e1e', 3, 2),
 (10, 'PRJ', '#272777', 1, 2),
-(11, 'NASA', '#1f9eff', 4, 2),
-(12, 'a', '#707070', 5, 2),
+(11, 'NASA', '#1f9eff', 5, 2),
+(12, 'a', '#707070', 6, 2),
 (13, '-GENERAL-', '#383838', 0, 1),
 (14, 'Dashboard', '#001eff', 6, 1),
 (15, 'Notas', '#1189a2', 7, 1),
@@ -367,16 +365,15 @@ INSERT INTO `fila` (`id`, `nombre`, `color`, `orden`, `tablaid`) VALUES
 (17, 'Matricula', '#07c048', 16, 1),
 (18, 'Docentes', '#800ff0', 22, 1),
 (19, 'Grupos', '#1189a2', 18, 1),
-(20, 'LUN', '#343187', 8, 3),
-(21, 'MAR', '#343187', 9, 3),
-(22, 'MIE', '#343187', 10, 3),
-(23, 'Completo', '#1c1c1c', 1, 3),
-(24, 'JUE', '#343187', 11, 3),
-(25, 'VIE', '#fd7e08', 5, 3),
-(26, 'SAB', '#343187', 13, 3),
-(27, 'VIE', '#343187', 12, 3),
+(20, 'LUN', '#343187', 2, 3),
+(21, 'MAR', '#343187', 3, 3),
+(22, 'MIE', '#343187', 4, 3),
+(24, 'JUE', '#343187', 5, 3),
+(25, 'VIE', '#fd7e08', 15, 3),
+(26, 'SAB', '#343187', 7, 3),
+(27, 'VIE', '#343187', 6, 3),
 (28, 'Cambiar contraseña', '#ff5a36', 4, 1),
-(29, 'SAB', '#fd7e08', 6, 3),
+(29, 'SAB', '#fd7e08', 13, 3),
 (30, 'Perfil', '#1189a2', 2, 1),
 (31, 'Configuracion', '#1189a2', 5, 1),
 (32, 'Todas notas', '#800ff0', 8, 1),
@@ -386,10 +383,13 @@ INSERT INTO `fila` (`id`, `nombre`, `color`, `orden`, `tablaid`) VALUES
 (36, 'Semestres', '#800ff0', 23, 1),
 (37, 'Curso', '#07c048', 20, 1),
 (38, 'Login', '#001eff', 1, 1),
-(39, 'JUE', '#fd7e08', 4, 3),
-(40, 'MIE', '#fd7e08', 3, 3),
-(41, 'MAR', '#fd7e08', 2, 3),
-(42, 'DOM', '#fd7e08', 7, 3);
+(39, 'JUE', '#fd7e08', 14, 3),
+(40, 'MIE', '#fd7e08', 12, 3),
+(41, 'MAR', '#fd7e08', 11, 3),
+(42, 'DOM', '#fd7e08', 9, 3),
+(43, 'LUN', '#fd7e08', 10, 3),
+(44, 'DOM', '#343187', 8, 3),
+(45, 'Yo', '#00b871', 4, 2);
 
 -- --------------------------------------------------------
 
@@ -931,21 +931,21 @@ INSERT INTO `tabla_tarea` (`tareaid`, `filaid`, `columnaid`, `color`, `orden`) V
 (4, 15, 20, '#994628', 1),
 (5, 17, 22, '#622222', 1),
 (6, 13, 21, '#465289', 2),
-(53, 12, 15, '#275e75', 17),
-(54, 12, 15, '#275e75', 2),
+(53, 45, 15, '#275e75', 8),
+(54, 12, 39, '#275e75', 9),
 (55, 12, 15, '#CCCCCC', 1),
-(56, 12, 15, '#CCCCCC', 1),
-(57, 12, 15, '#8a2626', 1),
+(56, 12, 40, '#CCCCCC', 4),
+(57, 12, 40, '#8a2626', 6),
 (58, 12, 15, '#CCCCCC', 3),
-(59, 12, 15, '#689fb6', 3),
-(60, 12, 15, '#359a91', 17),
+(59, 12, 40, '#689fb6', 13),
+(60, 45, 40, '#359a91', 2),
 (61, 15, 24, '#465289', 1),
 (62, 3, 20, '#CCCCCC', 3),
 (63, 8, 15, '#25c4ae', 0),
 (64, 8, 15, '#25c4ae', 0),
 (65, 9, 15, '#888c5f', 0),
 (66, 9, 15, '#888c5f', 0),
-(67, 12, 15, '#28918b', 1),
+(67, 11, 15, '#28918b', 1),
 (68, 10, 15, '#28918b', 0),
 (69, 3, 3, '#b75080', 0),
 (70, 3, 21, '#aa8880', 2),
@@ -956,7 +956,7 @@ INSERT INTO `tabla_tarea` (`tareaid`, `filaid`, `columnaid`, `color`, `orden`) V
 (75, 3, 20, '#aa8880', 5),
 (76, 3, 3, '#b75080', 2),
 (77, 1, 3, '#b75080', 1),
-(78, 12, 15, '#1fdb7d', 8),
+(78, 12, 39, '#1fdb7d', 12),
 (79, 1, 3, '#2146b5', 1),
 (80, 14, 20, '#c20000', 1),
 (81, 6, 22, '#94e302', 4),
@@ -974,7 +974,7 @@ INSERT INTO `tabla_tarea` (`tareaid`, `filaid`, `columnaid`, `color`, `orden`) V
 (93, 8, 15, '#1ee9cf', 0),
 (94, 8, 15, '#1ee9cf', 0),
 (95, 12, 15, '#5e2772', 17),
-(96, 12, 15, '#35916f', 9),
+(96, 45, 39, '#35916f', 6),
 (97, 3, 20, '#da5a5a', 3),
 (98, 3, 20, '#da5a5a', 3),
 (99, 3, 21, '#a2ada8', 9),
@@ -996,7 +996,7 @@ INSERT INTO `tabla_tarea` (`tareaid`, `filaid`, `columnaid`, `color`, `orden`) V
 (115, 3, 22, '#94595e', 0),
 (116, 29, 35, '#3b417e', 2),
 (117, 21, 30, '#293ac3', 1),
-(118, 29, 35, '#38876b', 3),
+(118, 24, 35, '#38876b', 1),
 (119, 22, 29, '#732550', 1),
 (120, 31, 21, '#1b93a7', 2),
 (121, 31, 20, '#1b93a7', 1),
@@ -1023,12 +1023,23 @@ INSERT INTO `tabla_tarea` (`tareaid`, `filaid`, `columnaid`, `color`, `orden`) V
 (142, 3, 20, '#16ae7a', 9),
 (143, 3, 20, '#16ae7a', 10),
 (144, 3, 20, '#16ae7a', 11),
-(145, 21, 34, '#995758', 2),
-(146, 21, 34, '#995758', 3),
+(145, 20, 34, '#995758', 2),
+(146, 20, 34, '#995758', 3),
 (147, 22, 34, '#995758', 2),
-(148, 24, 34, '#995758', 2),
+(148, 21, 34, '#995758', 2),
 (149, 42, 34, '#da996f', 2),
-(150, 23, 35, '#83b515', 2);
+(150, 20, 32, '#83b515', 1),
+(151, 20, 32, '#3b417e', 2),
+(152, 20, 32, '#3b417e', 3),
+(153, 20, 32, '#3b417e', 4),
+(154, 20, 32, '#3b417e', 5),
+(155, 21, 37, '#99767b', 2),
+(156, 20, 38, '#74739e', 2),
+(157, 21, 38, '#74739e', 2),
+(158, 20, 28, '#562bbc', 2),
+(159, 3, 3, '#047589', 3),
+(160, 3, 3, '#047589', 4),
+(161, 3, 20, '#11bb89', 12);
 
 -- --------------------------------------------------------
 
@@ -1132,7 +1143,7 @@ INSERT INTO `tarea` (`id`, `nombre`, `descripcion`, `color`, `orden`, `completo`
 (64, 'logo de empresa para Selección de empresas', NULL, '#ffffff33', 0, 0, NULL),
 (65, 'Formulario para agregar camaras o quitar camaras', NULL, '#ffffff33', 0, 0, NULL),
 (66, 'mejorar form de registro de persona', NULL, '#ffffff33', 0, 0, NULL),
-(67, 'mejorar pagina de tabla', NULL, '#ffffff33', 0, 0, NULL),
+(67, 'corregir documentos', NULL, '#ffffff33', 0, 0, NULL),
 (68, 'Revisar correcciones multiples', NULL, '#ffffff33', 0, 0, NULL),
 (69, 'funciones para mover filas', NULL, '#ffffff33', 0, 1, NULL),
 (70, 'crear js para mover entre celda', NULL, '#ffffff33', 0, 1, NULL),
@@ -1210,12 +1221,23 @@ INSERT INTO `tarea` (`id`, `nombre`, `descripcion`, `color`, `orden`, `completo`
 (142, 'Boton eliminar - Columna', NULL, '#16ae7a', 0, 0, NULL),
 (143, 'Boton Color - Columna', NULL, '#16ae7a', 0, 0, NULL),
 (144, 'Boton Drag - Columna', NULL, '#16ae7a', 0, 0, NULL),
-(145, 'Responder a foro de Debate', NULL, '#995758', 0, 0, NULL),
+(145, 'Responder a foro de Debate', NULL, '#995758', 0, 1, NULL),
 (146, 'Contrargumentar a un compañero', NULL, '#995758', 0, 0, NULL),
 (147, 'Contrargumentar a un compañero', NULL, '#995758', 0, 0, NULL),
 (148, 'Contrargumentar a un compañero', NULL, '#995758', 0, 0, NULL),
-(149, 'Mapa Mental', NULL, '#da996f', 0, 0, NULL),
-(150, 'Nueva_tarea', NULL, '#83b515', 0, 0, NULL);
+(149, 'Mapa Mental', NULL, '#da996f', 0, 1, NULL),
+(150, 'Para id de logo, el prefijo del nombre debe ser único por usuario, utilizar un ID o HASH', NULL, '#83b515', 0, 1, NULL),
+(151, 'Agregar previsualización del logo al editar para poder cambiarlo o retirarlo de la empresa.', NULL, '#3b417e', 0, 1, NULL),
+(152, 'Queda pendiente que las configuraciones guardadas en la edición de menú según plan, se apliquen o verifiquen con usuarios según el plan, ya que por ahora solo se muestra según rol. Primero se filtra según plan y luego se aplica según rol.', NULL, '#3b417e', 0, 1, NULL),
+(153, 'Validar accesos de rutas para sa, a través de un decorador', NULL, '#3b417e', 0, 1, NULL),
+(154, 'En selección empresas, debe existir la posibilidad de cerrar sesión', NULL, '#3b417e', 0, 1, NULL),
+(155, 'Alistar todo para una prueba', NULL, '#99767b', 0, 0, NULL),
+(156, 'Crear excel de horario', NULL, '#74739e', 0, 1, NULL),
+(157, 'Avanzar nuevas funciones de tabla PRJ', NULL, '#74739e', 0, 0, NULL),
+(158, 'Video forum', NULL, '#562bbc', 0, 0, NULL),
+(159, 'mejorar funciones y APIs para reordenar columnas', NULL, '#047589', 0, 0, NULL),
+(160, 'mejorar funciones y APIs para reordenar filas', NULL, '#047589', 0, 0, NULL),
+(161, 'Nueva_tarea', NULL, '#11bb89', 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -1573,7 +1595,7 @@ ALTER TABLE `actividad`
 -- AUTO_INCREMENT de la tabla `columna`
 --
 ALTER TABLE `columna`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT de la tabla `curso`
@@ -1603,7 +1625,7 @@ ALTER TABLE `etiqueta`
 -- AUTO_INCREMENT de la tabla `fila`
 --
 ALTER TABLE `fila`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=46;
 
 --
 -- AUTO_INCREMENT de la tabla `grupo`
@@ -1669,7 +1691,7 @@ ALTER TABLE `tablero`
 -- AUTO_INCREMENT de la tabla `tarea`
 --
 ALTER TABLE `tarea`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=151;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=162;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_actividad`
@@ -1817,7 +1839,3 @@ ALTER TABLE `usuario_nota`
   ADD CONSTRAINT `FKusuario_no696390` FOREIGN KEY (`notaid`) REFERENCES `nota` (`id`),
   ADD CONSTRAINT `FKusuario_no984737` FOREIGN KEY (`usuarioid`) REFERENCES `usuario` (`id`);
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
