@@ -115,14 +115,12 @@
             try {
                 let bgColor = window.getComputedStyle(el).backgroundColor;
                 let [r, g, b] = getRgbArray(bgColor);
-
-                // fórmula de luminosidad perceptual (mejor que promedio simple)
                 let brillo = (0.299 * r + 0.587 * g + 0.114 * b);
 
                 el.style.color = brillo > umbral ? "black" : "white";
             } catch (err) {
                 console.warn("Error al ajustar color:", err);
-                el.style.color = "black"; // fallback
+                el.style.color = "black";
             }
         }
 
@@ -130,6 +128,9 @@
             document.querySelectorAll(e).forEach(div => {
                 if (div) {
                     ajustarColorTexto(div);
+                    // div.querySelectorAll('*').forEach(sub => {
+                    //     ajustarColorTexto(sub);
+                    // });
                 }
             });
         }
@@ -319,12 +320,32 @@
                 const id = div.dataset[datasetKey];
                 const colorActual = cssColorToHexAdvanced(window.getComputedStyle(div).backgroundColor);
 
+                const cdiv = document.createElement('div');
+                cdiv.classList.add('btnUpdateColor');
+                cdiv.style.position = 'relative';
+                cdiv.style.display = 'inline-block';
+                div.appendChild(cdiv);
+
                 const input = document.createElement('input');
                 input.type = 'color';
-                input.classList.add('inputUpdateColor');
-                input.value = colorActual; 
+                input.value = colorActual;
+                input.style.position = 'absolute';
+                input.style.top = '0';
+                input.style.left = '0';
+                input.style.width = '100%';
+                input.style.height = '100%';
+                input.style.opacity = '0';
+                input.style.cursor = 'pointer';
+                input.style.zIndex = '2';
                 input.dataset.id = id;
-                div.appendChild(input);
+                cdiv.appendChild(input);
+
+                const icon = document.createElement('i');
+                icon.classList.add('iconUpdateColor', 'fa-solid', 'fa-palette');
+                icon.style.position = 'relative';
+                icon.style.zIndex = '1';
+                icon.style.pointerEvents = 'none';
+                cdiv.appendChild(icon);
 
                 // Cuando el usuario elige un color
                 input.addEventListener('input', () => {

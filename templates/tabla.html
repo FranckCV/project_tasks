@@ -22,24 +22,16 @@ Ver tabla {{ tabla_info['nombre'] }}
     th {
         min-width: 150px;
         max-width: 400px;
-        /* display: flex; */
         width: fit-content;
     }
 
-    /* td {
-        height: 100%;
-    } */
-
     td,
     th {
-        /* border: 1px solid white; */
-        /* border: 1px solid rgba(255, 255, 255, 0.281); */
         text-align: center;
         padding: 0;
     }
 
     td.td_tareas {
-        /* height: 100%; */
         position: relative;
         vertical-align: top;
         padding: 0;
@@ -68,10 +60,6 @@ Ver tabla {{ tabla_info['nombre'] }}
         width: 100%;
     }
 
-    /* .tarea:hover {
-        box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.57);
-    } */
-
     .section_tabla {
         display: flex;
         gap: 30px;
@@ -81,10 +69,8 @@ Ver tabla {{ tabla_info['nombre'] }}
 
     .insert_tarea {
         --size: 0px;
-
         border-radius: 0px;
         border-bottom-left-radius: 5px;
-        /* background-color: rgb(0, 136, 98); */
         color: white;
         height: 15px;
         aspect-ratio: 1 / 1;
@@ -102,7 +88,6 @@ Ver tabla {{ tabla_info['nombre'] }}
     .container_tabla {
         overflow: auto;
         position: relative;
-        /* max-width: 900px; */
         max-height: 85vh;
         background-color: rgba(0, 0, 0, 0.316);
         border-radius: 5px;
@@ -141,35 +126,17 @@ Ver tabla {{ tabla_info['nombre'] }}
         text-align: center;
     }
 
-    .columna_head {
-        display: flex;
-        justify-content: center;
-        gap: 5px;
-        /* justify-content: space-between; */
-        height: -webkit-fill-available;
-        align-items: center;
-    }
-
-    .col_name {
-        padding-block: 5px;
-    }
-
     .col_arrows {
         display: flex;
-        /* justify-content: space-between; */
     }
 
+    .fila_head .button ,
     .columna_head .button {
         width: fit-content;
         padding-inline: 5px;
         height: -webkit-fill-available;
     }
 
-    .fila_head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
 
     .fila_buttons {
         display: flex;
@@ -186,23 +153,10 @@ Ver tabla {{ tabla_info['nombre'] }}
         align-items: center;
     }
 
-    .fila_buttons .button {
-        /* height: 30px; */
-    }
-
     .fila_buttons i {
         padding: 0;
     }
 
-    .fil_name {
-        width: 100%;
-        height: -webkit-fill-available;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding-inline: 5px;
-        /* max-width: 100px; */
-    }
 
     .button i {
         font-size: 85%;
@@ -237,19 +191,10 @@ Ver tabla {{ tabla_info['nombre'] }}
     }
 
     td.head_fila {
-        /* position: fixed; */
         left: 0;
         z-index: 999;
         padding: 0;
         height: 1px; 
-    }
-
-    .fila_head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        min-height: 100%;
-        box-sizing: border-box;
     }
 
     th {
@@ -258,12 +203,6 @@ Ver tabla {{ tabla_info['nombre'] }}
         width: fit-content;
         padding: 0;
         height: 1px; 
-    }
-
-    .columna_head {
-        gap: 5px;
-        min-height: 100%;
-        box-sizing: border-box;
     }
 
     .btns_insert {
@@ -296,16 +235,6 @@ Ver tabla {{ tabla_info['nombre'] }}
     }
     .list_tareas.dragover {
         border: 2px dashed #fff;
-    }
-
-    .btn_delete {
-        z-index: 999;
-        position: absolute;
-        background-color: rgb(99, 1, 1) !important;
-        padding: 5px;
-        /* top: 5px; */
-        height: fit-content !important;
-        right: 20%;
     }
 
     .tarea_completa {
@@ -378,41 +307,114 @@ Ver tabla {{ tabla_info['nombre'] }}
         z-index: 111; 
     }
 
-
-
     th.dragging {
         opacity: 0.5;
         outline: 2px dashed #fff;
-    }
-
-    .btn_drag_col {
-        position: absolute;
-        top: -5px;
-        left: 30px;
-        z-index: 100;
-        cursor: grab;
     }
 
     .btn_drag_col:active {
         cursor: grabbing;
     }
 
-    .btn_drag_fila {
-        position: absolute;
-        right: 5px;
-        top: 5px;
-        transform: translateY(-50%);
-        z-index: 120;
-    }
-
-    .fila_head {
-        position: relative;
-    }
 
     tr.dragging {
         opacity: 0.5;
         outline: 2px dashed #fff;
     }
+
+    .btnUpdateColor {
+        display: flex;
+        position: relative;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    :root {
+        --spc: 3px;
+    }
+
+    .fila_head {
+        min-height: 100%;
+        align-items: center;
+        display: grid;
+        gap: var(--spc);
+        grid-template-areas: 
+            "f_name f_name f_name"
+            "f_del f_color f_drag"
+        ;
+        justify-items: center;
+
+    }
+
+    .btn_drag_fila {
+        grid-area: f_drag;
+    }
+
+    .fil_name {
+        grid-area: f_name;
+        width: 100%;
+        height: -webkit-fill-available;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-block: var(--spc);
+    }
+
+    .fila_head .btn_delete {
+        grid-area: f_del;
+        height: fit-content !important;
+    }
+
+    .fila_head .btnUpdateColor {
+        grid-area: f_color;
+    }
+
+
+    .columna_head {
+        padding-top: var(--spc);
+        height: -webkit-fill-available;
+        gap: var(--spc);
+        min-height: 100%;
+        width: 100%;
+        display: grid;
+        grid-template-areas: 
+            "c_name c_name c_name"
+            "c_del c_color c_drag"
+        ;
+        justify-items: center;
+    }
+
+    .col_name {
+        grid-area: c_name;
+        width: 100%;        
+        padding-block: 3px;
+    }
+
+    .btn_drag_col {
+        grid-area: c_drag;
+        z-index: 100;
+        cursor: grab;
+    }
+
+    .inputUpdateColor {
+        position: relative;
+        top: auto;
+        left: auto;
+    }
+    
+    .columna_head .btn_delete {
+        grid-area: c_del;
+        height: fit-content !important;
+    }
+
+    .columna_head .btnUpdateColor {
+        grid-area: c_color;
+        display: flex;
+        position: relative;
+        align-items: center;
+        justify-content: center;
+    }
+
 
         
     @media (max-width: 600px) {
@@ -475,32 +477,19 @@ Ver tabla {{ tabla_info['nombre'] }}
                     }
 
                     th[data-columnaid="{{ col.id }}"] .button {
-                        background-color: {{ col.color }};
+                        background-color: transparent;
                     }
 
                 </style>
 
                 <th data-columnaid="{{ col.id }}">
                     <div class="columna_head" data-columnaid="{{ col.id }}">
-                        <!-- <a class="button btn_move" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'm' ) }}">
-                            <i class="fa-solid fa-caret-left"></i>
-                        </a> -->
-                        <!-- <a class="button btn_drag_col" 
-                        draggable="true" title="Mover columna">
-                            <i class="fa-solid fa-up-down-left-right"></i>
-                        </a> -->
                         <div class="col_name" data-columnaid="{{ col.id }}" >
                             {{ col['nombre'] }}
                         </div>
-                        <!-- <div class="col_btns">
-
-                        </div> -->
-                        <!-- <a class="button btn_move" href="{{ url_for('update_orden_columna' , columnaid = col.id , modo = 'M' ) }}">
-                            <i class="fa-solid fa-caret-right"></i>
-                        </a> -->
-                    <!-- <a class="button btn_delete" href="{{ url_for('delete_columna' , columnaid = col.id ) }}">
-                        <i class="fa-solid fa-trash"></i>
-                    </a> -->
+                        <a class="button btn_delete" href="{{ url_for('delete_columna' , columnaid = col.id ) }}">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
                     </div>
                 </th>
                 {% endfor %}
@@ -526,7 +515,7 @@ Ver tabla {{ tabla_info['nombre'] }}
                         }
 
                         td[data-filaid="{{ fila.id }}"] .button {
-                            background-color: {{ fila.color }};
+                            background-color: transparent;
                         }
                     </style>
 
@@ -535,14 +524,9 @@ Ver tabla {{ tabla_info['nombre'] }}
                             <div class="fil_name" data-filaid="{{ fila.id }}">
                                 {{ fila.nombre }}
                             </div>
-                            <!-- <div class="fila_buttons">
-                                <a class="button" href="{{ url_for('change_orden_fila' , filaid = fila.id , modo = 'm' ) }}">
-                                    <i class="fa-solid fa-caret-up"></i>
-                                </a>
-                                <a class="button" href="{{ url_for('change_orden_fila' , filaid = fila.id , modo = 'M' ) }}">
-                                    <i class="fa-solid fa-caret-down"></i>
-                                </a>
-                            </div> -->
+                            <a class="button btn_delete" href="{{ url_for('delete_fila' , filaid = fila.id ) }}">
+                                <i class="fa-solid fa-trash"></i>
+                            </a>
                         </div>
                     </td>
                     {% for col in columnas %}
@@ -682,38 +666,6 @@ Ver tabla {{ tabla_info['nombre'] }}
 
 </script>
 
-<script>
-    pintarElemento(' .columna_head  ');
-    pintarElemento(' .fila_head  ');
-    pintarElemento(' .list_tareas ');
-    pintarElemento(' .insert_tarea ');
-    pintarElemento(' .fila_buttons .button , .columna_head .button ');
-    pintarElemento(' th input[type="text"] ');
-    pintarElemento(' td input[type="text"] ');
-    
-    update_name_element_bd_table( '.tabla_name' , 'tabla' , 'nombre' , 'tablaid');
-    update_name_element_bd_table( '.col_name' , 'columna' , 'nombre' , 'columnaid');
-    update_name_element_bd_table( '.fil_name' , 'fila' , 'nombre' , 'filaid');
-    update_name_element_bd_table( '.tarea' , 'tarea' , 'nombre' , 'tareaid');
-    
-    const eCol = [
-        ['-e-','backgroundColor', '-color-'] ,
-        ['.columna_head[data-columnaid="-id-"] .btn_move','backgroundColor', '-color-'] ,
-        // ['.list_tareas[data-columnaid="-id-"] ','border', ' 1px dashed color-mix( in srgb, -color- 10%, -color- 10% ) '] ,
-        // ['.list_tareas[data-columnaid="-id-"] ','backgroundColor', ' color-mix( in srgb, -color- 10%, -color- 10% ) '] ,
-    ];
-
-    const eFil = [
-        ['-e-','backgroundColor', '-color-'] ,
-        ['.columna_head[data-columnaid="-id-"] .btn_move','backgroundColor', '-color-'] ,
-    ];
-
-    update_color_element_bd_table(  '.columna_head' , 'columna' , 'columnaid' , eCol);
-    update_color_element_bd_table(  '.fila_head' , 'fila' , 'filaid' );
-
-    check_tareas('.tarea', 'tareaid');
-</script>
-
 
 <script>
    
@@ -722,7 +674,7 @@ document.querySelectorAll('th[data-columnaid]').forEach(th => {
     const columnaHead = th.querySelector('.columna_head');
     const dragBtn = document.createElement('a');
     dragBtn.className = 'button btn_drag_col';
-    dragBtn.innerHTML = '<i class="fa-solid fa-up-down-left-right"></i>';
+    dragBtn.innerHTML = '<i class="fa-solid fa-arrows-left-right"></i>';
     dragBtn.title = 'Mover columna';
     dragBtn.draggable = true;
     
@@ -736,7 +688,7 @@ document.querySelectorAll('td.head_fila[data-filaid]').forEach(td => {
     const filaHead = td.querySelector('.fila_head');
     const dragBtn = document.createElement('a');
     dragBtn.className = 'button btn_drag_fila';
-    dragBtn.innerHTML = '<i class="fa-solid fa-up-down-left-right"></i>';
+    dragBtn.innerHTML = '<i class="fa-solid fa-arrows-up-down"></i>';
     dragBtn.title = 'Mover fila';
     dragBtn.draggable = true;
     
@@ -947,6 +899,39 @@ async function updateFilasOrden() {
     //     });
     // });
 
+</script>
+
+
+<script>
+    pintarElemento(' .columna_head  ');
+    pintarElemento(' .fila_head  ');
+    pintarElemento(' .list_tareas ');
+    pintarElemento(' .insert_tarea ');
+    // pintarElemento(' .fila_head .button , .columna_head .button ');
+    pintarElemento(' th input[type="text"] ');
+    pintarElemento(' td input[type="text"] ');
+    
+    update_name_element_bd_table( '.tabla_name' , 'tabla' , 'nombre' , 'tablaid');
+    update_name_element_bd_table( '.col_name' , 'columna' , 'nombre' , 'columnaid');
+    update_name_element_bd_table( '.fil_name' , 'fila' , 'nombre' , 'filaid');
+    update_name_element_bd_table( '.tarea' , 'tarea' , 'nombre' , 'tareaid');
+    
+    const eCol = [
+        ['-e-','backgroundColor', '-color-'] ,
+        ['.columna_head[data-columnaid="-id-"] .btn_move','backgroundColor', '-color-'] ,
+        // ['.list_tareas[data-columnaid="-id-"] ','border', ' 1px dashed color-mix( in srgb, -color- 10%, -color- 10% ) '] ,
+        // ['.list_tareas[data-columnaid="-id-"] ','backgroundColor', ' color-mix( in srgb, -color- 10%, -color- 10% ) '] ,
+    ];
+
+    const eFil = [
+        ['-e-','backgroundColor', '-color-'] ,
+        ['.columna_head[data-columnaid="-id-"] .btn_move','backgroundColor', '-color-'] ,
+    ];
+
+    update_color_element_bd_table(  '.columna_head' , 'columna' , 'columnaid' , eCol);
+    update_color_element_bd_table(  '.fila_head' , 'fila' , 'filaid' );
+
+    check_tareas('.tarea', 'tareaid');
 </script>
 
 {% endblock %}

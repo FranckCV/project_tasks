@@ -442,7 +442,7 @@ option[selected] {
 
 @media (max-width: 600px) {
     .general_body {
-        min-height: 80vh;
+        min-height: 80vh !important;
     }
 
     aside {
@@ -457,6 +457,6 @@ option[selected] {
     
     .aside_item p {
         /* display: none; */
-        font-size: 50%;
+        font-size: 75%;
     }
 }
