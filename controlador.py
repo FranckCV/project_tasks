@@ -1117,31 +1117,31 @@ def up_orden_columna( columnaid ):
     update_columna_orden( orden , high_col.get('id') )
 
 
-def reorder_columna( columanid ):
-    col = consult_columna(columanid)
-    orden = col.get('orden',0)
-    tablaid = col.get('tablaid')
-    sql = ''
+# def reorder_columna( columanid ):
+#     col = consult_columna(columanid)
+#     orden = col.get('orden',0)
+#     tablaid = col.get('tablaid')
+#     sql = ''
 
-    if modo == 'M':
-        sql = '''
-            SELECT id, IFNULL(orden,1)  as orden 
-            FROM fila
-            WHERE tablaid = %s AND orden > %s
-            ORDER BY orden ASC
-            LIMIT 1
-        '''
-    elif modo == 'm':
-        sql = '''
-            SELECT 
-                id, IFNULL(orden,0) as orden
-            FROM fila  
-            WHERE tablaid = %s AND orden < %s
-            ORDER BY orden DESC
-            LIMIT 1
-        '''
+#     if modo == 'M':
+#         sql = '''
+#             SELECT id, IFNULL(orden,1)  as orden 
+#             FROM fila
+#             WHERE tablaid = %s AND orden > %s
+#             ORDER BY orden ASC
+#             LIMIT 1
+#         '''
+#     elif modo == 'm':
+#         sql = '''
+#             SELECT 
+#                 id, IFNULL(orden,0) as orden
+#             FROM fila  
+#             WHERE tablaid = %s AND orden < %s
+#             ORDER BY orden DESC
+#             LIMIT 1
+#         '''
 
-    sel = bd.sql_select_fetchone(sql, (tablaid , orden) )
+#     sel = bd.sql_select_fetchone(sql, (tablaid , orden) )
 
 
 
@@ -1176,9 +1176,10 @@ def change_orden_fila( filaid , modo ):
 
 
 def register_tabla_tarea( filaid , columnaid ):
-    cfil = get_bd_color('fila' , filaid )
-    ccol = get_bd_color('columna' , columnaid )
-    color = utils.mix_colors(cfil,ccol)
+    # cfil = get_bd_color('fila' , filaid )
+    # ccol = get_bd_color('columna' , columnaid )
+    # color = utils.mix_colors(cfil,ccol) 
+    color = None
 
     tareaid = insert_tarea(f'Nueva_tarea', None , color , 0 , None)
     orden = get_max_min_orden_tabla_tarea(columnaid , filaid)

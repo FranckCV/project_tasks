@@ -279,6 +279,7 @@ Ver tabla {{ tabla_info['nombre'] }}
 
     :root {
         --bg_table: #3b3b3b;
+        /* --bg_table: #00000000; */
         --sizeT: 2px;
     }
 
@@ -287,7 +288,7 @@ Ver tabla {{ tabla_info['nombre'] }}
     }
     
     thead th {
-        background: var(--bg_table);
+        /* background: var(--bg_table); */
         position: sticky;
         top: var(--sizeT);
         z-index: 110;    
@@ -296,7 +297,7 @@ Ver tabla {{ tabla_info['nombre'] }}
     tbody td.head_fila {
         position: sticky;
         left: var(--sizeT);
-        background: var(--bg_table); 
+        /* background: var(--bg_table);  */
         z-index: 109;     
     }
 
@@ -315,7 +316,6 @@ Ver tabla {{ tabla_info['nombre'] }}
     .btn_drag_col:active {
         cursor: grabbing;
     }
-
 
     tr.dragging {
         opacity: 0.5;
@@ -348,6 +348,7 @@ Ver tabla {{ tabla_info['nombre'] }}
 
     .btn_drag_fila {
         grid-area: f_drag;
+        cursor: grab;
     }
 
     .fil_name {
@@ -415,7 +416,14 @@ Ver tabla {{ tabla_info['nombre'] }}
         justify-content: center;
     }
 
+    .fila_head ,
+    .columna_head {
+        font-size: 107.5%;
+    }
 
+    .cell_insert {
+        background-color: var(--bg_table);
+    }
         
     @media (max-width: 600px) {
         .cell_insert {
@@ -505,7 +513,7 @@ Ver tabla {{ tabla_info['nombre'] }}
 
                         td[data-filaid="{{ fila.id }}"] .fila_head {
                             border-radius: 5px;
-                            border: 1px solid {{ fila.color }};
+                            /* border: 1px solid {{ fila.color }}; */
                             background-color: {{ fila.color }} ;
                             /* background-color: color-mix(
                             in srgb, 

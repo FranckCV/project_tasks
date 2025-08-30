@@ -117,19 +117,27 @@
                 let [r, g, b] = getRgbArray(bgColor);
                 let brillo = (0.299 * r + 0.587 * g + 0.114 * b);
 
-                el.style.color = brillo > umbral ? "black" : "white";
+                let ccc = brillo > umbral ? "black" : "white";
+                el.style.setProperty("color", ccc, "important");
+                // el.style.color = ccc;
+                // document.querySelectorAll(`${e} * `).forEach(son => {
+                //     son.style.color = ccc;
+                // });
             } catch (err) {
                 console.warn("Error al ajustar color:", err);
-                el.style.color = "black";
+                el.style.color = 'black';
+                // el.style.setProperty("color", "black", "important");
             }
         }
 
         function pintarElemento(e) {
-            document.querySelectorAll(e).forEach(div => {
+            document.querySelectorAll(`${e}`).forEach(div => {
                 if (div) {
                     ajustarColorTexto(div);
                     // div.querySelectorAll('*').forEach(sub => {
-                    //     ajustarColorTexto(sub);
+                    //     if (sub) {
+                    //         ajustarColorTexto(sub);
+                    //     }
                     // });
                 }
             });
