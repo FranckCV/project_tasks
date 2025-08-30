@@ -116,17 +116,15 @@
                 let bgColor = window.getComputedStyle(el).backgroundColor;
                 let [r, g, b] = getRgbArray(bgColor);
                 let brillo = (0.299 * r + 0.587 * g + 0.114 * b);
-
                 let ccc = brillo > umbral ? "black" : "white";
-                el.style.setProperty("color", ccc, "important");
-                // el.style.color = ccc;
-                // document.querySelectorAll(`${e} * `).forEach(son => {
-                //     son.style.color = ccc;
-                // });
+
+                el.style.color = ccc;
+                el.querySelectorAll(` * `).forEach(son => {
+                    son.style.color = ccc;
+                });
             } catch (err) {
                 console.warn("Error al ajustar color:", err);
                 el.style.color = 'black';
-                // el.style.setProperty("color", "black", "important");
             }
         }
 

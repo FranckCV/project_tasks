@@ -678,190 +678,190 @@ Ver tabla {{ tabla_info['nombre'] }}
 <script>
    
    // Añadir botones de arrastre a las columnas
-document.querySelectorAll('th[data-columnaid]').forEach(th => {
-    const columnaHead = th.querySelector('.columna_head');
-    const dragBtn = document.createElement('a');
-    dragBtn.className = 'button btn_drag_col';
-    dragBtn.innerHTML = '<i class="fa-solid fa-arrows-left-right"></i>';
-    dragBtn.title = 'Mover columna';
-    dragBtn.draggable = true;
-    
-    columnaHead.insertBefore(dragBtn, columnaHead.firstChild);
-});
-
-// ========== DRAG AND DROP PARA FILAS ==========
-
-// Añadir botones de arrastre a las filas
-document.querySelectorAll('td.head_fila[data-filaid]').forEach(td => {
-    const filaHead = td.querySelector('.fila_head');
-    const dragBtn = document.createElement('a');
-    dragBtn.className = 'button btn_drag_fila';
-    dragBtn.innerHTML = '<i class="fa-solid fa-arrows-up-down"></i>';
-    dragBtn.title = 'Mover fila';
-    dragBtn.draggable = true;
-    
-    filaHead.insertBefore(dragBtn, filaHead.firstChild);
-});
-
-// Variables para el drag and drop de filas
-let draggedRow = null;
-
-// Eventos para los botones de drag de filas
-document.querySelectorAll('.btn_drag_fila').forEach(btn => {
-    btn.addEventListener('dragstart', e => {
-        draggedRow = e.target.closest('tr');
-        draggedRow.classList.add('dragging');
-        e.dataTransfer.effectAllowed = 'move';
+    document.querySelectorAll('th[data-columnaid]').forEach(th => {
+        const columnaHead = th.querySelector('.columna_head');
+        const dragBtn = document.createElement('a');
+        dragBtn.className = 'button btn_drag_col';
+        dragBtn.innerHTML = '<i class="fa-solid fa-arrows-left-right"></i>';
+        dragBtn.title = 'Mover columna';
+        dragBtn.draggable = true;
+        
+        columnaHead.insertBefore(dragBtn, columnaHead.firstChild);
     });
 
-    btn.addEventListener('dragend', () => {
-        if (draggedRow) {
-            draggedRow.classList.remove('dragging');
-            draggedRow = null;
-        }
-    });
-});
+    // ========== DRAG AND DROP PARA FILAS ==========
 
-// Permitir drop en las filas
-document.querySelectorAll('td.head_fila[data-filaid]').forEach(td => {
-    td.addEventListener('dragover', e => {
-        if (draggedRow && td.closest('tr') !== draggedRow) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-        }
+    // Añadir botones de arrastre a las filas
+    document.querySelectorAll('td.head_fila[data-filaid]').forEach(td => {
+        const filaHead = td.querySelector('.fila_head');
+        const dragBtn = document.createElement('a');
+        dragBtn.className = 'button btn_drag_fila';
+        dragBtn.innerHTML = '<i class="fa-solid fa-arrows-up-down"></i>';
+        dragBtn.title = 'Mover fila';
+        dragBtn.draggable = true;
+        
+        filaHead.insertBefore(dragBtn, filaHead.firstChild);
     });
 
-    td.addEventListener('drop', e => {
-        if (draggedRow && td.closest('tr') !== draggedRow) {
-            e.preventDefault();
-            
-            const targetRow = td.closest('tr');
-            const tbody = targetRow.parentNode;
-            const draggedIndex = Array.from(tbody.children).indexOf(draggedRow);
-            const targetIndex = Array.from(tbody.children).indexOf(targetRow);
-            
-            // Mover la fila
-            if (draggedIndex < targetIndex) {
-                tbody.insertBefore(draggedRow, targetRow.nextSibling);
-            } else {
-                tbody.insertBefore(draggedRow, targetRow);
+    // Variables para el drag and drop de filas
+    let draggedRow = null;
+
+    // Eventos para los botones de drag de filas
+    document.querySelectorAll('.btn_drag_fila').forEach(btn => {
+        btn.addEventListener('dragstart', e => {
+            draggedRow = e.target.closest('tr');
+            draggedRow.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+
+        btn.addEventListener('dragend', () => {
+            if (draggedRow) {
+                draggedRow.classList.remove('dragging');
+                draggedRow = null;
             }
-            
-            // Actualizar orden en BD después del movimiento
-            updateFilasOrden();
-        }
-    });
-});
-
-// Variables para el drag and drop de columnas
-let draggedColumn = null;
-let draggedColumnIndex = null;
-
-// Eventos para los botones de drag de columnas
-document.querySelectorAll('.btn_drag_col').forEach(btn => {
-    btn.addEventListener('dragstart', e => {
-        draggedColumn = e.target.closest('th');
-        draggedColumnIndex = Array.from(draggedColumn.parentNode.children).indexOf(draggedColumn);
-        draggedColumn.classList.add('dragging');
-        e.dataTransfer.effectAllowed = 'move';
+        });
     });
 
-    btn.addEventListener('dragend', () => {
-        if (draggedColumn) {
-            draggedColumn.classList.remove('dragging');
-            draggedColumn = null;
-            draggedColumnIndex = null;
-        }
-    });
-});
-
-// Permitir drop en las columnas
-document.querySelectorAll('th[data-columnaid]').forEach(th => {
-    th.addEventListener('dragover', e => {
-        if (draggedColumn && th !== draggedColumn) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-        }
-    });
-
-    th.addEventListener('drop', e => {
-        if (draggedColumn && th !== draggedColumn) {
-            e.preventDefault();
-            
-            const targetIndex = Array.from(th.parentNode.children).indexOf(th);
-            const table = document.querySelector('table');
-            
-            // Mover header
-            if (draggedColumnIndex < targetIndex) {
-                th.parentNode.insertBefore(draggedColumn, th.nextSibling);
-            } else {
-                th.parentNode.insertBefore(draggedColumn, th);
+    // Permitir drop en las filas
+    document.querySelectorAll('td.head_fila[data-filaid]').forEach(td => {
+        td.addEventListener('dragover', e => {
+            if (draggedRow && td.closest('tr') !== draggedRow) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
             }
-            
-            // Mover todas las celdas de la columna en tbody
-            const rows = table.querySelectorAll('tbody tr');
-            rows.forEach(row => {
-                const cells = Array.from(row.children);
-                // Buscar las celdas por data-columnaid en lugar de por índice
-                const draggedColumnId = draggedColumn.dataset.columnaid;
-                const targetColumnId = th.dataset.columnaid;
+        });
+
+        td.addEventListener('drop', e => {
+            if (draggedRow && td.closest('tr') !== draggedRow) {
+                e.preventDefault();
                 
-                const draggedCell = row.querySelector(`td[data-columnaid="${draggedColumnId}"]`);
-                const targetCell = row.querySelector(`td[data-columnaid="${targetColumnId}"]`);
+                const targetRow = td.closest('tr');
+                const tbody = targetRow.parentNode;
+                const draggedIndex = Array.from(tbody.children).indexOf(draggedRow);
+                const targetIndex = Array.from(tbody.children).indexOf(targetRow);
                 
-                if (draggedCell && targetCell) {
-                    if (draggedColumnIndex < targetIndex) {
-                        row.insertBefore(draggedCell, targetCell.nextSibling);
-                    } else {
-                        row.insertBefore(draggedCell, targetCell);
-                    }
+                // Mover la fila
+                if (draggedIndex < targetIndex) {
+                    tbody.insertBefore(draggedRow, targetRow.nextSibling);
+                } else {
+                    tbody.insertBefore(draggedRow, targetRow);
                 }
+                
+                // Actualizar orden en BD después del movimiento
+                updateFilasOrden();
+            }
+        });
+    });
+
+    // Variables para el drag and drop de columnas
+    let draggedColumn = null;
+    let draggedColumnIndex = null;
+
+    // Eventos para los botones de drag de columnas
+    document.querySelectorAll('.btn_drag_col').forEach(btn => {
+        btn.addEventListener('dragstart', e => {
+            draggedColumn = e.target.closest('th');
+            draggedColumnIndex = Array.from(draggedColumn.parentNode.children).indexOf(draggedColumn);
+            draggedColumn.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        });
+
+        btn.addEventListener('dragend', () => {
+            if (draggedColumn) {
+                draggedColumn.classList.remove('dragging');
+                draggedColumn = null;
+                draggedColumnIndex = null;
+            }
+        });
+    });
+
+    // Permitir drop en las columnas
+    document.querySelectorAll('th[data-columnaid]').forEach(th => {
+        th.addEventListener('dragover', e => {
+            if (draggedColumn && th !== draggedColumn) {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            }
+        });
+
+        th.addEventListener('drop', e => {
+            if (draggedColumn && th !== draggedColumn) {
+                e.preventDefault();
+                
+                const targetIndex = Array.from(th.parentNode.children).indexOf(th);
+                const table = document.querySelector('table');
+                
+                // Mover header
+                if (draggedColumnIndex < targetIndex) {
+                    th.parentNode.insertBefore(draggedColumn, th.nextSibling);
+                } else {
+                    th.parentNode.insertBefore(draggedColumn, th);
+                }
+                
+                // Mover todas las celdas de la columna en tbody
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const cells = Array.from(row.children);
+                    // Buscar las celdas por data-columnaid en lugar de por índice
+                    const draggedColumnId = draggedColumn.dataset.columnaid;
+                    const targetColumnId = th.dataset.columnaid;
+                    
+                    const draggedCell = row.querySelector(`td[data-columnaid="${draggedColumnId}"]`);
+                    const targetCell = row.querySelector(`td[data-columnaid="${targetColumnId}"]`);
+                    
+                    if (draggedCell && targetCell) {
+                        if (draggedColumnIndex < targetIndex) {
+                            row.insertBefore(draggedCell, targetCell.nextSibling);
+                        } else {
+                            row.insertBefore(draggedCell, targetCell);
+                        }
+                    }
+                });
+                
+                // Actualizar orden en BD después del movimiento
+                updateColumnasOrden();
+            }
+        });
+    });
+
+
+    // Función para actualizar orden de columnas en BD
+    async function updateColumnasOrden() {
+        const columnas = Array.from(document.querySelectorAll('th[data-columnaid]')).map(th => th.dataset.columnaid);
+        
+        try {
+            const response = await fetch('/api_update_columnas_orden', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ columnas_orden: columnas })
             });
             
-            // Actualizar orden en BD después del movimiento
-            updateColumnasOrden();
+            if (!response.ok) throw new Error("Error al actualizar orden");
+            console.log("Orden de columnas actualizado");
+        } catch (err) {
+            console.error(err);
+            alert("Error al actualizar orden de columnas");
         }
-    });
-});
-
-
-// Función para actualizar orden de columnas en BD
-async function updateColumnasOrden() {
-    const columnas = Array.from(document.querySelectorAll('th[data-columnaid]')).map(th => th.dataset.columnaid);
-    
-    try {
-        const response = await fetch('/api_update_columnas_orden', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ columnas_orden: columnas })
-        });
-        
-        if (!response.ok) throw new Error("Error al actualizar orden");
-        console.log("Orden de columnas actualizado");
-    } catch (err) {
-        console.error(err);
-        alert("Error al actualizar orden de columnas");
     }
-}
 
-// Función para actualizar orden de filas en BD
-async function updateFilasOrden() {
-    const filas = Array.from(document.querySelectorAll('td.head_fila[data-filaid]')).map(td => td.dataset.filaid);
-    
-    try {
-        const response = await fetch('/api_update_filas_orden', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ filas_orden: filas })
-        });
+    // Función para actualizar orden de filas en BD
+    async function updateFilasOrden() {
+        const filas = Array.from(document.querySelectorAll('td.head_fila[data-filaid]')).map(td => td.dataset.filaid);
         
-        if (!response.ok) throw new Error("Error al actualizar orden");
-        console.log("Orden de filas actualizado");
-    } catch (err) {
-        console.error(err);
-        alert("Error al actualizar orden de filas");
+        try {
+            const response = await fetch('/api_update_filas_orden', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ filas_orden: filas })
+            });
+            
+            if (!response.ok) throw new Error("Error al actualizar orden");
+            console.log("Orden de filas actualizado");
+        } catch (err) {
+            console.error(err);
+            alert("Error al actualizar orden de filas");
+        }
     }
-}
 
 </script>
     

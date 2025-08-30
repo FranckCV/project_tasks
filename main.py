@@ -114,6 +114,15 @@ def index():
     )
 
 
+@app.route("/calendario")
+@validar_usuario()
+def calendario():
+    
+    return render_template(
+        "calendario.html",
+    )
+
+
 @app.route("/configuracion")
 @validar_usuario()
 def configuracion():

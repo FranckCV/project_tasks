@@ -35,7 +35,7 @@ ENLACES_MENU= [
     {'nombre' : 'Tablas' ,        'icono': 'ri-table-line' ,                'enlace': 'tablas' ,        'color': '' } ,
     {'nombre' : 'Tareas' ,        'icono': 'fa-solid fa-bars-staggered' ,   'enlace': 'tareas' ,        'color': '' } ,
     {'nombre' : 'Horario' ,       'icono': 'fa-solid fa-clock' ,            'enlace': 'horario' ,       'color': '' } ,
-    {'nombre' : 'Calendario' ,    'icono': 'fa-solid fa-circle-xmark' ,     'enlace': 'test' ,          'color': '' } ,
+    {'nombre' : 'Calendario' ,    'icono': 'fa-solid fa-circle-xmark' ,     'enlace': 'calendario' ,    'color': '' } ,
     {'nombre' : 'Matriculas' ,    'icono': 'fa-solid fa-grip' ,             'enlace': 'matriculas',     'color': '' } ,
     {'nombre' : 'Grupos' ,        'icono': 'fa-solid fa-list' ,             'enlace': 'grupos' ,        'color': '' } ,
     
