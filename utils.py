@@ -134,6 +134,11 @@ def local_time():
     return datetime.now(pytz.utc).astimezone(pytz.timezone('America/Lima'))
 
 
+def local_datetime_bd(days_delta=0):
+    fecha = local_time() + timedelta(days=days_delta)
+    return format_datetime_bd(fecha)
+
+
 def format_time(time,format):
     return time.strftime(format)
 

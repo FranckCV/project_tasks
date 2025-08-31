@@ -6,9 +6,30 @@ Calendario
 
 
 {% block estilos %}
+<style>
 
+    th , td {
+        border: 1px solid white;
+    }
 
+    th {
+        width: 200px;
+    }
 
+    table {
+        border-collapse: separate;
+        border-spacing: 2px;
+    }
+
+    .container_calendar {
+        overflow: auto;
+        position: relative;
+        max-height: 85vh;
+        background-color: rgba(0, 0, 0, 0.316);
+        border-radius: 5px;
+    }
+    
+</style>
 {% endblock %}
 
 
@@ -16,19 +37,37 @@ Calendario
 
 <div class="container_title">
     <p class="title">
-        {{ curso.nombre }}
+        Calendario
     </p>
 </div>
     
-<div class="container-calendar">
+<div class="container_calendar">
     <table>
         <thead>
             <th>
-                
+
             </th>
+            {% for col in columnas %}
+            <th>
+                <div>
+                    <div>
+                        {{ dias[col.1] }}
+                    </div>
+                    <div>
+                        {{ col.0 }}
+                    </div>
+                </div>
+            </th>
+            {% endfor %}
         </thead>
         <tbody>
-
+            {% for fil in filas %}
+                <tr>
+                    <td>
+                        {{ fil.0 }}: {{ fil.1 }}
+                    </td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 </div>

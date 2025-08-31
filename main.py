@@ -115,11 +115,33 @@ def index():
 
 
 @app.route("/calendario")
-@validar_usuario()
+# @validar_usuario()
 def calendario():
-    
+    DAYS = 10
+    DIFF = 1
+    HRS = 24
+    MINS = 60
+    local_datetime = utils.local_time()
+    columnas = [
+        [
+            (local_datetime + timedelta(days=i - DIFF)).strftime("%Y-%m-%d"),
+            (local_datetime + timedelta(days=i - DIFF)).isoweekday() % 7 # día de la semana
+        ]
+        for i in range(DAYS)
+    ]
+    filas = [
+        [i, j]
+        for i in range(HRS)
+        for j in range(MINS)
+    ]   
+    # filas = range(HRS)
     return render_template(
         "calendario.html",
+        local_datetime = local_datetime ,
+        columnas = columnas ,
+        filas = filas ,
+        HRS = HRS ,
+        MINS = MINS ,
     )
 
 
