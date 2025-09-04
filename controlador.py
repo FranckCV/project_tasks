@@ -208,6 +208,47 @@ def delete_paleta(id):
 
 # SELECT
 
+def get_actividades_items():
+    sql = f'''
+    SELECT 
+        act.id, 
+        act.nombre, 
+        act.fecha,  
+        CASE 
+        	WHEN gr.id is not null THEN CONCAT(cur.nombre, ' - ', gr.nombre) 
+        	WHEN con.id is not null THEN con.nombre
+            ELSE act.nombre 
+        END as titulo,
+        CASE 
+        	WHEN gr.id is not null THEN cur.siglas 
+        	WHEN con.id is not null THEN con.siglas
+            ELSE act.siglas 
+        END as siglas,
+        CASE 
+        	WHEN gr.id is not null THEN cur.icono 
+        	WHEN con.id is not null THEN con.icono
+            ELSE act.icono 
+        END as icono,        
+        CASE 
+        	WHEN gr.id is not null THEN cur.color 
+        	WHEN con.id is not null THEN con.color
+            ELSE act.color 
+        END as color, 
+        tip.nombre as tipo,
+        act.tipo_actividadid, 
+        act.grupoid, 
+        act.contextoid 
+    FROM actividad act
+    left join grupo gr on act.grupoid = gr.id
+    left join curso cur on cur.id = gr.cursoid
+    left join contexto con on con.id = act.contextoid
+    left join tipo_actividad tip on tip.id = act.tipo_actividadid
+    order by 3 asc
+    '''
+    data = bd.sql_select_fetchall(sql )
+    return data
+
+
 def get_bd_color( tabla , id ):
     sql = f'''
     SELECT color

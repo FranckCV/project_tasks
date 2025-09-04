@@ -10,15 +10,24 @@ Calendario
 
     th , td {
         border: 1px solid white;
+        text-align: center;
     }
 
     th {
-        width: 200px;
+        min-width: 200px;
+    }
+
+    th:first-of-type {
+        min-width: 75px;
     }
 
     table {
         border-collapse: separate;
         border-spacing: 2px;
+    }
+
+    .container_grid {
+        grid-template-columns: 3fr 1fr;
     }
 
     .container_calendar {
@@ -29,6 +38,49 @@ Calendario
         border-radius: 5px;
     }
     
+    .actividad {
+        --sizeIcon: 40px;
+        --borderRadius: 10px;
+        
+        border-radius: var(--borderRadius);
+        display: grid;
+        grid-template-columns: var(--sizeIcon) auto;
+        align-items: center;
+        padding: 5px;
+    }
+
+    .a_icon {
+        border-radius: calc( var(--borderRadius) - 5px );
+        display: flex;
+        height: calc( var(--sizeIcon) - 5px );
+        aspect-ratio: 1 / 1;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .a_icon i {
+        font-size: 110%;
+    }
+
+    .a_titulo {
+        font-size: 90%;
+        font-weight: bold;
+    }
+
+    .a_end {
+        display: flex;
+        gap: 10px;
+        font-size: 90%;
+    }
+
+    .a_fecha {
+        color: grey;
+    }
+
+    .a_tipo {
+        color: #cccccc;
+    }
+
 </style>
 {% endblock %}
 
@@ -41,35 +93,88 @@ Calendario
     </p>
 </div>
     
-<div class="container_calendar">
-    <table>
-        <thead>
-            <th>
+<div class="container_grid">
+    <div class="container_calendar">
+        <table>
+            <thead>
+                <th>
 
-            </th>
-            {% for col in columnas %}
-            <th>
-                <div>
+                </th>
+                {% for col in columnas %}
+                <th>
                     <div>
-                        {{ dias[col.1] }}
+                        <div>
+                            {{ dias[col.1] }}
+                        </div>
+                        <div>
+                            {{ col.0 }}
+                        </div>
                     </div>
-                    <div>
-                        {{ col.0 }}
+                </th>
+                {% endfor %}
+            </thead>
+            <tbody>
+                {% for fil in filas %}
+                    <tr>
+                        <td>
+                            {{ fil.0 }} : {{ fil.1 }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="container_list">
+        {% for a in actividades %}
+        <style>
+            .actividad[data-id="{{a.id}}"] {
+                background-color: color-mix(in srgb, transparent 100%, {{a.color}} 10%);
+                border: 1px solid {{ a.color }};
+            }
+
+            .actividad[data-id="{{a.id}}"] .a_icon {
+                background-color: {{a.color}} ;
+            }
+            
+            .actividad[data-id="{{a.id}}"] .a_titulo {
+                color: {{a.color}} ;
+            }
+
+        </style>
+
+        <div class="actividad" data-id="{{a.id}}">
+            <div class="a_icon">
+                {% if a.icono %}
+                    <i class="{{a.icono}}"></i>
+                {% else %}
+                    {{ a.siglas }}
+                {% endif %}
+            </div>
+            
+            <div class="a_info">
+                <div class="a_titulo">
+                    {{ a.titulo }}
+                </div>
+
+                <div class="a_nombre">
+                    {{ a.nombre }}
+                </div>
+
+                <div class="a_end">
+                    <div class="a_fecha">
+                        {{ a.fecha }}
+                    </div>
+                    
+                    <div class="a_tipo">
+                        {{ a.tipo }}
                     </div>
                 </div>
-            </th>
-            {% endfor %}
-        </thead>
-        <tbody>
-            {% for fil in filas %}
-                <tr>
-                    <td>
-                        {{ fil.0 }}: {{ fil.1 }}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </div>
+
+            
+        </div>
+        {% endfor %}
+    </div>
 </div>
 
 {% endblock %}

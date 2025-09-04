@@ -129,16 +129,26 @@ def calendario():
         ]
         for i in range(DAYS)
     ]
-    filas = [
+
+    filas2 = [
         [i, j]
         for i in range(HRS)
         for j in range(MINS)
-    ]   
-    # filas = range(HRS)
+    ]
+
+    filas = [
+        [i, '00']
+        for i in range(HRS)
+        # for j in range(MINS)
+    ]  
+
+    actividades = controlador.get_actividades_items()
+
     return render_template(
         "calendario.html",
         local_datetime = local_datetime ,
         columnas = columnas ,
+        actividades = actividades ,
         filas = filas ,
         HRS = HRS ,
         MINS = MINS ,
