@@ -11,14 +11,19 @@ Calendario
     th , td {
         border: 1px solid white;
         text-align: center;
+        border-radius: 5px;
     }
 
     th {
-        min-width: 200px;
+        min-width: 150px;
     }
 
     th:first-of-type {
         min-width: 75px;
+    }
+
+    .activity_cell {
+        border: 1px solid grey;
     }
 
     table {
@@ -26,8 +31,45 @@ Calendario
         border-spacing: 2px;
     }
 
+    :root {
+        --bg_table: #3b3b3b;
+        --sizeT: 1px;
+    }
+
+    .container_calendar {
+        padding: var(--sizeT);
+    }
+    
+    thead th.head_col {
+        background: var(--bg_table);
+        position: sticky;
+        top: var(--sizeT);
+        z-index: 110;    
+    }
+
+    tbody td.head_row {
+        position: sticky;
+        left: var(--sizeT);
+        background: var(--bg_table); 
+        z-index: 109;     
+        /* min-height: 100px; */
+    }
+
+    thead th:first-child {
+        position: sticky;
+        top: var(--sizeT);
+        left: var(--sizeT);
+        z-index: 111; 
+        background-color: rgb(37, 37, 37);
+    }
+
     .container_grid {
         grid-template-columns: 3fr 1fr;
+    }
+
+    .container_list {
+        height: 85vh;
+        overflow-x: auto;
     }
 
     .container_calendar {
@@ -64,7 +106,7 @@ Calendario
 
     .a_titulo {
         font-size: 90%;
-        font-weight: bold;
+        /* font-weight: bold; */
     }
 
     .a_end {
@@ -79,6 +121,87 @@ Calendario
 
     .a_tipo {
         color: #cccccc;
+    }
+
+    :root {
+        --sizeItemIcon: 30px;
+    }
+
+    .list_items {
+        display: flex;
+        flex-direction: column;
+        gap:     5px;
+        padding: 5px;
+    }
+
+    .item {
+        padding: 5px;
+        border-radius: 5px;
+        gap: 10px;
+        font-size: 90%;
+        display: flex;
+        flex-direction: column;
+        /* display: grid; */
+        /* grid-template-columns: calc( var(--sizeItemIcon) + 5px ) auto;
+        grid-template-areas: 
+            " i_i i_t "
+            " i_i i_ti "
+            " i_n i_n "
+        ; */
+    }
+
+    .i_icon {
+        grid-area: i_i;
+        height: var(--sizeItemIcon);
+        aspect-ratio: 1 / 1 ;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+    }
+    
+    .i_icon i {
+        font-size: 120%;
+    }
+
+    .i_start {
+        display: flex;
+        gap: 5px;
+    }
+
+    .i_info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .i_nombre {
+        text-align: left;
+    }
+
+    .i_titulo {
+        padding: 0;
+        text-align: left;
+    }
+
+    .i_tipo {
+        color: #cecece;
+        font-size: 90%;
+        text-align: left;
+    }
+
+    .i_fecha {
+        text-align: left;
+        color: #b1b1b1;
+        font-size: 85%;
+    }
+    
+    .modal_dialog {
+        width: 400px;
+    }
+
+    .modal_body {
+        grid-template-columns: repeat( 2 , 1fr );
     }
 
 </style>
@@ -97,11 +220,11 @@ Calendario
     <div class="container_calendar">
         <table>
             <thead>
-                <th>
+                <th class="head_cell">
 
                 </th>
                 {% for col in columnas %}
-                <th>
+                <th class="head_col">
                     <div>
                         <div>
                             {{ dias[col.1] }}
@@ -116,15 +239,80 @@ Calendario
             <tbody>
                 {% for fil in filas %}
                     <tr>
-                        <td>
+                        <td class="head_row">
                             {{ fil.0 }} : {{ fil.1 }}
                         </td>
+                        {% for col in columnas %}
+                        <td class="activity_cell">
+                            <div class="list_items">
+                                {% for a in actividades %}
+                                    {% set a_hora = a.fecha.strftime("%H") %}
+                                    {% set a_minuto = a.fecha.strftime("%M") %}
+                                    {% set a_date = a.fecha.strftime("%Y-%m-%d") %}
+
+                                    {% if fil.0 == a_hora | int  and  a_date == col.0  %}
+                                    <style>
+                                        .item[data-id="{{a.id}}"] {
+                                            background-color: color-mix(in srgb, transparent 100%, {{a.color}} 30%) ;
+                                            border: 1px solid {{a.color}} ;
+                                        }
+
+                                        .item[data-id="{{a.id}}"] .i_icon {
+                                            background-color: {{ a.color }};
+                                        }
+
+                                        .item[data-id="{{a.id}}"] .i_titulo {
+                                            color: color-mix(in srgb, white 25%, {{ a.color }} 100%) ;
+                                        }
+
+                                    </style>
+
+                                    <div class="item" data-id="{{a.id}}">
+                                        <div class="i_start">
+                                            <div class="i_icon">
+                                                {% if a.icono %}
+                                                    <i class="{{a.icono}}"></i>
+                                                {% else %}
+                                                    {{ a.siglas }}
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="i_info">
+                                                <div class="i_titulo">
+                                                    {{ a.titulo }}
+                                                </div>
+
+                                                <div class="i_tipo">
+                                                    {{ a.tipo }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="i_nombre">
+                                            {{ a.nombre }}
+                                        </div>
+
+                                        <div class="i_fecha">
+                                            {{ a.fecha }}
+                                        </div>
+
+                                    </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </td>
+                        {% endfor %}
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
     <div class="container_list">
+        <div class="clickable-modal button btn_insert" data-target="insert_actividad">
+            <i class="fa-solid fa-plus"></i>
+            Agregar actividad
+        </div>
+
         {% for a in actividades %}
         <style>
             .actividad[data-id="{{a.id}}"] {
@@ -137,7 +325,7 @@ Calendario
             }
             
             .actividad[data-id="{{a.id}}"] .a_titulo {
-                color: {{a.color}} ;
+                color: color-mix(in srgb, {{a.color}} 100%, white 50%) ;
             }
 
         </style>
@@ -170,18 +358,108 @@ Calendario
                     </div>
                 </div>
             </div>
-
-            
         </div>
+
+
         {% endfor %}
     </div>
 </div>
+
+
+
+
+
+<div class="modal_space" id="insert_actividad">
+    <form class="modal_dialog modal_form" action=" {{ url_for('guardar_actividad') }} " method="post">
+        <div class="modal_header">
+            Agregar actividad
+        </div>
+        <div class="modal_body">
+            <div class="form_field">
+                <label for="">Nombre</label>
+                <input type="text" name="nombre" id="" required>
+            </div>
+
+            <div class="form_field">
+                <label for="">Fecha</label>
+                <input type="datetime" name="fecha" id="" >
+            </div>
+            
+            <div class="form_field">
+                <label for="">Tipos</label>
+                <select name="tipo_actividadid" id="">
+                    <option value=""> Sin tipo </option>
+                    {% for t in tipo_actividades %}
+                    <option value="{{t.id}}">{{ t.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form_field">
+                <label for="">Contextos</label>
+                <select name="contextoid" id="" >
+                    <option value="" selected disabled> Sin contexto </option>
+                    {% for c in contextos %}
+                    <option value="{{c.id}}">{{c.siglas}} - {{c.nombre}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form_field">
+                <label for="">Grupos</label>
+                <select name="grupoid" id="">
+                    <option value="" selected disabled> Sin grupo </option>
+                    {% for g in grupos %}
+                    <option value="{{g.id}}"> {{ g.cu_siglas }} - {{ g.cu_nombre }} - {{ g.gr_nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form_field">
+                <label for="">Descripcion</label>
+                <textarea name="descripcion" id=""></textarea>
+            </div>
+
+            <div class="form_field">
+                <label for="">Siglas</label>
+                <input type="text" name="siglas" id=""  minlength="1" maxlength="5" style="width: 60px;" >
+            </div>
+
+            <div class="form_field">
+                <label for="">Icono</label>
+                <input type="text" name="icono" id="" >
+            </div>
+
+            <div class="form_field">
+                <label for="">Color</label>
+                <input type="color" name="color" id="" >
+            </div>
+
+        </div>
+
+        <div class="modal_footer">
+            <button class="button close_modal" type="reset">
+                Cerrar
+            </button>
+            <button class="button submit_modal" type="submit">
+                Guardar
+            </button>
+        </div>
+    </form>
+</div>
+
+
+
 
 {% endblock %}
 
 
 
 {% block scripts %}
+<script>
 
+    pintarElemento(' .a_icon ');
+    pintarElemento(' .i_icon ');
 
+</script>
 {% endblock %}

@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, flash, jsonify, ses
 from datetime import datetime, date , timedelta 
 import controlador
 import utils
+import values
 from decimal import Decimal
 import inspect
 import bd
@@ -10,42 +11,6 @@ import markdown
 import os
 
 app = Flask(__name__)
-
-
-CRUD_FORMS = {
-    'insert_docente' : {
-        'function': controlador.insert_docente , 
-        'title': 'Agregar docente' ,
-        'return' : '' ,
-        'form_fields': [
-#            ID/NAME        LABEL     PLACEHOLDER    TYPE  REQUIRED   ABLE/DISABLE   DATOS  VALIDACION
-            ['apellidos',  'Apellidos', 'Apellidos',  'text',  True ,     True ,        None ],
-            ['nombres',    'Nombres',   'Nombres',    'text',  True ,     True ,        None ],
-        ] ,
-    } ,
-    'insert_grupo_horarios' : {
-        'function': controlador.insert_grupo_horarios , 
-        'title': 'Agregar grupo' ,
-        'return' : 'grupos' ,
-        'form_fields': [
-#            ID/NAME        LABEL     PLACEHOLDER    TYPE  REQUIRED   ABLE/DISABLE   DATOS  VALIDACION
-            ['apellidos',  'Apellidos', 'Apellidos',  'text',  True ,     True ,        None ],
-            ['nombres',    'Nombres',   'Nombres',    'text',  True ,     True ,        None ],
-        ] ,
-    } ,
-#     'insert_matricula' : {
-#         'function': controlador.insert_matricula , 
-#         'title': 'Agregar matricula' ,
-#         'return' : 'matriculas' ,
-#         'form_fields': [
-# #            ID/NAME            LABEL        PLACEHOLDER TYPE       REQUIRED   ABLE/DISABLE   DATOS  VALIDACION
-#             ['nombre',          'Nombre',    'Nombre',   'text',    True ,  True ,   None , '' ],
-#             ['semestrecodigo',  'Semestre',  'Semestre', 'select',  True ,  True ,   controlador.options_semestres() , '' ],
-#             ['usuarioid',       '',          '',         'hidden',  True ,  True ,   None, '' ],
-#         ] ,
-#     }
-}
-
 
 def validar_usuario():
     def decorator(f):
@@ -69,21 +34,19 @@ def validar_usuario():
 
 @app.context_processor
 def inject_globals():
-    # print(utils.local_time())
     main_paleta = controlador.get_paleta_actual()
     return dict(
-        MENU = utils.ENLACES_MENU ,
-        CRUD_FORMS = CRUD_FORMS ,
-        dias = utils.BASE_NOMBRE_DIAS ,
-        USUARUIOID = utils.USUARIOID,
-        dato_usuario = utils.USUARIO ,
+        MENU = values.ENLACES_MENU ,
+        CRUD_FORMS = values.CRUD_FORMS ,
+        dias = values.BASE_NOMBRE_DIAS ,
+        USUARUIOID = values.USUARIOID,
+        dato_usuario = values.USUARIO ,
         main_paleta = main_paleta ,
     )
 
 
 matriculaid = 1
 tablaid = 1
-SEMESTRE = utils.SEMESTRE
 
 # controlador.update_cursos_color(  'yellow' ,  '#ffff33' )
 
@@ -118,7 +81,7 @@ def index():
 # @validar_usuario()
 def calendario():
     DAYS = 10
-    DIFF = 1
+    DIFF = 0
     HRS = 24
     MINS = 60
     local_datetime = utils.local_time()
@@ -140,16 +103,22 @@ def calendario():
         [i, '00']
         for i in range(HRS)
         # for j in range(MINS)
-    ]  
+    ]
 
+    grupos = controlador.get_grupos_matriculaid(2)
+    contextos = controlador.get_contextos()
     actividades = controlador.get_actividades_items()
+    tipo_actividades = controlador.get_tipos_actividades()
 
     return render_template(
         "calendario.html",
         local_datetime = local_datetime ,
         columnas = columnas ,
-        actividades = actividades ,
         filas = filas ,
+        actividades = actividades ,
+        contextos = contextos ,
+        grupos = grupos ,
+        tipo_actividades = tipo_actividades ,
         HRS = HRS ,
         MINS = MINS ,
     )
@@ -275,7 +244,7 @@ def semestre():
     semestre = controlador.get_info_semestre_codigo(codigo)
     grupos = controlador.get_grupos_semestre(codigo)
     horarios = controlador.get_horario_grupo()
-    dias = utils.BASE_NOMBRE_DIAS
+    dias = values.BASE_NOMBRE_DIAS
     return render_template(
         "semestre.html" ,
         grupos = grupos ,
@@ -395,7 +364,7 @@ def grupos():
 # @validar_usuario()
 def horario():
     actual = request.args.get('semestre')
-    semestre = actual if actual else utils.SEMESTRE
+    semestre = actual if actual else values.SEMESTRE
     ciclos = controlador.get_ciclos_grupos_semestre(semestre)
     cursos = controlador.get_cursos_grupo_semestre(semestre)
     grupos = controlador.get_grupos_semestre(semestre)
@@ -553,7 +522,7 @@ def nueva_columna():
     tablaid = request.args.get('tablaid')
     date = utils.format_now("%Y%m%d%H%M%S") 
     orden = controlador.get_max_min_orden_element_tabla('C' , tablaid).get('max') + 1
-    controlador.insert_columna(f'Columna{date}', utils.COLOR_DEFAULT , orden ,tablaid )
+    controlador.insert_columna(f'Columna{date}', values.COLOR_DEFAULT , orden ,tablaid )
     return redirect(url_for('tabla' , tablaid = tablaid))
 
 
@@ -563,7 +532,7 @@ def nueva_fila():
     tablaid = request.args.get('tablaid')
     date = utils.format_now("%Y%m%d%H%M%S")
     orden = controlador.get_max_min_orden_element_tabla('F' , tablaid).get('max') + 1
-    controlador.insert_fila(f'Fila{date}', utils.COLOR_DEFAULT , orden ,tablaid )
+    controlador.insert_fila(f'Fila{date}', values.COLOR_DEFAULT , orden ,tablaid )
     return redirect(url_for('tabla' , tablaid = tablaid))
 
 
@@ -614,7 +583,7 @@ def save_markdown():
 @app.route("/login")
 def login():
     username = request.cookies.get('username')
-    user_username = utils.USUARIO.get('username')
+    user_username = values.USUARIO.get('username')
     if username and user_username == username: 
         return redirect('/index')
     resp = make_response(render_template('login.html'))
@@ -646,9 +615,9 @@ def logout():
 
 
 def resp_login( username , password ):
-    user_id       = utils.USUARIO.get('id')
-    user_username = utils.USUARIO.get('username')
-    user_password = utils.USUARIO.get('password')
+    user_id       = values.USUARIO.get('id')
+    user_username = values.USUARIO.get('username')
+    user_password = values.USUARIO.get('password')
     if user_username == username and user_password == password:
         resp = make_response(redirect_url('login'))
         resp.set_cookie('id', str(user_id))
@@ -662,9 +631,9 @@ def rdrct_error(resp_redirect , e):
     resp = make_response(resp_redirect)
     error_message = str(e)
 
-    for clave in utils.ERRORES:
+    for clave in values.ERRORES:
         if clave in error_message:
-            msg = utils.ERRORES[clave]
+            msg = values.ERRORES[clave]
             break 
     else:
         msg =  'ERROR DESCONOCIDO ENCONTRADO: '+error_message
@@ -935,9 +904,17 @@ def guardar_paleta():
     return redirect(url_for('configuracion'))
 
 
+@app.route('/guardar_actividad', methods=['POST'])
+def guardar_actividad():
+    f = controlador.insert_actividad
+    valores = utils.request_values_parameters(f)
+    f( *valores )
+    return redirect(url_for('calendario'))
+
+
 @app.route('/execute_post=<name>', methods=['POST'])
 def execute_post(name):
-    crud_dict = CRUD_FORMS.get(name)
+    crud_dict = values.CRUD_FORMS.get(name)
     f = crud_dict.get('function')
     re = crud_dict.get('return')
     valores = utils.request_values_parameters(f)

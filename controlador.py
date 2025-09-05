@@ -101,6 +101,14 @@ def insert_paleta(color1, color2, color3, color4, color5, colorbg1, colorbg2, co
     return bd.sql_execute_lastrowid(sql,(color1, color2, color3, color4, color5, colorbg1, colorbg2, colorbg3, estado))
 
 
+def insert_actividad(nombre, siglas, descripcion, color, icono, fecha, tipo_actividadid, grupoid=None, contextoid=None):
+    sql = '''
+        INSERT INTO actividad(nombre, siglas, descripcion, color, icono, fecha, tipo_actividadid, grupoid, contextoid) VALUES 
+        (%s,%s,%s, %s,%s,%s, %s,%s,%s)
+    '''
+    bd.sql_execute(sql,(nombre, siglas, descripcion, color, icono, fecha, tipo_actividadid, grupoid, contextoid))
+
+
 
 # UPDATE
 
@@ -571,6 +579,29 @@ def get_horario_grupo():
     return bd.sql_select_fetchall(sql)
 
 
+def get_grupos_semestre_actual():
+    sql = f'''
+    SELECT 
+		gr.semestrecodigo ,
+		cu.nombre as cu_nombre,
+        gr.nombre as gr_nombre ,
+        cu.siglas as cu_siglas ,
+        cu.color as color ,
+        cu.ciclo as ciclo ,
+        doc.apellidos ,
+        doc.nombres ,
+        gr.id ,
+        gr.cursoid
+    FROM grupo gr
+    inner join curso cu on cu.id = gr.cursoid
+    inner join docente doc on doc.id = gr.docenteid
+    inner join semestre sem on sem.codigo = gr.semestrecodigo
+    where sem.f_inicio <= NOW() and NOW() <= sem.f_fin
+    order by 1 asc , 2 asc, 3 asc
+    '''
+    return bd.sql_select_fetchall(sql)
+
+
 def get_grupos_semestre(semestre):
     sql = f'''
     SELECT 
@@ -996,8 +1027,32 @@ def obtener_notas():
     return elementos
 
 
+def get_contextos():
+    sql = f'''
+        SELECT 
+            id, 
+            nombre, 
+            descripcion, 
+            siglas, 
+            icono, 
+            color 
+        FROM contexto
+        order by 2
+    '''
+    return bd.sql_select_fetchall(sql)
 
 
+def get_tipos_actividades():
+    sql = f'''
+        SELECT 
+            id, 
+            nombre, 
+            orden, 
+            usuarioid 
+        FROM tipo_actividad
+        order by 3
+    '''
+    return bd.sql_select_fetchall(sql)
 
 
 def get_tabla_info(id):
