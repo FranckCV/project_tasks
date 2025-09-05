@@ -9,7 +9,7 @@ Calendario
 <style>
 
     th , td {
-        border: 1px solid white;
+        border: 1px solid #ffffffae;
         text-align: center;
         border-radius: 5px;
     }
@@ -19,11 +19,11 @@ Calendario
     }
 
     th:first-of-type {
-        min-width: 75px;
+        min-width: 100px;
     }
 
     .activity_cell {
-        border: 1px solid grey;
+        border: 1px solid #d3d3d33f;
     }
 
     table {
@@ -52,7 +52,7 @@ Calendario
         left: var(--sizeT);
         background: var(--bg_table); 
         z-index: 109;     
-        /* min-height: 100px; */
+        height: 100px;
     }
 
     thead th:first-child {
@@ -204,6 +204,25 @@ Calendario
         grid-template-columns: repeat( 2 , 1fr );
     }
 
+    .current_time {
+        --cur: var(--color3);
+
+        border: 1px solid var(--cur);
+        animation: alert 0.5s infinite;
+    }
+
+    @keyframes alert {
+
+        0%,
+        100% {
+            border: 1px solid var(--color2);
+        }
+
+        50% {
+            border: 1px solid var(--color3);
+        }
+    }
+
 </style>
 {% endblock %}
 
@@ -216,21 +235,30 @@ Calendario
     </p>
 </div>
     
+{% set local_date = local_datetime.strftime("%Y-%m-%d") %}
+{% set local_hour = local_datetime.strftime("%H") %}
+{% set local_minute = local_datetime.strftime("%M") %}
+
 <div class="container_grid">
     <div class="container_calendar">
         <table>
             <thead>
                 <th class="head_cell">
-
+                    <div>
+                        {{ local_datetime.strftime("%Y-%m-%d") }}
+                    </div>
+                    <div>
+                        {{ local_datetime.strftime("%H : %M") }}
+                    </div>
                 </th>
                 {% for col in columnas %}
                 <th class="head_col">
                     <div>
                         <div>
-                            {{ dias[col.1] }}
+                            {{ col.0 }}
                         </div>
                         <div>
-                            {{ col.0 }}
+                            {{ dias[col.1] }}
                         </div>
                     </div>
                 </th>
@@ -239,16 +267,16 @@ Calendario
             <tbody>
                 {% for fil in filas %}
                     <tr>
-                        <td class="head_row">
+                        <td class="head_row" data-hora="{{fil.0}}">
                             {{ fil.0 }} : {{ fil.1 }}
                         </td>
                         {% for col in columnas %}
-                        <td class="activity_cell">
-                            <div class="list_items">
+                        <td class="activity_cell {{ 'current_time' if local_date == col.0 and local_hour | int == fil.0 else '' }}" >
+                            <div class="list_items" data-fecha="{{col.0}}" data-hora="{{fil.0}}">
                                 {% for a in actividades %}
+                                    {% set a_date = a.fecha.strftime("%Y-%m-%d") %}
                                     {% set a_hora = a.fecha.strftime("%H") %}
                                     {% set a_minuto = a.fecha.strftime("%M") %}
-                                    {% set a_date = a.fecha.strftime("%Y-%m-%d") %}
 
                                     {% if fil.0 == a_hora | int  and  a_date == col.0  %}
                                     <style>
@@ -264,7 +292,6 @@ Calendario
                                         .item[data-id="{{a.id}}"] .i_titulo {
                                             color: color-mix(in srgb, white 25%, {{ a.color }} 100%) ;
                                         }
-
                                     </style>
 
                                     <div class="item" data-id="{{a.id}}">

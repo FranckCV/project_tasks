@@ -84,7 +84,11 @@ def calendario():
     DIFF = 0
     HRS = 24
     MINS = 60
+    DIFFH = 2
+
     local_datetime = utils.local_time()
+    local_hour = int(local_datetime.strftime('%H'))
+
     columnas = [
         [
             (local_datetime + timedelta(days=i - DIFF)).strftime("%Y-%m-%d"),
@@ -100,8 +104,8 @@ def calendario():
     ]
 
     filas = [
-        [i, '00']
-        for i in range(HRS)
+        [i + local_hour - DIFFH, '00']
+        for i in range(HRS - local_hour + DIFFH)
         # for j in range(MINS)
     ]
 
