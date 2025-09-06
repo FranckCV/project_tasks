@@ -385,13 +385,41 @@ section.general_element {
     grid-template-columns: repeat( 2, auto );
 }
 
+.modal_container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal_navs {
+    display: flex;
+}
+
+.modal_navs .nav {
+    padding-inline: 10px;
+    padding-block: 5px;
+    border-radius: 5px;
+    border: 1px solid #ffffff7d;
+}
+
+.modal_navs_containers .modal_container {
+    display: none;
+    overflow-y: auto;
+}
+
+.modal_navs_containers {
+    height: 40vh;
+}
+
 .form_field {
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
-.form_field *:not(label) {
+.form_field select ,
+.form_field textarea ,
+.form_field input {
     height: 30px;
     border-radius: 3px;
     border: 1px solid #ffffff5a;
@@ -406,6 +434,28 @@ section.general_element {
     background-color: #ffffff1f;
     color: white;
 }
+
+.form_radio {
+    display: grid;
+    grid-template-columns: 20px auto;
+    gap: 5px;
+    align-items: center;
+    border: 0;
+    height: auto;
+    padding-block: 5px;
+}
+
+.form_radio input {
+    height: 12px;
+}
+
+
+
+
+
+
+
+
 
 
 

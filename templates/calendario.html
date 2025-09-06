@@ -20,6 +20,7 @@ Calendario
 
     th {
         min-width: var(--width);
+        font-weight: normal;
     }
 
     th:first-of-type {
@@ -30,7 +31,7 @@ Calendario
         background: var(--bg_table);
         position: sticky;
         top: var(--sizeT);
-        z-index: 110;    
+        z-index: 110;
     }
 
     tbody td.head_row {
@@ -54,12 +55,11 @@ Calendario
     }
     
     .activity_cell {
-        --cc: #ffffff20;
+        --cc: #ffffff1c;
     }
 
     .current_date {
-        /* --cc: #ffffff6c; */
-        --cc: color-mix(in srgb, #ffffff49 100%, var(--color3) 100%) ;
+        --cc: color-mix(in srgb, #ffffff49 50%, var(--color3) 100%) ;
     }
     
     .tomorrow_date {
@@ -78,7 +78,7 @@ Calendario
         }
 
         50% {
-            border: 1px solid var(--color3);
+            border: 1px solid var(--color4);
         }
     }
 
@@ -101,7 +101,6 @@ Calendario
         padding: var(--sizeT);
     }
     
-
     .container_grid {
         grid-template-columns: 3fr 1fr;
     }
@@ -200,8 +199,6 @@ Calendario
         --cb: #bebb00;
     }
 
-
-
     :root {
         --sizeItemIcon: 30px;
     }
@@ -280,7 +277,7 @@ Calendario
     }
     
     .modal_dialog {
-        width: 550px;
+        width: 650px;
     }
 
     .modal_body {
@@ -492,68 +489,103 @@ Calendario
         <div class="modal_header">
             Agregar actividad
         </div>
+        
         <div class="modal_body">
+            <div class="modal_container">
+                <div class="form_field">
+                    <label for="">Nombre</label>
+                    <input type="text" name="nombre" id="" required>
+                </div>
 
-            <div class="form_field">
-                <label for="">Nombre</label>
-                <input type="text" name="nombre" id="" required>
-            </div>
-
-            <div class="form_field">
-                <label for="">Fecha</label>
-                <input type="datetime-local" name="fecha" id="" >
-            </div>
-            
-            <div class="form_field">
-                <label for="">Tipos</label>
-                <select name="tipo_actividadid" id="">
-                    <option value=""> Sin tipo </option>
-                    {% for t in tipo_actividades %}
-                    <option value="{{t.id}}">{{ t.nombre }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="form_field">
-                <label for="">Contextos</label>
-                <select name="contextoid" id="" >
-                    <option value="" selected disabled> Sin contexto </option>
-                    {% for c in contextos %}
-                    <option value="{{c.id}}">{{c.siglas}} - {{c.nombre}}</option>
-                    {% endfor %}
-                </select>
+                <div class="form_field">
+                    <label for="">Fecha</label>
+                    <input type="datetime-local" name="fecha" id="" >
+                </div>
+                
+                <div class="form_field">
+                    <label for="">Tipos</label>
+                    <select name="tipo_actividadid" id="">
+                        <option value=""> Sin tipo </option>
+                        {% for t in tipo_actividades %}
+                        <option value="{{t.id}}">{{ t.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form_field">
+                    <label for="">Descripcion</label>
+                    <textarea name="descripcion" id=""></textarea>
+                </div>
             </div>
 
-            <div class="form_field">
-                <label for="">Grupos</label>
-                <select name="grupoid" id="">
-                    <option value="" selected disabled> Sin grupo </option>
-                    {% for g in grupos %}
-                    <option value="{{g.id}}"> {{ g.cu_siglas }} - {{ g.cu_nombre }} - {{ g.gr_nombre }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="form_field">
-                <label for="">Descripcion</label>
-                <textarea name="descripcion" id=""></textarea>
-            </div>
+            <div class="modal_container">
+                <div class="modal_navs">
+                    <div class="nav nav_active" data-target="c_grupo">
+                        Grupo
+                    </div>
+                    <div class="nav" data-target="c_contexto">
+                        Contexto
+                    </div>
+                    <div class="nav" data-target="c_ind">
+                        Independiente
+                    </div>
+                </div>
 
-            <div class="form_field">
-                <label for="">Siglas</label>
-                <input type="text" name="siglas" id=""  minlength="1" maxlength="5" style="width: 60px;" >
-            </div>
+                <div class="modal_containers modal_navs_containers">
 
-            <div class="form_field">
-                <label for="">Icono</label>
-                <input type="text" name="icono" id="" >
-            </div>
+                    <div class="modal_container" id="c_grupo">
+                        <div class="form_field">
+                            <label for="">Grupos</label>
 
-            <div class="form_field">
-                <label for="">Color</label>
-                <input type="color" name="color" id="" >
-            </div>
+                            {% for g in grupos %}
+                            <div class="form_radio">
+                                <input type="radio" name="grupoid" id="grupoid_{{g.id}}" value="{{g.id}}">
+                                <label for="grupoid_{{g.id}}">{{ g.cu_siglas }} - {{ g.cu_nombre }} - {{ g.gr_nombre }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>                    
+                    </div>
 
+                    <div class="modal_container" id="c_contexto">
+                        <div class="form_field">
+                            <label for="">Contextos</label>
+
+                            {% for g in grupos %}
+                            <div class="form_radio">
+                                <input type="radio" name="grupoid" id="grupoid_{{g.id}}" value="{{g.id}}">
+                                <label for="grupoid_{{g.id}}">{{ g.cu_siglas }} - {{ g.cu_nombre }} - {{ g.gr_nombre }}</label>
+                            </div>
+                            {% endfor %}
+                            
+                            <select name="contextoid" id="" >
+                                <option value="" selected disabled> Sin contexto </option>
+                                {% for c in contextos %}
+                                <option value="{{c.id}}">{{c.siglas}} - {{c.nombre}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="modal_container" id="c_ind">
+                        <div class="form_field">
+                            <label for="">Siglas</label>
+                            <input type="text" name="siglas" id=""  minlength="1" maxlength="5" style="width: 60px;" >
+                        </div>
+
+                        <div class="form_field">
+                            <label for="">Icono</label>
+                            <input type="text" name="icono" id="" >
+                        </div>
+
+                        <div class="form_field">
+                            <label for="">Color</label>
+                            <input type="color" name="color" id="" >
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
 
         <div class="modal_footer">
