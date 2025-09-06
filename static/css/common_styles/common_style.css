@@ -290,6 +290,18 @@ section.general_element {
     background-color: #00b84c;
 }
 
+.btn_update {
+    background-color: #dcd900;
+}
+
+.btn_delete {
+    background-color: #e11401;
+}
+
+.btn_consult {
+    background-color: #0093c9;
+}
+
 .clickable-modal {
     cursor: pointer;
 }

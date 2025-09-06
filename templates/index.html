@@ -180,36 +180,42 @@ Index
         <p>Progreso del ciclo</p>
 
         {% set porcentaje = progreso_semestre.get('porcentaje') if progreso_semestre.get('porcentaje') else 0.0 %}
-        {% set avance = porcentaje if porcentaje < 100 else 100.00 %} <div class="avance_ciclo">
+        {% set avance = porcentaje if porcentaje < 100 else 100.00 %} 
+        <div class="avance_ciclo">
             <div class="avance_info">
                 <p>{{ "%.2f"|format(avance) }}%</p>
                 <span>Semana {{ (progreso_semestre['actual'] / 7 ) | round | int }}</span>
+                <span>Dia {{ progreso_semestre['actual'] }}</span>
+                <span>Quedan {{ progreso_semestre['total'] - progreso_semestre['actual'] }} dias</span>
             </div>
             <div id="progress-ring-container"></div>
+        </div>
     </div>
 
-</div>
-<div class="d_block" data-block="2">
-    <p>
-        Promedio final por curso
-    </p>
-    <div class="promedio_curso">
-        <canvas id="graficoBarras" style="max-height: 300px;"></canvas>
+    <div class="d_block" data-block="2">
+        <p>
+            Promedio final por curso
+        </p>
+        <div class="promedio_curso">
+            <canvas id="graficoBarras" style="max-height: 300px;"></canvas>
+        </div>
     </div>
-</div>
 
-<div class="d_block" data-block="3">
-    Promedio general
-    <div>
-        <p>{{ promedio_general.promedio_general }}</p>
+    <div class="d_block" data-block="3">
+        Promedio general
+        <div>
+            <p>{{ promedio_general.promedio_general }}</p>
+        </div>
     </div>
-</div>
-<div class="d_block" data-block="4">
-    lista de actividades
-</div>
-<div class="d_block" data-block="5">
-    Actividad actual en ejecucion o Proxima actividad en ejecucion
-</div>
+
+    <div class="d_block" data-block="4">
+        lista de actividades
+    </div>
+
+    <div class="d_block" data-block="5">
+        Actividad actual en ejecucion o Proxima actividad en ejecucion
+    </div>
+
 <div class="d_block" data-block="6">
     <div>
         <button>

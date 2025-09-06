@@ -943,7 +943,7 @@ def calendario():
     columnas = [
         [
             (local_datetime + timedelta(days=i - DIFF)).strftime("%Y-%m-%d"),
-            (local_datetime + timedelta(days=i - DIFF)).isoweekday() % 7 # día de la semana
+            (local_datetime + timedelta(days=i - DIFF)).isoweekday() % 7
         ]
         for i in range(DAYS)
     ]

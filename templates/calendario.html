@@ -6,7 +6,11 @@ Calendario
 
 
 {% block estilos %}
+
 <style>
+    :root {
+        --width: 150px;
+    }
 
     th , td {
         border: 1px solid #ffffffae;
@@ -15,29 +19,11 @@ Calendario
     }
 
     th {
-        min-width: 150px;
+        min-width: var(--width);
     }
 
     th:first-of-type {
         min-width: 100px;
-    }
-
-    .activity_cell {
-        border: 1px solid #d3d3d33f;
-    }
-
-    table {
-        border-collapse: separate;
-        border-spacing: 2px;
-    }
-
-    :root {
-        --bg_table: #3b3b3b;
-        --sizeT: 1px;
-    }
-
-    .container_calendar {
-        padding: var(--sizeT);
     }
     
     thead th.head_col {
@@ -62,6 +48,59 @@ Calendario
         z-index: 111; 
         background-color: rgb(37, 37, 37);
     }
+    
+    td {
+        border: 1px solid var(--cc);
+    }
+    
+    .activity_cell {
+        --cc: #ffffff20;
+    }
+
+    .current_date {
+        /* --cc: #ffffff6c; */
+        --cc: color-mix(in srgb, #ffffff49 100%, var(--color3) 100%) ;
+    }
+    
+    .tomorrow_date {
+        --cc: #ffffff6b;
+    }
+
+    .current_datetime {
+        animation: alert 0.5s infinite;
+    }
+
+    @keyframes alert {
+
+        0%,
+        100% {
+            border: 1px solid var(--color2);
+        }
+
+        50% {
+            border: 1px solid var(--color3);
+        }
+    }
+
+</style>
+
+
+
+<style>
+    table {
+        border-collapse: separate;
+        border-spacing: 2px;
+    }
+
+    :root {
+        --bg_table: #3b3b3b;
+        --sizeT: 1px;
+    }
+
+    .container_calendar {
+        padding: var(--sizeT);
+    }
+    
 
     .container_grid {
         grid-template-columns: 3fr 1fr;
@@ -70,6 +109,7 @@ Calendario
     .container_list {
         height: 85vh;
         overflow-x: auto;
+        align-items: center;
     }
 
     .container_calendar {
@@ -86,9 +126,10 @@ Calendario
         
         border-radius: var(--borderRadius);
         display: grid;
-        grid-template-columns: var(--sizeIcon) auto;
+        grid-template-columns: var(--sizeIcon) auto 25px;
         align-items: center;
         padding: 5px;
+        width: 95%;
     }
 
     .a_icon {
@@ -123,6 +164,44 @@ Calendario
         color: #cccccc;
     }
 
+    .a_buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        align-items: center;
+    }
+
+    .a_buttons .button {
+        padding: 0;
+        height: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        aspect-ratio: 1 / 1;
+        border-radius: 5px;
+        border: 1px solid var(--cb);
+        color: var(--cb);
+        background-color: color-mix(in srgb, transparent 100%, var(--cb) 20%);
+    }
+
+    .a_buttons i {
+        font-size: 80%;
+    }
+
+    .a_buttons .button.btn_consult {
+        --cb: #1675db;
+    }
+
+    .a_buttons .button.btn_delete {
+        --cb: #c11000;
+    }
+
+    .a_buttons .button.btn_update {
+        --cb: #bebb00;
+    }
+
+
+
     :root {
         --sizeItemIcon: 30px;
     }
@@ -141,13 +220,6 @@ Calendario
         font-size: 90%;
         display: flex;
         flex-direction: column;
-        /* display: grid; */
-        /* grid-template-columns: calc( var(--sizeItemIcon) + 5px ) auto;
-        grid-template-areas: 
-            " i_i i_t "
-            " i_i i_ti "
-            " i_n i_n "
-        ; */
     }
 
     .i_icon {
@@ -184,6 +256,17 @@ Calendario
         text-align: left;
     }
 
+    .i_titulo {
+        padding: 0;
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        display: block;
+        width: calc( var(--width) - var(--sizeItemIcon) - 35px ) ;
+    }
+
     .i_tipo {
         color: #cecece;
         font-size: 90%;
@@ -202,33 +285,6 @@ Calendario
 
     .modal_body {
         grid-template-columns: repeat( 2 , 1fr );
-    }
-
-    .current_datetime {
-        /* --cur: var(--color3); */
-
-        /* border: 1px solid var(--cur); */
-        animation: alert 0.5s infinite;
-    }
-
-    .current_date {
-        border: 1px solid orange;
-    }
-    
-    .tomorrow_date {
-        border: 1px solid rgb(246, 255, 0);
-    }
-
-    @keyframes alert {
-
-        0%,
-        100% {
-            border: 1px solid var(--color2);
-        }
-
-        50% {
-            border: 1px solid var(--color3);
-        }
     }
 
 </style>
@@ -341,7 +397,7 @@ Calendario
                                         <div class="i_nombre">
                                             {{ a.nombre }}
                                         </div>
-
+                                        
                                         <div class="i_fecha">
                                             {{ a.fecha }}
                                         </div>
@@ -405,10 +461,22 @@ Calendario
                     <div class="a_fecha">
                         {{ a.fecha }}
                     </div>
-                    
+                    |
                     <div class="a_tipo">
                         {{ a.tipo }}
                     </div>
+                </div>
+            </div>
+
+            <div class="a_buttons">
+                <div class="button btn_consult">
+                    <i class="fa-solid fa-eye"></i>
+                </div>
+                <div class="button btn_update">
+                    <i class="fa-solid fa-pencil"></i>
+                </div>
+                <div class="button btn_delete">
+                    <i class="fa-solid fa-trash"></i>
                 </div>
             </div>
         </div>
@@ -417,9 +485,6 @@ Calendario
         {% endfor %}
     </div>
 </div>
-
-
-
 
 
 <div class="modal_space" id="insert_actividad">
