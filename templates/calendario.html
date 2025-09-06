@@ -101,7 +101,7 @@ Calendario
     }
 
     .a_icon i {
-        font-size: 110%;
+        font-size: 130%;
     }
 
     .a_titulo {
@@ -197,18 +197,26 @@ Calendario
     }
     
     .modal_dialog {
-        width: 400px;
+        width: 550px;
     }
 
     .modal_body {
         grid-template-columns: repeat( 2 , 1fr );
     }
 
-    .current_time {
-        --cur: var(--color3);
+    .current_datetime {
+        /* --cur: var(--color3); */
 
-        border: 1px solid var(--cur);
+        /* border: 1px solid var(--cur); */
         animation: alert 0.5s infinite;
+    }
+
+    .current_date {
+        border: 1px solid orange;
+    }
+    
+    .tomorrow_date {
+        border: 1px solid rgb(246, 255, 0);
     }
 
     @keyframes alert {
@@ -236,8 +244,8 @@ Calendario
 </div>
     
 {% set local_date = local_datetime.strftime("%Y-%m-%d") %}
-{% set local_hour = local_datetime.strftime("%H") %}
-{% set local_minute = local_datetime.strftime("%M") %}
+{% set local_hour = local_datetime.strftime("%H") | int %}
+{% set local_minute = local_datetime.strftime("%M") | int %}
 
 <div class="container_grid">
     <div class="container_calendar">
@@ -270,18 +278,33 @@ Calendario
                         <td class="head_row" data-hora="{{fil.0}}">
                             {{ fil.0 }} : {{ fil.1 }}
                         </td>
-                        {% for col in columnas %}
-                        <td class="activity_cell {{ 'current_time' if local_date == col.0 and local_hour | int == fil.0 else '' }}" >
-                            <div class="list_items" data-fecha="{{col.0}}" data-hora="{{fil.0}}">
-                                {% for a in actividades %}
+
+                        {% for colu in columnas %}
+
+                        {% set col_fecha = colu.0|add_days(1) if fil.0 + DIFH < local_hour else colu.0 %}
+                        {% set col_dia   = colu.1 + 1         if fil.0 + DIFH < local_hour else colu.1 %}
+
+                        <td class="activity_cell 
+                        {{ 'current_datetime' if local_date == col_fecha and local_hour == fil.0 else '' }}
+                        {{ 'current_date' if local_date == col_fecha else '' }}
+                        {{ 'tomorrow_date' if local_date|add_days(1) == col_fecha else '' }}
+                        " >
+                            <div class="list_items" data-fecha="{{col_fecha}}" data-hora="{{fil.0}}">
+                                <!-- {{ col_fecha }}
+                                {{ fil.0 }} -->
+
+                                {% for a in actividades  %}
                                     {% set a_date = a.fecha.strftime("%Y-%m-%d") %}
-                                    {% set a_hora = a.fecha.strftime("%H") %}
+                                    {% set tomorrow = a_date|add_days(1) %}
+
+                                    {% set a_hora = a.fecha.strftime("%H") | int %}
                                     {% set a_minuto = a.fecha.strftime("%M") %}
 
-                                    {% if fil.0 == a_hora | int  and  a_date == col.0  %}
+                                    {% if ( fil.0 == a_hora and a_date == col_fecha ) %}
+
                                     <style>
                                         .item[data-id="{{a.id}}"] {
-                                            background-color: color-mix(in srgb, transparent 100%, {{a.color}} 30%) ;
+                                            background-color: color-mix(in srgb, transparent 100%, {{a.color}} 20%) ;
                                             border: 1px solid {{a.color}} ;
                                         }
 
@@ -324,6 +347,9 @@ Calendario
                                         </div>
 
                                     </div>
+
+
+
                                     {% endif %}
                                 {% endfor %}
                             </div>
@@ -402,6 +428,7 @@ Calendario
             Agregar actividad
         </div>
         <div class="modal_body">
+
             <div class="form_field">
                 <label for="">Nombre</label>
                 <input type="text" name="nombre" id="" required>

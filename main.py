@@ -77,57 +77,6 @@ def index():
     )
 
 
-@app.route("/calendario")
-# @validar_usuario()
-def calendario():
-    DAYS = 10
-    DIFF = 0
-    HRS = 24
-    MINS = 60
-    DIFFH = 2
-
-    local_datetime = utils.local_time()
-    local_hour = int(local_datetime.strftime('%H'))
-
-    columnas = [
-        [
-            (local_datetime + timedelta(days=i - DIFF)).strftime("%Y-%m-%d"),
-            (local_datetime + timedelta(days=i - DIFF)).isoweekday() % 7 # día de la semana
-        ]
-        for i in range(DAYS)
-    ]
-
-    filas2 = [
-        [i, j]
-        for i in range(HRS)
-        for j in range(MINS)
-    ]
-
-    filas = [
-        [i + local_hour - DIFFH, '00']
-        for i in range(HRS - local_hour + DIFFH)
-        # for j in range(MINS)
-    ]
-
-    grupos = controlador.get_grupos_matriculaid(2)
-    contextos = controlador.get_contextos()
-    actividades = controlador.get_actividades_items()
-    tipo_actividades = controlador.get_tipos_actividades()
-
-    return render_template(
-        "calendario.html",
-        local_datetime = local_datetime ,
-        columnas = columnas ,
-        filas = filas ,
-        actividades = actividades ,
-        contextos = contextos ,
-        grupos = grupos ,
-        tipo_actividades = tipo_actividades ,
-        HRS = HRS ,
-        MINS = MINS ,
-    )
-
-
 @app.route("/configuracion")
 @validar_usuario()
 def configuracion():
@@ -969,3 +918,71 @@ def api_update_filas_orden():
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"success": False, "error": str(e)}), 500
+
+
+
+
+
+
+
+
+
+@app.route("/calendario")
+# @validar_usuario()
+def calendario():
+    HRS = 24
+    MINS = 60
+
+    DAYS = 10
+    DIFF = 0
+    DIFH = 0
+
+    local_datetime = utils.local_time()
+    local_hour = int(local_datetime.strftime('%H'))
+
+    columnas = [
+        [
+            (local_datetime + timedelta(days=i - DIFF)).strftime("%Y-%m-%d"),
+            (local_datetime + timedelta(days=i - DIFF)).isoweekday() % 7 # día de la semana
+        ]
+        for i in range(DAYS)
+    ]
+
+    filas2 = [
+        [i, j]
+        for i in range(HRS)
+        for j in range(MINS)
+    ]
+
+    filas = [
+        [ (i + local_hour - DIFH) % 24 , '00']
+        for i in range(HRS )
+        # for j in range(MINS)
+    ]
+
+    grupos = controlador.get_grupos_matriculaid(2)
+    contextos = controlador.get_contextos()
+    actividades = controlador.get_actividades_items()
+    tipo_actividades = controlador.get_tipos_actividades()
+
+    return render_template(
+        "calendario.html",
+        local_datetime = local_datetime ,
+        columnas = columnas ,
+        filas = filas ,
+        actividades = actividades ,
+        contextos = contextos ,
+        grupos = grupos ,
+        tipo_actividades = tipo_actividades ,
+        DAYS = DAYS ,
+        DIFF = DIFF ,
+        DIFH = DIFH ,
+    )
+
+
+
+@app.template_filter("add_days")
+def add_days(value, days):
+    fmt = "%Y-%m-%d"
+    dt = datetime.strptime(value, fmt)
+    return (dt + timedelta(days=days)).strftime(fmt)
