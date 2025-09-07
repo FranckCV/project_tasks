@@ -1608,4 +1608,10 @@ def ver_tareas_tabla( id ):
 #     return elementos
 
 
-
+def consult_local_datetime_bd():
+    sql = '''
+    select
+        NOW() as now
+    from tarea
+    '''
+    return bd.sql_select_fetchone(sql).get('now')

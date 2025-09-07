@@ -936,7 +936,7 @@ def calendario():
     DAYS = 10
     DIFF = 0
     DIFH = 0
-
+    bd_datetime = controlador.consult_local_datetime_bd()
     local_datetime = utils.local_time()
     local_hour = int(local_datetime.strftime('%H'))
 
@@ -967,6 +967,7 @@ def calendario():
 
     return render_template(
         "calendario.html",
+        bd_datetime = bd_datetime ,
         local_datetime = local_datetime ,
         columnas = columnas ,
         filas = filas ,
