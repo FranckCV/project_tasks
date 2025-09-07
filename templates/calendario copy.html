@@ -10,7 +10,6 @@ Calendario
 <style>
     :root {
         --width: 150px;
-        --height: 100px;
     }
 
     th , td {
@@ -40,7 +39,7 @@ Calendario
         left: var(--sizeT);
         background: var(--bg_table); 
         z-index: 109;     
-        height: var(--height);
+        height: 100px;
     }
 
     thead th:first-child {
@@ -223,8 +222,7 @@ Calendario
     .i_icon {
         grid-area: i_i;
         height: var(--sizeItemIcon);
-        width: var(--sizeItemIcon);
-        /* aspect-ratio: 1 / 1 ; */
+        aspect-ratio: 1 / 1 ;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -290,48 +288,11 @@ Calendario
 {% endblock %}
 
 
-
 {% block contenido %}
-
-{% set format_date_col = "%m-%d" if modo_simple else "%Y-%m-%d" %}
-
-{% if modo_simple %}
-<style>
-    :root {
-        --width:  50px;
-        --height: 10px;
-    }
-
-    th:first-of-type {
-        min-width: var(--width);
-    }
-
-    .list_items {
-        padding: 2px;
-        gap: 2px;
-    }
-
-    .item {
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .i_icon {
-        height: var(--height) ;
-        width: var(--sizeItemIcon);
-        font-size: 95%;
-        width: calc( var(--width) - 5px );
-    }
-
-</style>
-{% endif %}
-
 
 <div class="container_title">
     <p class="title">
-        Calendario
+        Calendario {{bd_datetime}}
     </p>
 
     <div class="clickable-modal button btn_insert" data-target="insert_actividad">
@@ -350,7 +311,7 @@ Calendario
             <thead>
                 <th class="head_cell">
                     <div>
-                        {{ local_datetime.strftime(format_date_col) }}
+                        {{ local_datetime.strftime("%Y-%m-%d") }}
                     </div>
                     <div>
                         {{ local_datetime.strftime("%H : %M") }}
@@ -360,10 +321,10 @@ Calendario
                 <th class="head_col">
                     <div>
                         <div>
-                            {{ col[0].strftime(format_date_col) }}
+                            {{ col.0 }}
                         </div>
                         <div>
-                            {{ dias[col.1][:3] if modo_simple else dias[col.1] }}
+                            {{ dias[col.1] }}
                         </div>
                     </div>
                 </th>
@@ -378,8 +339,7 @@ Calendario
 
                         {% for colu in columnas %}
 
-                        {% set cf = colu.0.strftime("%Y-%m-%d") %}
-                        {% set col_fecha = cf|add_days(1) if fil.0 + DIFH < local_hour else cf %}
+                        {% set col_fecha = colu.0|add_days(1) if fil.0 + DIFH < local_hour else colu.0 %}
                         {% set col_dia   = colu.1 + 1         if fil.0 + DIFH < local_hour else colu.1 %}
 
                         <td class="activity_cell 
@@ -388,7 +348,9 @@ Calendario
                         {{ 'tomorrow_date' if local_date|add_days(1) == col_fecha else '' }}
                         " >
                             <div class="list_items" data-fecha="{{col_fecha}}" data-hora="{{fil.0}}">
-                                
+                                <!-- {{ col_fecha }}
+                                {{ fil.0 }} -->
+
                                 {% for a in actividades  %}
                                     {% set a_date = a.fecha.strftime("%Y-%m-%d") %}
                                     {% set tomorrow = a_date|add_days(1) %}
@@ -396,8 +358,7 @@ Calendario
                                     {% set a_hora = a.fecha.strftime("%H") | int %}
                                     {% set a_minuto = a.fecha.strftime("%M") %}
 
-                                    {% if  fil.0 == a_hora and a_date == col_fecha  %}
-
+                                    {% if ( fil.0 == a_hora and a_date == col_fecha ) %}
 
                                     <style>
                                         .item[data-id="{{a.id}}"] {
@@ -413,7 +374,6 @@ Calendario
                                             color: color-mix(in srgb, white 25%, {{ a.color }} 100%) ;
                                         }
                                     </style>
-                                    {% if not modo_simple %}
 
                                     <div class="item" data-id="{{a.id}}">
                                         <div class="i_start">
@@ -445,20 +405,7 @@ Calendario
                                         </div>
 
                                     </div>
-                                    {% else %}
-                                    <div class="item" data-id="{{a.id}}">
-                                        <div class="i_start">
-                                            <div class="i_icon">
-                                                {% if a.icono %}
-                                                    <i class="{{a.icono}}"></i>
-                                                {% else %}
-                                                    {{ a.siglas }}
-                                                {% endif %}
-                                            </div>
 
-                                        </div>
-                                    </div>
-                                    {% endif %}
 
 
                                     {% endif %}

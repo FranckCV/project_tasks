@@ -56,7 +56,7 @@ def main_page():
 
 
 @app.route("/index")
-@validar_usuario()
+# @validar_usuario()
 def index():
     progreso_semestre = controlador.get_progreso_ciclo()
     promedio_general = controlador.get_promedio_final(1)
@@ -930,19 +930,25 @@ def api_update_filas_orden():
 @app.route("/calendario")
 # @validar_usuario()
 def calendario():
-    HRS = 24
-    MINS = 60
-
-    DAYS = 10
-    DIFF = 0
-    DIFH = 0
-    bd_datetime = controlador.consult_local_datetime_bd()
     local_datetime = utils.local_time()
     local_hour = int(local_datetime.strftime('%H'))
 
+    progreso = controlador.get_progreso_ciclo()
+    dias = progreso.get('total') - progreso.get('actual')
+
+    conf = controlador.get_configuracion()
+    modo_simple = conf.get('modo_simple')
+    ver_dias = conf.get('ver_dias')
+    cdias = conf.get('dias')
+    DAYS = dias if ver_dias else cdias
+    HRS =  conf.get('hrs')
+    MINS = conf.get('mins')
+    DIFF = conf.get('diff')
+    DIFH = conf.get('difh')
+
     columnas = [
         [
-            (local_datetime + timedelta(days=i - DIFF)).strftime("%Y-%m-%d"),
+            (local_datetime + timedelta(days=i - DIFF)),
             (local_datetime + timedelta(days=i - DIFF)).isoweekday() % 7
         ]
         for i in range(DAYS)
@@ -967,7 +973,7 @@ def calendario():
 
     return render_template(
         "calendario.html",
-        bd_datetime = bd_datetime ,
+        modo_simple = modo_simple ,
         local_datetime = local_datetime ,
         columnas = columnas ,
         filas = filas ,

@@ -431,13 +431,14 @@ def get_progreso_ciclo():
         codigo, 
         f_inicio, 
         f_fin,
-        DATEDIFF({utils.local_datetime_bd()}, f_inicio) AS actual,
+        DATEDIFF('{utils.local_datetime_bd()}', f_inicio) AS actual,
         DATEDIFF(f_fin, f_inicio) AS total,
-        ROUND(100 * DATEDIFF({utils.local_datetime_bd()}, f_inicio) / DATEDIFF(f_fin, f_inicio), 2) AS porcentaje
+        ROUND(100 * DATEDIFF('{utils.local_datetime_bd()}', f_inicio) / DATEDIFF(f_fin, f_inicio), 2) AS porcentaje
     FROM semestre
     WHERE activo = 1
     LIMIT 1
     '''
+    print(sql)
     return bd.sql_select_fetchone(sql)
 
 
@@ -1170,7 +1171,6 @@ def get_tareas(tareaid=None):
     return bd.sql_select_fetchall(sql)
 
 
-
 def get_tarea_id(id):
     sql = '''
     SELECT 
@@ -1180,6 +1180,16 @@ def get_tarea_id(id):
     '''
     return bd.sql_select_fetchone(sql,(id))
 
+
+def get_configuracion():
+    sql = '''
+    SELECT 
+        id, activo, dias, hrs, mins, diff, difh, modo_simple, ver_dias 
+    FROM configuracion 
+    WHERE activo = 1
+    LIMIT 1
+    '''
+    return bd.sql_select_fetchone(sql)
 
 
 # OTROS
