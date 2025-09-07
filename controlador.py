@@ -426,14 +426,14 @@ def consult_detalle_matricula_matriculaid_grupoid(matriculaid,grupoid):
 
 
 def get_progreso_ciclo():
-    sql = '''
+    sql = f'''
     SELECT 
         codigo, 
         f_inicio, 
         f_fin,
-        DATEDIFF(NOW(), f_inicio) AS actual,
+        DATEDIFF({utils.local_datetime_bd()}, f_inicio) AS actual,
         DATEDIFF(f_fin, f_inicio) AS total,
-        ROUND(100 * DATEDIFF(NOW(), f_inicio) / DATEDIFF(f_fin, f_inicio), 2) AS porcentaje
+        ROUND(100 * DATEDIFF({utils.local_datetime_bd()}, f_inicio) / DATEDIFF(f_fin, f_inicio), 2) AS porcentaje
     FROM semestre
     WHERE activo = 1
     LIMIT 1
@@ -604,7 +604,7 @@ def get_grupos_semestre_actual():
     inner join curso cu on cu.id = gr.cursoid
     inner join docente doc on doc.id = gr.docenteid
     inner join semestre sem on sem.codigo = gr.semestrecodigo
-    where sem.f_inicio <= NOW() and NOW() <= sem.f_fin
+    where sem.f_inicio <= {utils.local_datetime_bd()} and {utils.local_datetime_bd()} <= sem.f_fin
     order by 1 asc , 2 asc, 3 asc
     '''
     return bd.sql_select_fetchall(sql)
@@ -1609,9 +1609,10 @@ def ver_tareas_tabla( id ):
 
 
 def consult_local_datetime_bd():
-    sql = '''
+    sql = f'''
     select
-        NOW() as now
+        {utils.local_datetime_bd()} as now
     from tarea
     '''
-    return bd.sql_select_fetchone(sql).get('now')
+    # return bd.sql_select_fetchone(sql).get('now')
+    return utils.local_datetime_bd()
