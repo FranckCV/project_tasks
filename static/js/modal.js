@@ -15,19 +15,31 @@ document.querySelectorAll('.clickable-modal').forEach(btn => {
         if (modalNavs) {
             modalNavs.forEach(nav => {
                 nav.addEventListener('click',() => {
-                    let modalContID = nav.dataset.target;
-                    const containers = modalSpace.querySelectorAll(`.modal_navs_containers .modal_container `);
-                    containers.forEach(container => {
-                        if (container.id == modalContID) {
-                            container.style.display = 'flex';
-                        } else {
-                            container.style.display = 'none';
-                        }
+                    modalNavs.forEach(n => {
+                        n.classList.remove('nav_active');
                     });
+                    nav.classList.add('nav_active');
+
+                    activateNavContainer();
+                    
                 });
             });
+            activateNavContainer();
+
         }
 
+        function activateNavContainer() {
+            let modalContID = modalSpace.querySelector('.nav_active').dataset.target;
+            const containers = modalSpace.querySelectorAll(`.modal_navs_containers .modal_container `);
+            containers.forEach(container => {
+                if (container.id == modalContID) {
+                    container.style.display = 'flex';
+                } else {
+                    container.style.display = 'none';
+                }
+            });
+        }
+        
 
     });
 });

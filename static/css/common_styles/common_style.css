@@ -400,6 +400,15 @@ section.general_element {
     padding-block: 5px;
     border-radius: 5px;
     border: 1px solid #ffffff7d;
+    cursor: pointer;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.modal_navs .nav.nav_active ,
+.modal_navs .nav:hover {
+    background-color: #ffffff;
+    color: var(--colorbg1);
 }
 
 .modal_navs_containers .modal_container {
@@ -443,6 +452,9 @@ section.general_element {
     border: 0;
     height: auto;
     padding-block: 5px;
+    padding-inline: 5px;
+    font-size: 85%;
+    border-radius: 5px;        
 }
 
 .form_radio input {

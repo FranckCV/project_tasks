@@ -101,12 +101,20 @@ def insert_paleta(color1, color2, color3, color4, color5, colorbg1, colorbg2, co
     return bd.sql_execute_lastrowid(sql,(color1, color2, color3, color4, color5, colorbg1, colorbg2, colorbg3, estado))
 
 
-def insert_actividad(nombre, siglas, descripcion, color, icono, fecha, tipo_actividadid, grupoid=None, contextoid=None):
+# def insert_actividad(nombre, siglas, descripcion, color, icono, fecha, tipo_actividadid, grupoid=None, contextoid=None):
+#     sql = '''
+#         INSERT INTO actividad(nombre, siglas, descripcion, color, icono, fecha, tipo_actividadid, grupoid, contextoid) VALUES 
+#         (%s,%s,%s, %s,%s,%s, %s,%s,%s)
+#     '''
+#     bd.sql_execute(sql,(nombre, siglas, descripcion, color, icono, fecha, tipo_actividadid, grupoid, contextoid))
+
+def insert_actividad(nombre, siglas, descripcion, color, icono, fecha, hora, tipo_actividadid, grupoid=None, contextoid=None):
+    date = f'{fecha} {hora}:00'
     sql = '''
         INSERT INTO actividad(nombre, siglas, descripcion, color, icono, fecha, tipo_actividadid, grupoid, contextoid) VALUES 
         (%s,%s,%s, %s,%s,%s, %s,%s,%s)
     '''
-    bd.sql_execute(sql,(nombre, siglas, descripcion, color, icono, fecha, tipo_actividadid, grupoid, contextoid))
+    bd.sql_execute(sql,(nombre, siglas, descripcion, color, icono, date, tipo_actividadid, grupoid, contextoid))
 
 
 

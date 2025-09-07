@@ -277,7 +277,7 @@ Calendario
     }
     
     .modal_dialog {
-        width: 650px;
+        width: 550px;
     }
 
     .modal_body {
@@ -294,6 +294,11 @@ Calendario
     <p class="title">
         Calendario
     </p>
+
+    <div class="clickable-modal button btn_insert" data-target="insert_actividad">
+        <i class="fa-solid fa-plus"></i>
+        Agregar actividad
+    </div>
 </div>
     
 {% set local_date = local_datetime.strftime("%Y-%m-%d") %}
@@ -413,11 +418,7 @@ Calendario
             </tbody>
         </table>
     </div>
-    <div class="container_list">
-        <div class="clickable-modal button btn_insert" data-target="insert_actividad">
-            <i class="fa-solid fa-plus"></i>
-            Agregar actividad
-        </div>
+    <div class="container_list">        
 
         {% for a in actividades %}
         <style>
@@ -499,7 +500,15 @@ Calendario
 
                 <div class="form_field">
                     <label for="">Fecha</label>
-                    <input type="datetime-local" name="fecha" id="" >
+                    <!-- <input type="datetime-local" name="fecha" id="" > -->
+                    <div style="display: grid; gap: 10px; grid-template-columns: 2fr 1fr;">
+                        <input type="date" name="fecha" id="" >
+                        <select name="hora" id="">
+                            {% for h in range(24) %}
+                            <option value="{{h}}">{{h}}:00</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
                 
                 <div class="form_field">
@@ -538,7 +547,12 @@ Calendario
                             <label for="">Grupos</label>
 
                             {% for g in grupos %}
-                            <div class="form_radio">
+                            <style>
+                                .form_radio[data-grupoid="{{g.id}}"] {
+                                    border: 1px solid {{g.color}};
+                                }
+                            </style>
+                            <div class="form_radio" data-grupoid="{{g.id}}">
                                 <input type="radio" name="grupoid" id="grupoid_{{g.id}}" value="{{g.id}}">
                                 <label for="grupoid_{{g.id}}">{{ g.cu_siglas }} - {{ g.cu_nombre }} - {{ g.gr_nombre }}</label>
                             </div>
@@ -550,19 +564,18 @@ Calendario
                         <div class="form_field">
                             <label for="">Contextos</label>
 
-                            {% for g in grupos %}
-                            <div class="form_radio">
-                                <input type="radio" name="grupoid" id="grupoid_{{g.id}}" value="{{g.id}}">
-                                <label for="grupoid_{{g.id}}">{{ g.cu_siglas }} - {{ g.cu_nombre }} - {{ g.gr_nombre }}</label>
+                            {% for c in contextos %}
+                            <style>
+                                .form_radio[data-contextoid="{{c.id}}"] {
+                                    border: 1px solid {{c.color}};
+                                }
+                            </style>
+                            <div class="form_radio" data-contextoid="{{c.id}}">
+                                <input type="radio" name="contextoid" id="contextoid_{{c.id}}" value="{{c.id}}">
+                                <label for="contextoid_{{c.id}}">{{c.siglas}} - {{c.nombre}}</label>
                             </div>
                             {% endfor %}
                             
-                            <select name="contextoid" id="" >
-                                <option value="" selected disabled> Sin contexto </option>
-                                {% for c in contextos %}
-                                <option value="{{c.id}}">{{c.siglas}} - {{c.nombre}}</option>
-                                {% endfor %}
-                            </select>
                         </div>
                     </div>
                     
