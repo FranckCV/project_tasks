@@ -934,7 +934,7 @@ def calendario():
     local_hour = int(local_datetime.strftime('%H'))
 
     progreso = controlador.get_progreso_ciclo()
-    dias = progreso.get('total') - progreso.get('actual')
+    dias = progreso.get('total') - progreso.get('actual') + 1
 
     conf = controlador.get_configuracion()
     modo_simple = conf.get('modo_simple')
