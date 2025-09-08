@@ -120,6 +120,22 @@ def insert_actividad(nombre, siglas, descripcion, color, icono, fecha, hora, tip
 
 # UPDATE
 
+def change_configuracion_ver_dias():
+    sql = '''
+        UPDATE configuracion SET 
+        ver_dias = 1 - ver_dias
+        WHERE activo = 1
+    '''
+    bd.sql_execute(sql)
+
+
+def change_configuracion_modo_simple():
+    sql = '''
+        UPDATE configuracion SET 
+        modo_simple = 1 - modo_simple
+        WHERE activo = 1
+    '''
+    bd.sql_execute(sql)
 
 
 def actualizar_valor_nota_id(valor,id):
@@ -438,7 +454,7 @@ def get_progreso_ciclo():
     WHERE activo = 1
     LIMIT 1
     '''
-    print(sql)
+    # print(sql)
     return bd.sql_select_fetchone(sql)
 
 

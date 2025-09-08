@@ -993,3 +993,19 @@ def add_days(value, days):
     fmt = "%Y-%m-%d"
     dt = datetime.strptime(value, fmt)
     return (dt + timedelta(days=days)).strftime(fmt)
+
+
+
+@app.route('/change_ver_dias')
+@validar_usuario()
+def change_ver_dias():
+    controlador.change_configuracion_ver_dias()
+    return redirect(url_for('calendario'))
+
+
+@app.route('/change_modo_simple')
+@validar_usuario()
+def change_modo_simple():
+    controlador.change_configuracion_modo_simple()
+    return redirect(url_for('calendario'))
+

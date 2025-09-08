@@ -334,9 +334,19 @@ Calendario
         Calendario
     </p>
 
-    <div class="clickable-modal button btn_insert" data-target="insert_actividad">
-        <i class="fa-solid fa-plus"></i>
-        Agregar actividad
+    <div class="buttons">
+        <a class="button" href="{{url_for('change_modo_simple')}}">
+            Modo simple
+        </a>
+        
+        <a class="button" href="{{url_for('change_ver_dias')}}">
+            Ver días
+        </a>
+
+        <div class="clickable-modal button btn_insert" data-target="insert_actividad">
+            <i class="fa-solid fa-plus"></i>
+            Agregar actividad
+        </div>
     </div>
 </div>
     
