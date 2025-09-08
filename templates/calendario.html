@@ -88,6 +88,11 @@ Calendario
 
 
 <style>
+    .buttons {
+        display: flex;
+        gap: 10px;
+    }
+
     table {
         border-collapse: separate;
         border-spacing: 2px;
@@ -336,11 +341,11 @@ Calendario
 
     <div class="buttons">
         <a class="button" href="{{url_for('change_modo_simple')}}">
-            Modo simple
+            Modo simple {{modo_simple}}
         </a>
         
         <a class="button" href="{{url_for('change_ver_dias')}}">
-            Ver días
+            Ver días {{ver_dias}}
         </a>
 
         <div class="clickable-modal button btn_insert" data-target="insert_actividad">

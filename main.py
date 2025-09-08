@@ -973,6 +973,7 @@ def calendario():
 
     return render_template(
         "calendario.html",
+        ver_dias = ver_dias ,
         modo_simple = modo_simple ,
         local_datetime = local_datetime ,
         columnas = columnas ,
