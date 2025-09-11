@@ -857,14 +857,6 @@ def guardar_paleta():
     return redirect(url_for('configuracion'))
 
 
-@app.route('/guardar_actividad', methods=['POST'])
-def guardar_actividad():
-    f = controlador.insert_actividad
-    valores = utils.request_values_parameters(f)
-    f( *valores )
-    return redirect(url_for('calendario'))
-
-
 @app.route('/execute_post=<name>', methods=['POST'])
 def execute_post(name):
     crud_dict = values.CRUD_FORMS.get(name)
@@ -968,7 +960,7 @@ def calendario():
 
     grupos = controlador.get_grupos_matriculaid(2)
     contextos = controlador.get_contextos()
-    actividades = controlador.get_actividades_items()
+    actividades = controlador.get_actividades_items( date_ini = str(local_datetime) )
     tipo_actividades = controlador.get_tipos_actividades()
 
     return render_template(
@@ -1009,4 +1001,21 @@ def change_ver_dias():
 def change_modo_simple():
     controlador.change_configuracion_modo_simple()
     return redirect(url_for('calendario'))
+
+
+@app.route('/guardar_actividad', methods=['POST'])
+def guardar_actividad():
+    f = controlador.insert_actividad
+    valores = utils.request_values_parameters(f)
+    f( *valores )
+    return redirect(url_for('calendario'))
+
+
+@app.route('/update_actividad', methods=['POST'])
+def update_actividad():
+    f = controlador.insert_actividad
+    valores = utils.request_values_parameters(f)
+    f( *valores )
+    return redirect(url_for('calendario'))
+
 

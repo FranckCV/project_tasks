@@ -58,11 +58,11 @@ Calendario
     }
     
     .activity_cell {
-        --cc: #00405d51;
+        --cc: #ffffff32;
     }
 
     .other_hour {
-        --cc: #ffffff32;
+        --cc: #0078af73;
     }
 
     .current_date {
@@ -688,6 +688,137 @@ Calendario
 </div>
 
 
+{% for a in actividades %}
+
+<div class="modal_space" id="update_actividad_{{a.id}}">
+    <form class="modal_dialog modal_form" action=" {{ url_for('guardar_actividad') }} " method="post">
+        <div class="modal_header">
+            Editar actividad
+        </div>
+        
+        <div class="modal_body">
+            <div class="modal_container">
+                <div class="form_field">
+                    <label for="">Nombre</label>
+                    <input type="text" name="nombre" id="" required>
+                </div>
+
+                <div class="form_field">
+                    <label for="">Fecha</label>
+                    <!-- <input type="datetime-local" name="fecha" id="" > -->
+                    <div style="display: grid; gap: 10px; grid-template-columns: 2fr 1fr;">
+                        <input type="date" name="fecha" id="" >
+                        <select name="hora" id="">
+                            {% for h in range(24) %}
+                            <option value="{{h}}">{{h}}:00</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form_field">
+                    <label for="">Tipos</label>
+                    <select name="tipo_actividadid" id="">
+                        <option value=""> Sin tipo </option>
+                        {% for t in tipo_actividades %}
+                        <option value="{{t.id}}">{{ t.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form_field">
+                    <label for="">Descripcion</label>
+                    <textarea name="descripcion" id=""></textarea>
+                </div>
+            </div>
+
+            <div class="modal_container">
+                <div class="modal_navs">
+                    <div class="nav nav_active" data-target="c_grupo">
+                        Grupo
+                    </div>
+                    <div class="nav" data-target="c_contexto">
+                        Contexto
+                    </div>
+                    <div class="nav" data-target="c_ind">
+                        Independiente
+                    </div>
+                </div>
+
+                <div class="modal_containers modal_navs_containers">
+
+                    <div class="modal_container" id="c_grupo">
+                        <div class="form_field">
+                            <label for="">Grupos</label>
+
+                            {% for g in grupos %}
+                            <style>
+                                .form_radio[data-grupoid="{{g.id}}"] {
+                                    border: 1px solid {{g.color}};
+                                }
+                            </style>
+                            <div class="form_radio" data-grupoid="{{g.id}}">
+                                <input type="radio" name="grupoid" id="grupoid_{{g.id}}" value="{{g.id}}">
+                                <label for="grupoid_{{g.id}}">{{ g.cu_siglas }} - {{ g.cu_nombre }} - {{ g.gr_nombre }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>                    
+                    </div>
+
+                    <div class="modal_container" id="c_contexto">
+                        <div class="form_field">
+                            <label for="">Contextos</label>
+
+                            {% for c in contextos %}
+                            <style>
+                                .form_radio[data-contextoid="{{c.id}}"] {
+                                    border: 1px solid {{c.color}};
+                                }
+                            </style>
+                            <div class="form_radio" data-contextoid="{{c.id}}">
+                                <input type="radio" name="contextoid" id="contextoid_{{c.id}}" value="{{c.id}}">
+                                <label for="contextoid_{{c.id}}">{{c.siglas}} - {{c.nombre}}</label>
+                            </div>
+                            {% endfor %}
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="modal_container" id="c_ind">
+                        <div class="form_field">
+                            <label for="">Siglas</label>
+                            <input type="text" name="siglas" id=""  minlength="1" maxlength="5" style="width: 60px;" >
+                        </div>
+
+                        <div class="form_field">
+                            <label for="">Icono</label>
+                            <input type="text" name="icono" id="" >
+                        </div>
+
+                        <div class="form_field">
+                            <label for="">Color</label>
+                            <input type="color" name="color" id="" >
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal_footer">
+            <button class="button close_modal" type="reset">
+                Cerrar
+            </button>
+            <button class="button submit_modal" type="submit">
+                Guardar
+            </button>
+        </div>
+    </form>
+</div>
+
+
+{% endfor %}
 
 
 {% endblock %}

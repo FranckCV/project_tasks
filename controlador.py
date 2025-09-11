@@ -120,6 +120,16 @@ def insert_actividad(nombre, siglas, descripcion, color, icono, fecha, hora, tip
 
 # UPDATE
 
+
+def update_actividad(nombre, siglas, descripcion, color, icono, fecha, hora, tipo_actividadid, grupoid=None, contextoid=None):
+    date = f'{fecha} {hora}:00'
+    sql = '''
+        INSERT INTO actividad(nombre, siglas, descripcion, color, icono, fecha, tipo_actividadid, grupoid, contextoid) VALUES 
+        (%s,%s,%s, %s,%s,%s, %s,%s,%s)
+    '''
+    bd.sql_execute(sql,(nombre, siglas, descripcion, color, icono, date, tipo_actividadid, grupoid, contextoid))
+
+
 def change_configuracion_ver_dias():
     sql = '''
         UPDATE configuracion SET 
@@ -240,45 +250,100 @@ def delete_paleta(id):
 
 # SELECT
 
-def get_actividades_items():
+def get_actividades_items(date_ini=None, date_fin=None):
+    filtros = []
+    params = []
+
+    if date_ini:
+        filtros.append(" act.fecha >= %s ")
+        params.append(date_ini)
+    if date_fin:
+        filtros.append(" act.fecha <= %s ")
+        params.append(date_fin)
+
+    where = f" WHERE {' AND '.join(filtros)} " if filtros else ""
+
     sql = f'''
     SELECT 
         act.id, 
         act.nombre, 
         act.fecha,  
         CASE 
-        	WHEN gr.id is not null THEN CONCAT(cur.nombre, ' - ', gr.nombre) 
-        	WHEN con.id is not null THEN con.nombre
+            WHEN gr.id IS NOT NULL THEN CONCAT(cur.nombre, ' - ', gr.nombre) 
+            WHEN con.id IS NOT NULL THEN con.nombre
             ELSE act.nombre 
-        END as titulo,
+        END AS titulo,
         CASE 
-        	WHEN gr.id is not null THEN cur.siglas 
-        	WHEN con.id is not null THEN con.siglas
+            WHEN gr.id IS NOT NULL THEN cur.siglas 
+            WHEN con.id IS NOT NULL THEN con.siglas
             ELSE act.siglas 
-        END as siglas,
+        END AS siglas,
         CASE 
-        	WHEN gr.id is not null THEN cur.icono 
-        	WHEN con.id is not null THEN con.icono
+            WHEN gr.id IS NOT NULL THEN cur.icono 
+            WHEN con.id IS NOT NULL THEN con.icono
             ELSE act.icono 
-        END as icono,        
+        END AS icono,        
         CASE 
-        	WHEN gr.id is not null THEN cur.color 
-        	WHEN con.id is not null THEN con.color
+            WHEN gr.id IS NOT NULL THEN cur.color 
+            WHEN con.id IS NOT NULL THEN con.color
             ELSE act.color 
-        END as color, 
-        tip.nombre as tipo,
+        END AS color, 
+        tip.nombre AS tipo,
         act.tipo_actividadid, 
         act.grupoid, 
         act.contextoid 
     FROM actividad act
-    left join grupo gr on act.grupoid = gr.id
-    left join curso cur on cur.id = gr.cursoid
-    left join contexto con on con.id = act.contextoid
-    left join tipo_actividad tip on tip.id = act.tipo_actividadid
-    order by 3 asc
+    LEFT JOIN grupo gr ON act.grupoid = gr.id
+    LEFT JOIN curso cur ON cur.id = gr.cursoid
+    LEFT JOIN contexto con ON con.id = act.contextoid
+    LEFT JOIN tipo_actividad tip ON tip.id = act.tipo_actividadid
+    {where}
+    ORDER BY act.fecha ASC
     '''
-    data = bd.sql_select_fetchall(sql )
+
+    data = bd.sql_select_fetchall(sql, params)
     return data
+
+
+# def get_actividades_items():
+#     sql = f'''
+#     SELECT 
+#         act.id, 
+#         act.nombre, 
+#         act.fecha,  
+#         CASE 
+#         	WHEN gr.id is not null THEN CONCAT(cur.nombre, ' - ', gr.nombre) 
+#         	WHEN con.id is not null THEN con.nombre
+#             ELSE act.nombre 
+#         END as titulo,
+#         CASE 
+#         	WHEN gr.id is not null THEN cur.siglas 
+#         	WHEN con.id is not null THEN con.siglas
+#             ELSE act.siglas 
+#         END as siglas,
+#         CASE 
+#         	WHEN gr.id is not null THEN cur.icono 
+#         	WHEN con.id is not null THEN con.icono
+#             ELSE act.icono 
+#         END as icono,        
+#         CASE 
+#         	WHEN gr.id is not null THEN cur.color 
+#         	WHEN con.id is not null THEN con.color
+#             ELSE act.color 
+#         END as color, 
+#         tip.nombre as tipo,
+#         act.tipo_actividadid, 
+#         act.grupoid, 
+#         act.contextoid 
+#     FROM actividad act
+#     left join grupo gr on act.grupoid = gr.id
+#     left join curso cur on cur.id = gr.cursoid
+#     left join contexto con on con.id = act.contextoid
+#     left join tipo_actividad tip on tip.id = act.tipo_actividadid
+#     order by 3 asc
+#     '''
+#     data = bd.sql_select_fetchall(sql )
+#     return data
 
 
 def get_bd_color( tabla , id ):
