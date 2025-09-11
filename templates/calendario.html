@@ -23,12 +23,14 @@ Calendario
         min-width: var(--width);
         font-weight: normal;
     }
-
-    th:first-of-type {
+    
+    /* th:first-of-type {
         min-width: 100px;
-    }
+    } */
     
     thead th.head_col {
+        min-width: var(--width);
+        width: 100%;
         background: var(--bg_table);
         position: sticky;
         top: var(--sizeT);
@@ -56,7 +58,11 @@ Calendario
     }
     
     .activity_cell {
-        --cc: #ffffff1c;
+        --cc: #00405d51;
+    }
+
+    .other_hour {
+        --cc: #ffffff32;
     }
 
     .current_date {
@@ -398,9 +404,10 @@ Calendario
                         {% set col_dia   = colu.1 + 1         if fil.0 + DIFH < local_hour else colu.1 %}
 
                         <td class="activity_cell 
-                        {{ 'current_datetime' if local_date == col_fecha and local_hour == fil.0 else '' }}
+                        {{ 'other_hour' if local_hour > fil.0 else '' }}
                         {{ 'current_date' if local_date == col_fecha else '' }}
                         {{ 'tomorrow_date' if local_date|add_days(1) == col_fecha else '' }}
+                        {{ 'current_datetime' if local_date == col_fecha and local_hour == fil.0 else '' }}
                         " >
                             <div class="list_items" data-fecha="{{col_fecha}}" data-hora="{{fil.0}}">
                                 
