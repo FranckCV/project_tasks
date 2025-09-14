@@ -1013,7 +1013,7 @@ def guardar_actividad():
 
 @app.route('/update_actividad', methods=['POST'])
 def update_actividad():
-    f = controlador.insert_actividad
+    f = controlador.update_actividad
     valores = utils.request_values_parameters(f)
     f( *valores )
     return redirect(url_for('calendario'))

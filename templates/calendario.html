@@ -120,7 +120,7 @@ Calendario
     .container_list {
         height: 85vh;
         overflow-x: auto;
-        align-items: center;
+        /* align-items: center; */
     }
 
     .container_calendar {
@@ -132,15 +132,19 @@ Calendario
     }
     
     .actividad {
-        --sizeIcon: 40px;
+        --sizeIcon: 35px;
         --borderRadius: 10px;
         
         border-radius: var(--borderRadius);
         display: grid;
         grid-template-columns: var(--sizeIcon) auto 25px;
+        grid-template-areas:
+            "ai ain ab"
+            "ae ae ab"
+        ;
         align-items: center;
         padding: 5px;
-        width: 95%;
+        width: 99%;
     }
 
     .a_icon {
@@ -150,6 +154,8 @@ Calendario
         aspect-ratio: 1 / 1;
         justify-content: center;
         align-items: center;
+        grid-area: ai;
+        font-weight: bold;
     }
 
     .a_icon i {
@@ -161,10 +167,15 @@ Calendario
         /* font-weight: bold; */
     }
 
+    .a_info {
+        grid-area: ain;
+    }
+
     .a_end {
         display: flex;
         gap: 10px;
         font-size: 90%;
+        grid-area: ae;
     }
 
     .a_fecha {
@@ -176,9 +187,10 @@ Calendario
     }
 
     .a_buttons {
+        grid-area: ab;
         display: flex;
         flex-direction: column;
-        gap: 5px;
+        gap: 0px;
         align-items: center;
     }
 
@@ -190,9 +202,12 @@ Calendario
         align-items: center;
         aspect-ratio: 1 / 1;
         border-radius: 5px;
-        border: 1px solid var(--cb);
-        color: var(--cb);
-        background-color: color-mix(in srgb, transparent 100%, var(--cb) 20%);
+        color: white;
+
+        background: transparent !important;
+        /* border: 1px solid var(--cb); */
+        /* color: var(--cb); */
+        /* background-color: color-mix(in srgb, transparent 100%, var(--cb) 20%); */
     }
 
     .a_buttons i {
@@ -211,6 +226,9 @@ Calendario
         --cb: #bebb00;
     }
 
+</style>
+
+<style>
     :root {
         --sizeItemIcon: 30px;
     }
@@ -334,6 +352,11 @@ Calendario
         width: var(--sizeItemIcon);
         font-size: 95%;
         width: calc( var(--width) - 5px );
+        font-weight: bold;
+    }
+
+    .i_icon i {
+        font-size: 100%;
     }
 
 </style>
@@ -510,6 +533,17 @@ Calendario
                 color: color-mix(in srgb, {{a.color}} 100%, white 50%) ;
             }
 
+            .actividad[data-id="{{a.id}}"] .a_buttons .button {
+                border: 1px solid {{ a.color }} ;
+                color: color-mix(in srgb, {{a.color}} 100%, white 50%) ;
+            }
+
+            .actividad[data-id="{{a.id}}"] .a_buttons .button:hover {
+                /* color: {{ a.color }}; */
+                border: 1px solid {{ a.color }} ;
+                color: color-mix(in srgb, {{a.color}} 75%, white 100%) ;
+            }
+
         </style>
 
         <div class="actividad" data-id="{{a.id}}">
@@ -529,26 +563,26 @@ Calendario
                 <div class="a_nombre">
                     {{ a.nombre }}
                 </div>
-
-                <div class="a_end">
-                    <div class="a_fecha">
-                        {{ a.fecha }}
-                    </div>
-                    |
-                    <div class="a_tipo">
-                        {{ a.tipo }}
-                    </div>
+            </div>
+            
+            <div class="a_end">
+                <div class="a_fecha">
+                    {{ a.fecha }}
+                </div>
+                |
+                <div class="a_tipo">
+                    {{ a.tipo }}
                 </div>
             </div>
 
             <div class="a_buttons">
-                <div class="button btn_consult">
+                <div class="clickable-modal button btn_consult">
                     <i class="fa-solid fa-eye"></i>
                 </div>
-                <div class="button btn_update">
+                <div class="clickable-modal button btn_update" data-target="update_actividad_{{a.id}}">
                     <i class="fa-solid fa-pencil"></i>
                 </div>
-                <div class="button btn_delete">
+                <div class="clickable-modal button btn_delete">
                     <i class="fa-solid fa-trash"></i>
                 </div>
             </div>
@@ -691,26 +725,27 @@ Calendario
 {% for a in actividades %}
 
 <div class="modal_space" id="update_actividad_{{a.id}}">
-    <form class="modal_dialog modal_form" action=" {{ url_for('guardar_actividad') }} " method="post">
+    <form class="modal_dialog modal_form" action=" {{ url_for('update_actividad') }} " method="post">
         <div class="modal_header">
-            Editar actividad
+            Editar actividad "{{ a.nombre }}"
         </div>
+
+        <input type="hidden" name="id" value="{{a.id}}">
         
         <div class="modal_body">
             <div class="modal_container">
                 <div class="form_field">
                     <label for="">Nombre</label>
-                    <input type="text" name="nombre" id="" required>
+                    <input type="text" name="nombre" id="" value="{{ a.nombre }}" required>
                 </div>
 
                 <div class="form_field">
                     <label for="">Fecha</label>
-                    <!-- <input type="datetime-local" name="fecha" id="" > -->
                     <div style="display: grid; gap: 10px; grid-template-columns: 2fr 1fr;">
-                        <input type="date" name="fecha" id="" >
-                        <select name="hora" id="">
+                        <input type="date" name="fecha" id="" value="{{ a.fecha.strftime('%Y-%m-%d') }}" required>
+                        <select name="hora" id="" required>
                             {% for h in range(24) %}
-                            <option value="{{h}}">{{h}}:00</option>
+                            <option value="{{h}}" {{ 'selected' if a.fecha.strftime("%H") | int == h | int else '' }} >{{h}}:00</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -721,26 +756,26 @@ Calendario
                     <select name="tipo_actividadid" id="">
                         <option value=""> Sin tipo </option>
                         {% for t in tipo_actividades %}
-                        <option value="{{t.id}}">{{ t.nombre }}</option>
+                        <option value="{{t.id}}" {{ 'selected' if a.tipo_actividadid == t.id else '' }}>{{ t.nombre }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 
                 <div class="form_field">
                     <label for="">Descripcion</label>
-                    <textarea name="descripcion" id=""></textarea>
+                    <textarea name="descripcion" id="">{{ a.descripcion }}</textarea>
                 </div>
             </div>
 
             <div class="modal_container">
                 <div class="modal_navs">
-                    <div class="nav nav_active" data-target="c_grupo">
+                    <div class="nav {{ '' if a.grupoid is none else 'nav_active' }}" data-target="c_grupo">
                         Grupo
                     </div>
-                    <div class="nav" data-target="c_contexto">
+                    <div class="nav {{ '' if a.contextoid is none else 'nav_active' }}" data-target="c_contexto">
                         Contexto
                     </div>
-                    <div class="nav" data-target="c_ind">
+                    <div class="nav {{ '' if a.grupoid is none or a.contextoid is none else 'nav_active' }}" data-target="c_ind">
                         Independiente
                     </div>
                 </div>
@@ -758,7 +793,7 @@ Calendario
                                 }
                             </style>
                             <div class="form_radio" data-grupoid="{{g.id}}">
-                                <input type="radio" name="grupoid" id="grupoid_{{g.id}}" value="{{g.id}}">
+                                <input type="radio" name="grupoid" id="grupoid_{{g.id}}" value="{{g.id}}" {{ 'checked' if g.id == a.grupoid else '' }} >
                                 <label for="grupoid_{{g.id}}">{{ g.cu_siglas }} - {{ g.cu_nombre }} - {{ g.gr_nombre }}</label>
                             </div>
                             {% endfor %}
@@ -776,7 +811,7 @@ Calendario
                                 }
                             </style>
                             <div class="form_radio" data-contextoid="{{c.id}}">
-                                <input type="radio" name="contextoid" id="contextoid_{{c.id}}" value="{{c.id}}">
+                                <input type="radio" name="contextoid" id="contextoid_{{c.id}}" value="{{c.id}}" {{ 'checked' if c.id == a.contextoid else '' }} >
                                 <label for="contextoid_{{c.id}}">{{c.siglas}} - {{c.nombre}}</label>
                             </div>
                             {% endfor %}

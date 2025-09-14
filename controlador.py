@@ -121,13 +121,22 @@ def insert_actividad(nombre, siglas, descripcion, color, icono, fecha, hora, tip
 # UPDATE
 
 
-def update_actividad(nombre, siglas, descripcion, color, icono, fecha, hora, tipo_actividadid, grupoid=None, contextoid=None):
+def update_actividad(id,nombre, siglas, descripcion, color, icono, fecha, hora, tipo_actividadid, grupoid=None, contextoid=None):
     date = f'{fecha} {hora}:00'
     sql = '''
-        INSERT INTO actividad(nombre, siglas, descripcion, color, icono, fecha, tipo_actividadid, grupoid, contextoid) VALUES 
-        (%s,%s,%s, %s,%s,%s, %s,%s,%s)
+        UPDATE actividad SET 
+        nombre =           %s,
+        siglas =           %s,
+        descripcion =      %s,
+        color =            %s,
+        icono =            %s,
+        fecha =            %s,
+        tipo_actividadid = %s,
+        grupoid =          %s,
+        contextoid =       %s
+        where id = %s
     '''
-    bd.sql_execute(sql,(nombre, siglas, descripcion, color, icono, date, tipo_actividadid, grupoid, contextoid))
+    bd.sql_execute(sql,(nombre, siglas, descripcion, color, icono, date, tipo_actividadid, grupoid, contextoid, id))
 
 
 def change_configuracion_ver_dias():
