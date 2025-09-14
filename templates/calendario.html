@@ -516,9 +516,8 @@ Calendario
             </tbody>
         </table>
     </div>
-    <div class="container_list">        
-
-        {% for a in actividades %}
+    <div class="container_list">
+        {% macro create_actividad(a) %}
         <style>
             .actividad[data-id="{{a.id}}"] {
                 background-color: color-mix(in srgb, transparent 100%, {{a.color}} 10%);
@@ -587,8 +586,13 @@ Calendario
                 </div>
             </div>
         </div>
+        {% endmacro %}
 
 
+        {% for a in actividades %}
+
+            {{ create_actividad(a) }}
+        
         {% endfor %}
     </div>
 </div>
