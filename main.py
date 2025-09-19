@@ -59,7 +59,7 @@ def main_page():
 # @validar_usuario()
 def index():
     progreso_semestre = controlador.get_progreso_ciclo()
-    promedio_general = controlador.get_promedio_final(1)
+    promedio_general = controlador.get_promedio_final(2)
 
     promedio_cursos = controlador.obtener_cursos(1)
     cursos = [r['siglas'] for r in promedio_cursos]
