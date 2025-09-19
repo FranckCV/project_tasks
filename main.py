@@ -45,7 +45,7 @@ def inject_globals():
     )
 
 
-matriculaid = 1
+matriculaid = 2
 tablaid = 1
 
 # controlador.update_cursos_color(  'yellow' ,  '#ffff33' )
@@ -212,7 +212,6 @@ def semestre():
 def notas():
     # semestre = SEMESTRE
     # usuarioid = USUARUIOID
-
     cursos = controlador.obtener_cursos( matriculaid )
     unidades = controlador.obtener_unidades()
     notas = controlador.obtener_notas()
