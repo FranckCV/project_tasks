@@ -61,7 +61,7 @@ def index():
     progreso_semestre = controlador.get_progreso_ciclo()
     promedio_general = controlador.get_promedio_final(2)
 
-    promedio_cursos = controlador.obtener_cursos(1)
+    promedio_cursos = controlador.obtener_cursos(2)
     cursos = [r['siglas'] for r in promedio_cursos]
     nombres_completos = [r['nombre'] for r in promedio_cursos]
     promedios = [round(float(r['prom'])) for r in promedio_cursos]
@@ -1034,9 +1034,16 @@ def guardar_unidad():
 @app.route('/guardar_nota_grupo', methods=['POST'])
 def guardar_nota_grupo():
     g_id = request.form['grupoid']
-    f = controlador.insert_nota 
-    valores = utils.request_values_parameters(f)
-    f( *valores ) 
+
+    nombre = request.form['nombre']
+    porcentaje = request.form['porcentaje']
+    unidadid = request.form['unidadid']
+    usuarioid = request.cookies.get('id')
+
+    controlador.insert_nota(nombre, porcentaje, unidadid,usuarioid)
+    # f = controlador.insert_nota 
+    # valores = utils.request_values_parameters(f)
+    # f( *valores ) 
     return redirect(url_for('grupo',id=g_id))
 
 

@@ -125,12 +125,18 @@ def insert_unidad(nombre, porcentaje, grupoid):
     bd.sql_execute(sql,(nombre, porcentaje, grupoid))
 
 
-def insert_nota(nombre, porcentaje, unidadid):
-    sql = '''
+def insert_nota(nombre, porcentaje, unidadid,usuarioid):
+    sql1 = '''
         INSERT INTO nota(nombre, porcentaje, unidadid) VALUES 
         (%s,%s,%s)
     '''
-    bd.sql_execute(sql,(nombre, porcentaje, unidadid))
+    nid = bd.sql_execute_lastrowid(sql1,(nombre, porcentaje, unidadid))
+    
+    sql2 = '''
+        INSERT INTO usuario_nota(usuarioid, notaid, valor) VALUES 
+        (%s,%s,%s)
+    '''
+    bd.sql_execute(sql2,(usuarioid, nid, 0))
 
 
 
@@ -1079,7 +1085,7 @@ def obtener_cursos( matriculaid ):
                 cu.ciclo , 
                 gr.nombre as g_nombre ,
                 count(DISTINCT ud.id) as cant_ud,
-                ROUND(SUM(ud.porcentaje * (nta.porcentaje * un.valor) / 10000) , 4) as prom,
+                IFNULL(ROUND(SUM(ud.porcentaje * (nta.porcentaje * un.valor) / 10000) , 4),0) as prom,
                 cu.color
             from curso cu
             left join grupo gr on gr.cursoid = cu.id
