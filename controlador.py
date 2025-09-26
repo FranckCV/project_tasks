@@ -125,6 +125,14 @@ def insert_unidad(nombre, porcentaje, grupoid):
     bd.sql_execute(sql,(nombre, porcentaje, grupoid))
 
 
+def insert_nota(nombre, porcentaje, unidadid):
+    sql = '''
+        INSERT INTO nota(nombre, porcentaje, unidadid) VALUES 
+        (%s,%s,%s)
+    '''
+    bd.sql_execute(sql,(nombre, porcentaje, unidadid))
+
+
 
 # UPDATE
 
