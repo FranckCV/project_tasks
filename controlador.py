@@ -117,6 +117,14 @@ def insert_actividad(nombre, siglas, descripcion, color, icono, fecha, hora, tip
     bd.sql_execute(sql,(nombre, siglas, descripcion, color, icono, date, tipo_actividadid, grupoid, contextoid))
 
 
+def insert_unidad(nombre, porcentaje, grupoid):
+    sql = '''
+        INSERT INTO unidad(nombre, porcentaje, grupoid) VALUES 
+        (%s,%s,%s)
+    '''
+    bd.sql_execute(sql,(nombre, porcentaje, grupoid))
+
+
 
 # UPDATE
 

@@ -20,8 +20,6 @@
         border: 1px solid var(--color-curso);
         gap: 10px;
         flex-direction: column;
-        /* padding: 10px; */
-        /* padding-block: 5px; */
         border-radius: 5px;
     }
 
@@ -50,6 +48,27 @@
         padding-bottom: 10px;
     }
 
+    .u_nom {
+        display: flex;
+        gap: 5px;
+    }
+
+    .u_btn {
+        background-color: white;
+        color: var(--color-curso);
+        border-radius: 5px;
+        height: 20px;
+        width:  20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .u_btn i {
+        display: flex;
+        justify-content: center;
+    }
+
 </style>
 {% endblock %}
 
@@ -61,6 +80,13 @@
     <p class="title">
         Grupo {{ grupo.semestrecodigo }} - {{ grupo.gr_nombre }} - {{ grupo.cu_nombre }}
     </p>
+
+    <div class="buttons">
+        <div class="clickable-modal button btn_insert" data-target="insert_unidad">
+            <i class="fa-solid fa-plus"></i>
+            Agregar unidad
+        </div>
+    </div>
 </div>
 
 <div class="container_list container_unidad">
@@ -68,7 +94,12 @@
     <div class="unidad">
         <div class="u_info">
             <div class="u_nom" data-unidadid="{{ unidad.id }}">
-                {{ unidad.nombre }}
+                <div class="clickable-modal u_btn" data-target="insert_nota_grupoid_{{unidad.id}}">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                <div>
+                    {{ unidad.nombre }}
+                </div>
             </div>
             <div class="u_por">
                 {{ unidad.porcentaje }} %
@@ -89,6 +120,82 @@
     </div>
     {% endfor %}
 </div>
+
+
+<div class="modal_space" id="insert_unidad">
+    <form class="modal_dialog modal_form" action="{{ url_for('guardar_unidad') }}" method="post">
+        <div class="modal_header">
+            Agregar unidad
+        </div>
+        
+        <div class="modal_body">
+            <div class="modal_container">
+                <div class="form_field">
+                    <label for="">Nombre</label>
+                    <input type="text" name="nombre" id="" required>
+                </div>
+                
+                <div class="form_field">
+                    <label for="">Porcentaje</label>
+                    <input type="number" name="porcentaje" id="" required>
+                </div>
+
+                <input type="hidden" name="grupoid" value="{{ grupo.id }}">
+            </div>
+            
+        </div>
+
+        <div class="modal_footer">
+            <button class="button close_modal" type="reset">
+                Cerrar
+            </button>
+            <button class="button submit_modal" type="submit">
+                Guardar
+            </button>
+        </div>
+    </form>
+</div>
+
+
+{% for u in unidades %}
+
+<div class="modal_space" id="insert_nota_grupoid_{{u.id}}">
+    <form class="modal_dialog modal_form" action="{{ url_for('guardar_unidad') }}" method="post">
+        <div class="modal_header">
+            Editar unidad {{u.nombre}}
+        </div>
+        
+        <div class="modal_body">
+            <div class="modal_container">
+                <div class="form_field">
+                    <label for="">Nombre</label>
+                    <input type="text" name="nombre" id="" required>
+                </div>
+                
+                <div class="form_field">
+                    <label for="">Porcentaje</label>
+                    <input type="number" name="porcentaje" id="" required>
+                </div>
+
+                <input type="hidden" name="grupoid" value="{{ grupo.id }}">
+            </div>
+            
+        </div>
+
+        <div class="modal_footer">
+            <button class="button close_modal" type="reset">
+                Cerrar
+            </button>
+            <button class="button submit_modal" type="submit">
+                Guardar
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endfor %}
+
+
 
 
 {% endblock %}

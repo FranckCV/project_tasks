@@ -1022,3 +1022,11 @@ def update_actividad():
     return redirect(url_for('calendario'))
 
 
+
+@app.route('/guardar_unidad', methods=['POST'])
+def guardar_unidad():
+    g_id = request.form['grupoid']
+    f = controlador.insert_unidad
+    valores = utils.request_values_parameters(f)
+    f( *valores ) 
+    return redirect(url_for('grupo',id=g_id))
