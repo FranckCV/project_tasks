@@ -1086,7 +1086,7 @@ def obtener_cursos( matriculaid ):
             left join unidad ud on ud.grupoid = gr.id
             left join nota nta on nta.unidadid = ud.id
             left join detalle_matricula det on det.grupoid = gr.id 
-            inner join usuario_nota un on un.notaid = nta.id
+            LEFT join usuario_nota un on un.notaid = nta.id
             where det.matriculaid = %s 
             GROUP BY cu.id
             order by  2
