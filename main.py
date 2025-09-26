@@ -59,7 +59,7 @@ def main_page():
 # @validar_usuario()
 def index():
     progreso_semestre = controlador.get_progreso_ciclo()
-    promedio_general = controlador.get_promedio_final(2)
+    promedio_general = controlador.get_promedio_final(1)
 
     promedio_cursos = controlador.obtener_cursos(2)
     cursos = [r['siglas'] for r in promedio_cursos]
@@ -67,7 +67,9 @@ def index():
     promedios = [round(float(r['prom'])) for r in promedio_cursos]
 
     local_datetime = utils.local_time()
+    
     actividades = controlador.get_actividades_items( date_ini = str(local_datetime) )
+    proyectos = controlador.get_proyectos_pendientes()
 
     return render_template(
         "index.html",
@@ -77,7 +79,8 @@ def index():
         cursos = cursos ,
         promedios = promedios,
         nombres_completos = nombres_completos ,
-        actividades = actividades
+        actividades = actividades ,
+        proyectos = proyectos ,
     )
 
 

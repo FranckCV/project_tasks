@@ -33,7 +33,7 @@ Index
 
     .section_dashboard {
         display: grid;
-        grid-template-columns: repeat(10, 8.25vw);
+        grid-template-columns: repeat(10, 8.3vw);
         grid-template-rows: repeat(8, 65px);
         gap: 10px;
     }
@@ -64,7 +64,7 @@ Index
         /* justify-content: center; */
         align-items: center;
         flex-direction: column;
-        gap: 10px;
+        gap: 7px;
     }
 
     .d_block[data-block="1"] {
@@ -80,38 +80,52 @@ Index
     }
 
     .d_block[data-block="3"] {
-        grid-column: span 3 / span 2;
-        grid-row: span 2 / span 2;
+        grid-column: span 1 / span 1;
+        grid-row:    span 1 / span 1;
         grid-column-start: 3;
         grid-row-start: 1;
     }
 
     .d_block[data-block="4"] {
-        grid-column: span 3 / span 3;
-        grid-row: span 2 / span 2;
-        grid-column-start: 8;
-        grid-row-start: 1;
+        grid-column: span 1 / span 1;
+        grid-row: span 1 / span 1;
+        grid-column-start: 3;
+        grid-row-start: 2;
     }
 
     .d_block[data-block="5"] {
-        grid-column: span 3 / span 3;
-        grid-row: span 4 / span 6;
-        grid-column-start: 8;
-        grid-row-start: 3;
+        grid-column: span 2 / span 2;
+        grid-row: span 8 / span 8;
+        grid-column-start: 9;
+        grid-row-start: 1;
     }
 
     .d_block[data-block="6"] {
         grid-column: span 1 / span 1;
-        grid-row: span 5 / span 5;
+        grid-row: span 1 / span 1;
         grid-column-start: 4;
-        grid-row-start: 4;
+        grid-row-start: 2;
     }
 
     .d_block[data-block="7"] {
         grid-column: span 3 / span 3;
         grid-row: span 5 / span 5;
-        grid-column-start: 5;
+        grid-column-start: 6;
         grid-row-start: 4;
+    }
+    
+    .d_block[data-block="8"] {
+        grid-column: span 1 / span 1;
+        grid-row: span 1 / span 1;
+        grid-column-start: 3;
+        grid-row-start: 3;
+    }
+    
+    .d_block[data-block="9"] {
+        grid-column: span 1 / span 1;
+        grid-row: span 1 / span 1;
+        grid-column-start: 4;
+        grid-row-start: 1;
     }
 
 
@@ -179,7 +193,16 @@ Index
 
 <style>
     .actividad {
+        font-size: 80%;
+    }
+</style>
+
+<style>
+    .proyecto {
+        border: 1px solid #ffffff69;
+        border-radius: 5px;
         font-size: 90%;
+        width: 100%;
     }
 </style>
 {% endblock %}
@@ -214,7 +237,7 @@ Index
     </div>
 
     <div class="d_block" data-block="3">
-        Promedio general
+        <!-- Promedio general -->
         <div>
             <p>{{ promedio_general.promedio_general }}</p>
         </div>
@@ -305,34 +328,44 @@ Index
     </div>
 
     <div class="d_block" data-block="4">
-        <!-- Actividad actual en ejecucion o Proxima actividad en ejecucion -->
-
+        4
     </div>
 
     <div class="d_block" data-block="6">
-        <div>
-            <button>
-                Agregar Actividad
-            </button>
-            
-            <button>
-                Ver notas
-            </button>
-            
-            <button>
-                Ver calendario
-            </button>
-            
-            <button>
-                Ver horario
-            </button>
-            
-            
-        </div>
+        6
     </div>
 
     <div class="d_block" data-block="7">
+        <p>
+            Proyectos
+        </p>
+        <div class="container_list">
+            {% for p in proyectos %}
+                <style>
+                    .proyecto[data-id="{{p.id}}"] {
+                        color: {{ p.color }};
+                        border-color: {{ p.color }};
+                    }
+                </style>
+                
+                <div class="proyecto" data-id="{{p.id}}">
+                    <div>{{ p.nombre }}</div>
+                    <div>{{ p.icono }}</div>
+                    <div>{{ p.siglas }}</div>
+                    <div>{{ p.img }}</div>
+                    <div>{{ p.fecha_limite }}</div>
+                    <div>{{ p.tiempo }}</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 
+    <div class="d_block" data-block="8">
+        8
+    </div>
+
+    <div class="d_block" data-block="9">
+        9
     </div>
 
 

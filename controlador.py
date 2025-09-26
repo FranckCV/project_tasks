@@ -1304,6 +1304,24 @@ def get_configuracion():
     return bd.sql_select_fetchone(sql)
 
 
+def get_proyectos_pendientes():
+    sql = f'''
+    SELECT 
+        id, 
+        nombre , 
+        color ,
+        icono , 
+        siglas, 
+        img ,
+        completo ,
+        fecha_limite ,
+        DATEDIFF(fecha_limite,'{utils.local_datetime_bd()}') AS tiempo
+    FROM proyecto 
+    WHERE completo != 1
+    order by 9
+    '''
+    return bd.sql_select_fetchall(sql)
+
 # OTROS
 
 def down_orden_columna( columnaid ):
