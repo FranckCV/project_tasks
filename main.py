@@ -45,7 +45,7 @@ def inject_globals():
     )
 
 
-matriculaid = 1
+matriculaid = 2
 tablaid = 1
 
 # controlador.update_cursos_color(  'yellow' ,  '#ffff33' )
@@ -59,7 +59,7 @@ def main_page():
 # @validar_usuario()
 def index():
     progreso_semestre = controlador.get_progreso_ciclo()
-    promedio_general = controlador.get_promedio_final(1)
+    promedio_general = controlador.get_promedio_final(2)
 
     promedio_cursos = controlador.obtener_cursos(1)
     cursos = [r['siglas'] for r in promedio_cursos]
@@ -216,7 +216,6 @@ def semestre():
 def notas():
     # semestre = SEMESTRE
     # usuarioid = USUARUIOID
-
     cursos = controlador.obtener_cursos( matriculaid )
     unidades = controlador.obtener_unidades()
     notas = controlador.obtener_notas()
