@@ -91,8 +91,6 @@ Calendario
 
 </style>
 
-
-
 <style>
     .buttons {
         display: flex;
@@ -117,12 +115,6 @@ Calendario
         grid-template-columns: 3fr 1fr;
     }
 
-    .container_list {
-        height: 85vh;
-        overflow-x: auto;
-        /* align-items: center; */
-    }
-
     .container_calendar {
         overflow: auto;
         position: relative;
@@ -130,103 +122,8 @@ Calendario
         background-color: rgba(0, 0, 0, 0.316);
         border-radius: 5px;
     }
-    
-    .actividad {
-        --sizeIcon: 35px;
-        --borderRadius: 10px;
-        
-        border-radius: var(--borderRadius);
-        display: grid;
-        grid-template-columns: var(--sizeIcon) auto 25px;
-        grid-template-areas:
-            "ai ain ab"
-            "ae ae ab"
-        ;
-        align-items: center;
-        padding: 5px;
-        width: 99%;
-    }
-
-    .a_icon {
-        border-radius: calc( var(--borderRadius) - 5px );
-        display: flex;
-        height: calc( var(--sizeIcon) - 5px );
-        aspect-ratio: 1 / 1;
-        justify-content: center;
-        align-items: center;
-        grid-area: ai;
-        font-weight: bold;
-    }
-
-    .a_icon i {
-        font-size: 130%;
-    }
-
-    .a_titulo {
-        font-size: 90%;
-        /* font-weight: bold; */
-    }
-
-    .a_info {
-        grid-area: ain;
-    }
-
-    .a_end {
-        display: flex;
-        gap: 10px;
-        font-size: 90%;
-        grid-area: ae;
-    }
-
-    .a_fecha {
-        color: grey;
-    }
-
-    .a_tipo {
-        color: #cccccc;
-    }
-
-    .a_buttons {
-        grid-area: ab;
-        display: flex;
-        flex-direction: column;
-        gap: 0px;
-        align-items: center;
-    }
-
-    .a_buttons .button {
-        padding: 0;
-        height: 20px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        aspect-ratio: 1 / 1;
-        border-radius: 5px;
-        color: white;
-
-        background: transparent !important;
-        /* border: 1px solid var(--cb); */
-        /* color: var(--cb); */
-        /* background-color: color-mix(in srgb, transparent 100%, var(--cb) 20%); */
-    }
-
-    .a_buttons i {
-        font-size: 80%;
-    }
-
-    .a_buttons .button.btn_consult {
-        --cb: #1675db;
-    }
-
-    .a_buttons .button.btn_delete {
-        --cb: #c11000;
-    }
-
-    .a_buttons .button.btn_update {
-        --cb: #bebb00;
-    }
-
 </style>
+<link rel="stylesheet" href="/static/css/actividad_items.css">
 
 <style>
     :root {
@@ -865,10 +762,5 @@ Calendario
 
 
 {% block scripts %}
-<script>
 
-    pintarElemento(' .a_icon ');
-    pintarElemento(' .i_icon ');
-
-</script>
 {% endblock %}

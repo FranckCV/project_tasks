@@ -64,7 +64,10 @@ def index():
     promedio_cursos = controlador.obtener_cursos(1)
     cursos = [r['siglas'] for r in promedio_cursos]
     nombres_completos = [r['nombre'] for r in promedio_cursos]
-    promedios = [round(float(r['prom'])) for r in promedio_cursos] 
+    promedios = [round(float(r['prom'])) for r in promedio_cursos]
+
+    local_datetime = utils.local_time()
+    actividades = controlador.get_actividades_items( date_ini = str(local_datetime) )
 
     return render_template(
         "index.html",
@@ -74,6 +77,7 @@ def index():
         cursos = cursos ,
         promedios = promedios,
         nombres_completos = nombres_completos ,
+        actividades = actividades
     )
 
 
@@ -960,8 +964,8 @@ def calendario():
 
     grupos = controlador.get_grupos_matriculaid(2)
     contextos = controlador.get_contextos()
-    actividades = controlador.get_actividades_items( date_ini = str(local_datetime) )
     tipo_actividades = controlador.get_tipos_actividades()
+    actividades = controlador.get_actividades_items( date_ini = str(local_datetime) )
 
     return render_template(
         "calendario.html",

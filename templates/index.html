@@ -33,11 +33,9 @@ Index
 
     .section_dashboard {
         display: grid;
-        /* width: 400px; */
-        /* grid-template-columns: repeat(8, 125px); */
-        grid-template-columns: repeat(8, 10vw);
-        grid-template-rows: repeat(6, 85px);
-        gap: 15px;
+        grid-template-columns: repeat(10, 8.25vw);
+        grid-template-rows: repeat(8, 65px);
+        gap: 10px;
     }
 
     .d_block {
@@ -46,8 +44,8 @@ Index
         /* background-color: color-mix(in srgb, var(--color1) 30%, black 90%) ; */
         /* filter: saturate(2.5); */
         border-radius: 10px;
-        padding: 10px;
-        padding-inline: 15px;
+        padding: 7px;
+        padding-inline: 10px;
         font-size: 110%;
         gap: 10px;
         display: flex;
@@ -63,7 +61,7 @@ Index
 
     .d_block>div {
         display: flex;
-        justify-content: center;
+        /* justify-content: center; */
         align-items: center;
         flex-direction: column;
         gap: 10px;
@@ -76,13 +74,13 @@ Index
 
     .d_block[data-block="2"] {
         grid-column: span 3 / span 3;
-        grid-row: span 4 / span 4;
-        grid-column-start: 3;
-        grid-row-start: 3;
+        grid-row: span 5 / span 5;
+        grid-column-start: 1;
+        grid-row-start: 4;
     }
 
     .d_block[data-block="3"] {
-        grid-column: span 3 / span 3;
+        grid-column: span 3 / span 2;
         grid-row: span 2 / span 2;
         grid-column-start: 3;
         grid-row-start: 1;
@@ -91,29 +89,35 @@ Index
     .d_block[data-block="4"] {
         grid-column: span 3 / span 3;
         grid-row: span 2 / span 2;
-        grid-column-start: 6;
+        grid-column-start: 8;
         grid-row-start: 1;
     }
 
     .d_block[data-block="5"] {
         grid-column: span 3 / span 3;
-        grid-row: span 4 / span 4;
-        grid-column-start: 6;
+        grid-row: span 4 / span 6;
+        grid-column-start: 8;
         grid-row-start: 3;
     }
 
     .d_block[data-block="6"] {
-        grid-column: span 2 / span 2;
-        grid-row: span 3 / span 3;
+        grid-column: span 1 / span 1;
+        grid-row: span 5 / span 5;
+        grid-column-start: 4;
+        grid-row-start: 4;
+    }
+
+    .d_block[data-block="7"] {
+        grid-column: span 3 / span 3;
+        grid-row: span 5 / span 5;
+        grid-column-start: 5;
         grid-row-start: 4;
     }
 
 
 
-
-
     .avance_ciclo {
-        --size: 215px;
+        --size: 190px;
         --thickness: 15px;
         --percentage: 50;
         position: relative;
@@ -135,12 +139,12 @@ Index
 
     .avance_ciclo p {
         color: var(--color3);
-        font-size: 315%;
+        font-size: 290%;
     }
 
     .avance_ciclo span {
-        color: color-mix(in srgb, var(--color2) 100%, white 10%);
-        font-size: 130%;
+        color: color-mix(in srgb, var(--color2) 100%, white 60%);
+        font-size: 110%;
     }
 
     .avance_ciclo div {
@@ -170,6 +174,14 @@ Index
         /* height: 400px; */
     }
 </style>
+
+<link rel="stylesheet" href="/static/css/actividad_items.css">
+
+<style>
+    .actividad {
+        font-size: 90%;
+    }
+</style>
 {% endblock %}
 
 {% block contenido %}
@@ -177,7 +189,7 @@ Index
 <div class="section_dashboard">
 
     <div class="d_block" data-block="1">
-        <p>Progreso del ciclo</p>
+        <!-- <p>Progreso del ciclo</p> -->
 
         {% set porcentaje = progreso_semestre.get('porcentaje') if progreso_semestre.get('porcentaje') else 0.0 %}
         {% set avance = porcentaje if porcentaje < 100 else 100.00 %} 
@@ -208,37 +220,120 @@ Index
         </div>
     </div>
 
-    <div class="d_block" data-block="4">
-        lista de actividades
-    </div>
-
     <div class="d_block" data-block="5">
-        Actividad actual en ejecucion o Proxima actividad en ejecucion
+        <p>
+            Actividades
+        </p>
+
+        <div class="container_list">
+            {% macro create_actividad(a) %}
+            <style>
+                .actividad[data-id="{{a.id}}"] {
+                    background-color: color-mix(in srgb, transparent 100%, {{a.color}} 10%);
+                    border: 1px solid {{ a.color }};
+                }
+
+                .actividad[data-id="{{a.id}}"] .a_icon {
+                    background-color: {{a.color}} ;
+                }
+                
+                .actividad[data-id="{{a.id}}"] .a_titulo {
+                    color: color-mix(in srgb, {{a.color}} 100%, white 50%) ;
+                }
+
+                .actividad[data-id="{{a.id}}"] .a_buttons .button {
+                    border: 1px solid {{ a.color }} ;
+                    color: color-mix(in srgb, {{a.color}} 100%, white 50%) ;
+                }
+
+                .actividad[data-id="{{a.id}}"] .a_buttons .button:hover {
+                    /* color: {{ a.color }}; */
+                    border: 1px solid {{ a.color }} ;
+                    color: color-mix(in srgb, {{a.color}} 75%, white 100%) ;
+                }
+
+            </style>
+
+            <div class="actividad" data-id="{{a.id}}">
+                <div class="a_icon">
+                    {% if a.icono %}
+                        <i class="{{a.icono}}"></i>
+                    {% else %}
+                        {{ a.siglas }}
+                    {% endif %}
+                </div>
+                
+                <div class="a_info">
+                    <div class="a_titulo">
+                        {{ a.titulo }}
+                    </div>
+
+                    <div class="a_nombre">
+                        {{ a.nombre }}
+                    </div>
+                </div>
+                
+                <div class="a_end">
+                    <div class="a_fecha">
+                        {{ a.fecha }}
+                    </div>
+                    |
+                    <div class="a_tipo">
+                        {{ a.tipo }}
+                    </div>
+                </div>
+
+                <!-- <div class="a_buttons">
+                    <div class="clickable-modal button btn_consult">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <div class="clickable-modal button btn_update" data-target="update_actividad_{{a.id}}">
+                        <i class="fa-solid fa-pencil"></i>
+                    </div>
+                    <div class="clickable-modal button btn_delete">
+                        <i class="fa-solid fa-trash"></i>
+                    </div>
+                </div> -->
+            </div>
+            {% endmacro %}
+
+
+            {% for a in actividades %}
+                {{ create_actividad(a) }}
+            {% endfor %}
+        </div>
     </div>
 
-<div class="d_block" data-block="6">
-    <div>
-        <button>
-            Agregar Actividad
-        </button>
-        
-        <button>
-            Ver notas
-        </button>
-        
-        <button>
-            Ver calendario
-        </button>
-        
-        <button>
-            Ver horario
-        </button>
-        
-        
+    <div class="d_block" data-block="4">
+        <!-- Actividad actual en ejecucion o Proxima actividad en ejecucion -->
+
     </div>
-</div>
 
+    <div class="d_block" data-block="6">
+        <div>
+            <button>
+                Agregar Actividad
+            </button>
+            
+            <button>
+                Ver notas
+            </button>
+            
+            <button>
+                Ver calendario
+            </button>
+            
+            <button>
+                Ver horario
+            </button>
+            
+            
+        </div>
+    </div>
 
+    <div class="d_block" data-block="7">
+
+    </div>
 
 
 </div>
@@ -430,13 +525,13 @@ Index
 
     var bar = new ProgressBar.Circle('#progress-ring-container', {
         trailColor: colorTransparent,
-        strokeWidth: 10,
-        trailWidth: 10,
+        strokeWidth: 7,
+        trailWidth:  7,
         easing: 'easeInOut',
-        duration: 1400,
+        duration: 1000,
         text: { autoStyleContainer: false },
-        from: { color: '#ff0000', width: 10 },
-        to: { color: '#00ff00', width: 10 },
+        from: { color: '#ff0000', width: 7 },
+        to:   { color: '#00ff00', width: 7 },
         step: function (state, circle) {
             let percent = circle.value();
 
