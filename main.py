@@ -216,7 +216,7 @@ def semestre():
 def notas():
     # semestre = SEMESTRE
     # usuarioid = USUARUIOID
-    cursos = controlador.obtener_cursos( matriculaid )
+    cursos = controlador.obtener_cursos( 2 )
     unidades = controlador.obtener_unidades()
     notas = controlador.obtener_notas()
     return render_template(
