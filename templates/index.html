@@ -194,6 +194,7 @@ Index
 <style>
     .actividad {
         font-size: 80%;
+        --sizeIcon: 30px;
     }
 </style>
 
@@ -203,6 +204,7 @@ Index
         border-radius: 5px;
         font-size: 90%;
         width: 100%;
+        padding: 5px;
     }
 </style>
 {% endblock %}
@@ -349,13 +351,17 @@ Index
                 </style>
                 
                 <div class="proyecto" data-id="{{p.id}}">
+                    {% if p.icono %}
+                        <i class="{{ p.icono }}"></i>
+                    {% else %}
+                        <div>{{ p.siglas }}</div>
+                    {% endif %}
                     <div>{{ p.nombre }}</div>
-                    <div>{{ p.icono }}</div>
-                    <div>{{ p.siglas }}</div>
                     <div>{{ p.img }}</div>
                     <div>{{ p.fecha_limite }}</div>
                     <div>{{ p.tiempo }}</div>
                 </div>
+                
             {% endfor %}
         </div>
     </div>

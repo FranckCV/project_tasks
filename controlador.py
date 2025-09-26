@@ -1305,7 +1305,7 @@ def get_configuracion():
 
 
 def get_proyectos_pendientes():
-    sql = f'''
+    sql = '''
     SELECT 
         id, 
         nombre , 
@@ -1315,12 +1315,16 @@ def get_proyectos_pendientes():
         img ,
         completo ,
         fecha_limite ,
-        DATEDIFF(fecha_limite,'{utils.local_datetime_bd()}') AS tiempo
+        DATEDIFF(fecha_limite,%s) AS tiempo
     FROM proyecto 
     WHERE completo != 1
     order by 9
     '''
-    return bd.sql_select_fetchall(sql)
+    return bd.sql_select_fetchall(sql,(utils.local_datetime_bd()))
+
+
+
+
 
 # OTROS
 
