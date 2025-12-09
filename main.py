@@ -293,9 +293,7 @@ def grupos_curso(id):
 @app.route("/test")
 @validar_usuario()
 def test():
-    return render_template(
-        "crear_grupo.html" ,
-    )
+    return 'hola'
 
 
 @app.route("/grupos")

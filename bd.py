@@ -3,15 +3,20 @@ from pymysql.cursors import DictCursor
 
 # SQLALCHEMY_DATABASE_URI = 'mysql://ulkkuhuq5vq6ly5k:k1huLwTpahIIbyRds33S@b1maiitpask5s6u7x1or-mysql.services.clever-cloud.com:3306/b1maiitpask5s6u7x1or'
 
-# BD_HOST = 'sql.freedb.tech'
-# BD_USER = 'freedb_franc'
-# BD_PSWD = 'xx5q#XCa*t5j?dV'
-# BD_DBNM = 'freedb_bd_domus'
+BD_HOST = 'mysql-franckcv.alwaysdata.net'
+BD_USER = 'franckcv' 
+BD_PSWD = 'FRANCO0105alwaysdata'
+BD_DBNM = 'franckcv_bd_academic'
 
-BD_HOST = 'b1maiitpask5s6u7x1or-mysql.services.clever-cloud.com'
-BD_USER = 'ulkkuhuq5vq6ly5k'
-BD_PSWD = 'k1huLwTpahIIbyRds33S'
-BD_DBNM = 'b1maiitpask5s6u7x1or'
+# BD_HOST = 'sql.freedb.tech'
+# BD_USER = 'freedb_franck'
+# BD_PSWD = '?fZ2*ggS?z?jn3F'
+# BD_DBNM = 'freedb_bd_academic'
+
+# BD_HOST = 'b1maiitpask5s6u7x1or-mysql.services.clever-cloud.com'
+# BD_USER = 'ulkkuhuq5vq6ly5k'
+# BD_PSWD = 'k1huLwTpahIIbyRds33S'
+# BD_DBNM = 'b1maiitpask5s6u7x1or'
 
 # BD_HOST = 'FranckCv.mysql.pythonanywhere-services.com'
 # BD_USER = 'FranckCv'
