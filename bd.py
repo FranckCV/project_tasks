@@ -3,41 +3,64 @@ from pymysql.cursors import DictCursor
 
 # SQLALCHEMY_DATABASE_URI = 'mysql://ulkkuhuq5vq6ly5k:k1huLwTpahIIbyRds33S@b1maiitpask5s6u7x1or-mysql.services.clever-cloud.com:3306/b1maiitpask5s6u7x1or'
 
-BD_HOST = 'mysql-franckcv.alwaysdata.net'
-BD_USER = 'franckcv' 
-BD_PSWD = 'FRANCO0105alwaysdata'
-BD_DBNM = 'franckcv_bd_academic'
+PARAMETER_CONNECT = {
+    0: {
+        "host" : 'localhost' ,
+        "port" : 3306 ,
+        "user" : 'root',
+        "password": '' ,
+        "db" : 'bd_academic' ,
+    } ,
+    1: {
+        "host" : 'FranckCv.mysql.pythonanywhere-services.com' ,
+        "user" : 'FranckCv',
+        "password": 'mysql2025' ,
+        "db" : 'FranckCv$bd_academic' ,
+    },
+    2: {
+        "host" : 'b1maiitpask5s6u7x1or-mysql.services.clever-cloud.com',
+        "user" : 'ulkkuhuq5vq6ly5k',
+        "password" : 'k1huLwTpahIIbyRds33S',
+        "db" : 'b1maiitpask5s6u7x1or',
+    },
+    3: {
+        "host" : 'sql.freedb.tech' ,
+        "user" : 'freedb_franck',
+        "password": '?fZ2*ggS?z?jn3F' ,
+        "db" : 'freedb_bd_academic' ,
+    },
+    4: {
+        "host" : 'mysql-franckcv.alwaysdata.net' ,
+        "user" : 'franckcv',
+        "password": 'FRANCO0105alwaysdata' ,
+        "db" : 'franckcv_bd_academic' ,
+    } ,
+    -1: {
+        "host" : '' ,
+        "user" : '',
+        "password": '' ,
+        "db" : '' ,
+    } 
+}
 
-# BD_HOST = 'sql.freedb.tech'
-# BD_USER = 'freedb_franck'
-# BD_PSWD = '?fZ2*ggS?z?jn3F'
-# BD_DBNM = 'freedb_bd_academic'
 
-# BD_HOST = 'b1maiitpask5s6u7x1or-mysql.services.clever-cloud.com'
-# BD_USER = 'ulkkuhuq5vq6ly5k'
-# BD_PSWD = 'k1huLwTpahIIbyRds33S'
-# BD_DBNM = 'b1maiitpask5s6u7x1or'
-
-# BD_HOST = 'FranckCv.mysql.pythonanywhere-services.com'
-# BD_USER = 'FranckCv'
-# BD_PSWD = 'mysql2025'
-# BD_DBNM = 'FranckCv$bd_academic'
-
-# BD_HOST = 'localhost'
-# BD_PORT = 3306
-# BD_USER = 'root'
-# BD_PSWD = ''
-# BD_DBNM = 'bd_academic'
+SELECT_BD = 0
+data = PARAMETER_CONNECT.get(SELECT_BD)
+data['cursorclass'] = DictCursor
 
 def obtener_conexion():
-    return pymysql.connect(
-        host = BD_HOST,
-        # port = BD_PORT,
-        user = BD_USER,
-        password = BD_PSWD,
-        db = BD_DBNM ,
-        cursorclass = DictCursor
-        )
+    return pymysql.connect(**data)
+
+
+# def obtener_conexion():
+#     return pymysql.connect(
+#         host = BD_HOST,
+#         # port = BD_PORT,
+#         user = BD_USER,
+#         password = BD_PSWD,
+#         db = BD_DBNM ,
+#         cursorclass = DictCursor
+#         )
 
 
 def sql_select_fetchall(sql , args = None):
