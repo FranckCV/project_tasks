@@ -40,7 +40,7 @@ PARAMETER_CONNECT = {
         "user" : '',
         "password": '' ,
         "db" : '' ,
-    } 
+    } ,
 }
 
 
