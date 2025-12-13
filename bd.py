@@ -1,8 +1,6 @@
 import pymysql
 from pymysql.cursors import DictCursor
 
-# SQLALCHEMY_DATABASE_URI = 'mysql://ulkkuhuq5vq6ly5k:k1huLwTpahIIbyRds33S@b1maiitpask5s6u7x1or-mysql.services.clever-cloud.com:3306/b1maiitpask5s6u7x1or'
-
 PARAMETER_CONNECT = {
     0: {
         "host" : 'localhost' ,
@@ -44,7 +42,7 @@ PARAMETER_CONNECT = {
 }
 
 
-SELECT_BD = 0
+SELECT_BD = 4
 data = PARAMETER_CONNECT.get(SELECT_BD)
 data['cursorclass'] = DictCursor
 

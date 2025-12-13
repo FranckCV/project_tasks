@@ -1,14 +1,9 @@
 :root {
-    /* --cell-width: 600px; */
-
     --heigh-header: 65px;
     --height-footer: 50vh;
     --height-aside: 90vh;
     --height-section: 1vh;
     --width-aside: 95px;
-    /* --width-aside: 7.5vw; */
-
-
 }
 
 body {

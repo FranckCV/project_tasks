@@ -351,6 +351,23 @@ def data_grupo(semestre):
     ) 
 
 
+@app.route("/arbol_tareas")
+@validar_usuario()
+def arbol_tareas():
+    id = request.args.get('id') 
+    tareaid = id if id else None
+    tarea_info = controlador.get_tarea_id(tareaid) if tareaid else {}
+    tareas_planas = controlador.get_tareas(tareaid) 
+    tareas_arbol = construir_arbol_tareas(tareas_planas)
+    return render_template(
+        "arbol_tareas.html" ,
+        tareaid = tareaid ,
+        tareas = tareas_arbol ,
+        tareas_planas = tareas_planas ,
+        tarea_info = tarea_info ,
+    )
+
+
 @app.route("/tareas")
 @validar_usuario()
 def tareas():

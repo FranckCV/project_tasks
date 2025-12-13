@@ -18,7 +18,7 @@ ERRORES = {
     "foreign key constraint fails" : 'No es posible eliminar dicha fila' ,
     "404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again." : "El enlace al que intentó ingresar no existe." ,
 }
-
+ 
 
 ENLACES_MENU= [
     {'nombre' : 'Perfil' ,        'icono': 'fa-solid fa-circle-xmark' ,     'enlace': 'test' ,          'color': '' } ,
@@ -26,7 +26,7 @@ ENLACES_MENU= [
     {'nombre' : 'Dashboard' ,     'icono': 'ri-dashboard-fill' ,            'enlace': 'index' ,         'color': '' } ,
     {'nombre' : 'Notas' ,         'icono': 'fa-solid fa-graduation-cap' ,   'enlace': 'notas' ,         'color': '' } ,
     {'nombre' : 'Tablas' ,        'icono': 'ri-table-line' ,                'enlace': 'tablas' ,        'color': '' } ,
-    {'nombre' : 'Tareas' ,        'icono': 'fa-solid fa-bars-staggered' ,   'enlace': 'tareas' ,        'color': '' } ,
+    {'nombre' : 'Tareas' ,        'icono': 'fa-solid fa-bars-staggered' ,   'enlace': 'arbol_tareas' ,        'color': '' } ,
     {'nombre' : 'Horario' ,       'icono': 'fa-solid fa-clock' ,            'enlace': 'horario' ,       'color': '' } ,
     {'nombre' : 'Calendario' ,    'icono': 'fa-solid fa-calendar-week' ,    'enlace': 'calendario' ,    'color': '' } ,
     {'nombre' : 'Matriculas' ,    'icono': 'fa-solid fa-grip' ,             'enlace': 'matriculas',     'color': '' } ,
