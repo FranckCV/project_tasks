@@ -1066,3 +1066,38 @@ def guardar_nota_grupo():
     return redirect(url_for('grupo',id=g_id))
 
 
+
+
+@app.route("/edit_markdown", methods=["GET", "POST"])
+def edit_markdown():
+    # Leer el archivo md.md
+    md_file = os.path.join(os.path.dirname(__file__), 'md.md')
+    
+    try:
+        with open(md_file, 'r', encoding='utf-8') as f:
+            markdown = f.read()
+            # Remover el frontmatter YAML si existe
+            if markdown.startswith('---'):
+                parts = markdown.split('---', 2)
+                if len(parts) >= 3:
+                    markdown = parts[2].strip()
+    except FileNotFoundError:
+        markdown = '''# Archivo md.md no encontrado
+## Crea un archivo md.md en la carpeta raíz
+    - Item 1
+    - Item 2'''
+
+    if request.method == "POST":
+        markdown = request.form.get("markdown", "")
+        # Guardar cambios en el archivo
+        try:
+            with open(md_file, 'w', encoding='utf-8') as f:
+                f.write(markdown)
+        except Exception as e:
+            print(f"Error al guardar: {e}")
+
+    return render_template("edit_markdown.html", markdown=markdown)
+
+
+
+

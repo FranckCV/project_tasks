@@ -22,6 +22,7 @@ ERRORES = {
 
 ENLACES_MENU= [
     {'nombre' : 'Perfil' ,        'icono': 'fa-solid fa-circle-xmark' ,     'enlace': 'test' ,          'color': '' } ,
+    {'nombre' : 'Markdown' , 'icono': 'fa-solid fa-file' ,             'enlace': 'edit_markdown' , 'color': '' } , 
     {'nombre' : 'Configuracion' , 'icono': 'fa-solid fa-gear' ,             'enlace': 'configuracion' , 'color': '' } , 
     {'nombre' : 'Dashboard' ,     'icono': 'ri-dashboard-fill' ,            'enlace': 'index' ,         'color': '' } ,
     {'nombre' : 'Notas' ,         'icono': 'fa-solid fa-graduation-cap' ,   'enlace': 'notas' ,         'color': '' } ,
