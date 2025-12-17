@@ -1103,11 +1103,12 @@ def edit_markdown():
 
 
 
-# Último JSON recibido
+
+latest_frame = None
 latest_data = {}
 
-@app.route("/test_tesis")
-def test_tesis():
+@app.route("/test_tesis2")
+def test_tesis2():
     return render_template_string("""
     <!DOCTYPE html>
     <html>
@@ -1132,15 +1133,70 @@ def test_tesis():
     </html>
     """)
 
+
 @app.route("/api/data", methods=["POST"])
 def receive_data():
     global latest_data
     latest_data = request.json
     return jsonify({"status": "ok"})
 
+
 @app.route("/api/latest")
 def latest():
     return jsonify(latest_data)
+
+
+@app.route("/test_tesis")
+def test_tesis():
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Monitor IoT</title>
+    </head>
+    <body>
+        <h2>Video en tiempo casi real</h2>
+        <img id="video" width="480"><br><br>
+
+        <h3>JSON recibido</h3>
+        <pre id="data">Esperando datos...</pre>
+
+        <script>
+            async function fetchFrame() {
+                const res = await fetch('/api/frame');
+                const data = await res.json();
+                if (data.frame) {
+                    document.getElementById("video").src =
+                        "data:image/jpeg;base64," + data.frame;
+                }
+            }
+
+            async function fetchData() {
+                const res = await fetch('/api/latest');
+                const data = await res.json();
+                document.getElementById('data').textContent =
+                    JSON.stringify(data, null, 2);
+            }
+
+            setInterval(fetchFrame, 120); // ~8 FPS
+            setInterval(fetchData, 1000);
+        </script>
+    </body>
+    </html>
+    """)
+
+
+@app.route("/api/frame", methods=["POST"])
+def receive_frame():
+    global latest_frame
+    latest_frame = request.json.get("frame")
+    return jsonify({"status": "ok"})
+
+
+@app.route("/api/frame", methods=["GET"])
+def get_frame():
+    return jsonify({"frame": latest_frame})
+
 
 
 
