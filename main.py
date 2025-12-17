@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash, jsonify, session, make_response,  redirect, url_for
+from flask import Flask, render_template, request, redirect, flash, jsonify, session, make_response,  redirect, url_for , render_template_string
 from datetime import datetime, date , timedelta 
 import controlador
 import utils
@@ -1098,6 +1098,49 @@ def edit_markdown():
 
     return render_template("edit_markdown.html", markdown=markdown)
 
+
+
+
+
+
+# Último JSON recibido
+latest_data = {}
+
+@app.route("/test_tesis")
+def test_tesis():
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Monitor IoT - Emociones</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <h2>Datos recibidos del Raspberry (simulado)</h2>
+        <pre id="data">Esperando datos...</pre>
+
+        <script>
+            async function fetchData() {
+                const res = await fetch('/api/latest');
+                const data = await res.json();
+                document.getElementById('data').textContent =
+                    JSON.stringify(data, null, 2);
+            }
+            setInterval(fetchData, 1000); // cada 1 segundo
+        </script>
+    </body>
+    </html>
+    """)
+
+@app.route("/api/data", methods=["POST"])
+def receive_data():
+    global latest_data
+    latest_data = request.json
+    return jsonify({"status": "ok"})
+
+@app.route("/api/latest")
+def latest():
+    return jsonify(latest_data)
 
 
 
