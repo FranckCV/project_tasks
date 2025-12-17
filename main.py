@@ -1107,32 +1107,6 @@ def edit_markdown():
 latest_frame = None
 latest_data = {}
 
-@app.route("/test_tesis2")
-def test_tesis2():
-    return render_template_string("""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Monitor IoT - Emociones</title>
-        <meta charset="utf-8">
-    </head>
-    <body>
-        <h2>Datos recibidos del Raspberry (simulado)</h2>
-        <pre id="data">Esperando datos...</pre>
-
-        <script>
-            async function fetchData() {
-                const res = await fetch('/api/latest');
-                const data = await res.json();
-                document.getElementById('data').textContent =
-                    JSON.stringify(data, null, 2);
-            }
-            setInterval(fetchData, 1000); // cada 1 segundo
-        </script>
-    </body>
-    </html>
-    """)
-
 
 @app.route("/api/data", methods=["POST"])
 def receive_data():
@@ -1162,25 +1136,24 @@ def test_tesis():
         <pre id="data">Esperando datos...</pre>
 
         <script>
-            async function fetchFrame() {
-                const res = await fetch('/api/frame');
-                const data = await res.json();
-                if (data.frame) {
-                    document.getElementById("video").src =
-                        "data:image/jpeg;base64," + data.frame;
-                }
+        async function fetchData() {
+            const res = await fetch('/api/latest');
+            const data = await res.json();
+
+            // VIDEO
+            if (data.frame) {
+                document.getElementById("video").src =
+                    "data:image/jpeg;base64," + data.frame;
             }
 
-            async function fetchData() {
-                const res = await fetch('/api/latest');
-                const data = await res.json();
-                document.getElementById('data').textContent =
-                    JSON.stringify(data, null, 2);
-            }
+            // JSON COMPLETO
+            document.getElementById('data').textContent =
+                JSON.stringify(data, null, 2);
+        }
 
-            setInterval(fetchFrame, 120); // ~8 FPS
-            setInterval(fetchData, 1000);
+        setInterval(fetchData, 120); // ~8 FPS
         </script>
+
     </body>
     </html>
     """)
@@ -1199,4 +1172,30 @@ def get_frame():
 
 
 
+
+@app.route("/test_tesis2")
+def test_tesis2():
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Monitor IoT - Emociones</title>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <h2>Datos recibidos del Raspberry (simulado)</h2>
+        <pre id="data">Esperando datos...</pre>
+
+        <script>
+            async function fetchData() {
+                const res = await fetch('/api/latest');
+                const data = await res.json();
+                document.getElementById('data').textContent =
+                    JSON.stringify(data, null, 2);
+            }
+            setInterval(fetchData, 1000); // cada 1 segundo
+        </script>
+    </body>
+    </html>
+    """)
 
