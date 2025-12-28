@@ -11,6 +11,7 @@ import markdown
 import os
 from flask_socketio import SocketIO, emit
 
+
 app = Flask(__name__)
 
 def validar_usuario():
