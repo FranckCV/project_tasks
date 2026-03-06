@@ -999,6 +999,21 @@ def get_semestres():
     '''
     return bd.sql_select_fetchall(sql)
 
+
+def get_semestre_activo():
+    sql = '''
+    SELECT 
+        codigo ,
+        f_inicio ,
+        f_fin ,
+        activo
+    FROM semestre 
+    where activo = 1
+    ORDER BY 1 DESC
+    '''
+    return bd.sql_select_fetchone(sql)
+
+
 def options_semestres():
     sql = '''
     SELECT 

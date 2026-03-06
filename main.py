@@ -322,7 +322,8 @@ def grupos():
 # @validar_usuario()
 def horario():
     actual = request.args.get('semestre')
-    semestre = actual if actual else values.SEMESTRE
+    sss = controlador.get_semestre_activo()
+    semestre = actual or sss.get('codigo') or values.SEMESTRE
     ciclos = controlador.get_ciclos_grupos_semestre(semestre)
     cursos = controlador.get_cursos_grupo_semestre(semestre)
     grupos = controlador.get_grupos_semestre(semestre)

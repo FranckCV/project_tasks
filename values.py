@@ -127,7 +127,7 @@ sizeROW   = '30px'
 sizeROWad = '20px'
 sizeGAP   = '1px'
 
-SEMESTRE = '2025-2'
+SEMESTRE = '2026-1'
 USUARIOID = 1
 
 CURSOS_AMARILLO = (5 , 8 , 14 , 20 , 25 , 36 , 43 , 51 , 57 ,63)
